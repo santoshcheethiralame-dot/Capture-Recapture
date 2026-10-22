@@ -14,7 +14,7 @@ papers.
 
 | ID | Experiment | Owner | Tier | Stage | Status | Depends on | Hypotheses | Testbed ($0 plan, D-007) | Needed by |
 |---|---|---|---|---|---|---|---|---|---|
-| [E00](experiments/E00-estimator-library.md) | Estimator library and reference validation | Santosh | core | 0 | in progress (R001–R002 done) | none | — | R reference data (sandbox) | 2026-11-01 |
+| [E00](experiments/E00-estimator-library.md) | Estimator library and reference validation | Santosh | core | 0 | analysed (R001–R004 done; awaiting Kushal's review) | none | — | R reference data (sandbox) | 2026-11-01 |
 | [E01](experiments/E01-simulation-study.md) | Simulation study under AI-safety violations | Santosh | core | 1 (exploratory) | registered | E00 | PH2; sets † thresholds | simulation (sandbox CPU) | 2026-11-05 (freeze) |
 | [E02](experiments/E02-synthsaebench-zoo.md) | Coverage of SAEs, released seed zoo | Santosh | core | 2 | registered | E00, E01 | PH1, PH2, PH3a | SynthSAEBench zoo (Kaggle) | 2026-12-05 (preprint) |
 | [E03](experiments/E03-matcher-bakeoff.md) | Matcher bake-off and threshold diagnostics | Santosh | core | 2 | registered | E02 | PH3a | SynthSAEBench zoo (Kaggle) | 2026-12-05 |
@@ -56,7 +56,7 @@ Rendered by `python tools/notebook.py render`.
 <!-- counts:start -->
 | Exp | Runs | Planned | Running | Succeeded | Failed |
 |---|---|---|---|---|---|
-| E00 | 3 | 1 | 0 | 2 | 0 |
+| E00 | 4 | 0 | 0 | 4 | 0 |
 | E01 | 5 | 5 | 0 | 0 | 0 |
 | E02 | 1 | 1 | 0 | 0 | 0 |
 | E03 | 0 | 0 | 0 | 0 | 0 |

@@ -24,7 +24,8 @@ the vocabulary in `docs/GLOSSARY.md` ("failure mode", "catcher", "run",
   workshop ~Feb 1; **NeurIPS 2027 main** ~May 15 (primary); fallbacks SaTML
   2028 / ICLR 2028 / TMLR (D-003).
 - **Status (2026-10-22):** pre-registration v0.1 drafting, nothing frozen.
-  E00-R001/R002 succeeded. Freeze of prereg v1.0 targeted Nov 6–8.
+  E00 R001–R004 succeeded (awaiting Kushal's review). Freeze of prereg v1.0
+  targeted Nov 6–8.
 
 ## Team and who I work for
 
@@ -53,11 +54,10 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 
 ## Next concrete tasks for Santosh
 
-1. **E00-R003** (registered, planned): implement and validate against R the
-   remaining estimators. Chiu-Chao formula is open question Q-D10 (PeerJ
-   4:e1634); if unconfirmable, drop it and use `breakaway_nof1` (E00
-   contingency). Until R003 succeeds, no experiment may use these.
-2. Kushal to review `results/E00/E00-R001/summary.md` and D-008 (four-eyes).
+1. ~~E00-R003~~ done 2026-10-22 (log-linear, generalised Chao,
+   breakaway_nof1 bridge; Chiu-Chao left out per contingency, Q-D10 open;
+   D-009).
+2. Kushal to review E00 (R001–R004 summaries) and D-008/D-009 (four-eyes).
 3. **E01** simulation on `crsafety` (design in
    `notebook/experiments/E01-simulation-study.md`): base cell N=500, K=10,
    logit-normal mean 0.2 σ=1; one-factor-at-a-time blocks; n_sim=500; master
@@ -69,7 +69,7 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 
 | Path | What |
 |---|---|
-| `src/crsafety/` | Estimator library: `estimators.py` (IncidenceData, chapman, chapman_pairs, darroch_mt, chao2, chao2_ci, ichao2, jackknife, ice, coverage, good_turing_coverage, extrapolate, huggins, report), `bootstrap.py` (iNEXT-style pseudo-population, B=2000), `histories.py` (read_cell / write_cell, PROTOCOLS §10) |
+| `src/crsafety/` | Estimator library: `estimators.py` (IncidenceData, chapman, chapman_pairs, darroch_mt, chao2, chao2_ci, ichao2, jackknife, ice, coverage, good_turing_coverage, extrapolate, huggins, generalized_chao, report), `loglin.py` (loglinear, closedp: Rcapture models + run interactions), `rbridge.py` (breakaway_nof1 via Rscript; env `CRSAFETY_RSCRIPT`), `bootstrap.py` (iNEXT-style pseudo-population, B=2000), `histories.py` (read_cell / write_cell, PROTOCOLS §10) |
 | `tests/test_estimators.py` | 377 property tests (E00-R002) |
 | `validation/e00/` | R reference comparison (`run.sh`, `reference.R`, `compare.py`, `make_synthetic.py`) |
 | `results/EXX/<run_id>/` | Run outputs (small files only; large ones external with sha256) |
@@ -83,7 +83,7 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 
 ```bash
 python -m pip install -e ".[dev]"     # use python -m: the bare `pytest` on PATH is a uv tool without numpy
-python -m pytest -q                   # 377 tests
+python -m pytest -q                   # 595 tests (1 skipped without R + breakaway)
 python tools/notebook.py check        # CI runs this + py_compile + pytest
 python tools/notebook.py new E01 --owner Santosh --title "..." [--config ...]
 python tools/notebook.py set E01-R001 status=running
@@ -92,10 +92,12 @@ python tools/notebook.py render && python tools/notebook.py check
 python tools/notebook.py freeze E01 --note "prereg v1; reviewed by Kushal"
 ```
 
-R (for validation) is not preinstalled; install via micromamba/conda-forge
-(`r-rcapture r-inext r-breakaway r-vgam`; CRAN-only pkgs from
-`github.com/cran/<pkg>`). See `validation/e00/README.md`. Hugging Face, arXiv
-and Zenodo were blocked from the sandbox (Q-D1); GitHub, PyPI, conda-forge OK.
+R (for validation) is not preinstalled. Recipe in `validation/e00/README.md`
+(R 4.5 env via micromamba fetched from conda-forge; breakaway 5 built from
+`github.com/adw96/breakaway`; CRAN-only pkgs from `github.com/cran/<pkg>`).
+Blocked from the sandbox: Hugging Face, arXiv, Zenodo, CRAN, micro.mamba.pm,
+peerj.com, PMC (Q-D1). Working: conda-forge, PyPI, `git clone` from GitHub.
+rpy2 does not load against the conda R; use `crsafety.rbridge` (Rscript).
 
 ## Rules I must follow
 
@@ -151,7 +153,8 @@ PRs unless asked.
 D-001 safety framing · D-002 coverage + Δ headline, counts as lower bounds ·
 D-003 venues · D-004 plain-git notebook · D-005 tiered prereg with prior
 knowledge disclosed · D-006 (proposed, needs owner) code MIT, docs/data
-CC BY 4.0 · D-007 $0 plan · D-008 estimator formula conventions.
+CC BY 4.0 · D-007 $0 plan · D-008 estimator formula conventions · D-009
+log-linear ported, breakaway_nof1 via Rscript, Chiu-Chao left out.
 
 ## Study hypotheses (PREREGISTRATION.md)
 PH1 coverage estimable (\|Ĉ−C\| ≤ 0.05† in ≥ 80%† cells) · PH2 counts are

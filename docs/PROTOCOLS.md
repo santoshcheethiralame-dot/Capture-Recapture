@@ -17,8 +17,12 @@ frozen experiment that uses it.
   run pair, Darroch Mt.
 - **As named in experiments:**
   - Huggins / Böhning (covariates);
-  - log-linear (`Rcapture`, `dga`) for K ≥ 3 with dependence;
-  - f1-free (`breakaway_nof1`);
+  - log-linear models for K ≥ 3 with dependence: `crsafety.loglinear`
+    (Rcapture's `closedp.t` models, plus run interactions as in
+    `closedpCI.t`; validated in E00-R003). `dga` is not ported;
+  - f1-free: `crsafety.rbridge.breakaway_nof1` (R `breakaway` through
+    `Rscript`; needs R);
+  - generalised Chao with covariates: `crsafety.generalized_chao`;
   - dependence-robust interval (Sun et al. 2023).
 - **Always print** K, S_obs, f1 to f4, Ĉ, Δ̂(K), Chao2, and the identity
   rule with its threshold. See the reporting recipe (§8).

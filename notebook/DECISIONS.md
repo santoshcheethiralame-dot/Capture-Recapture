@@ -192,3 +192,36 @@ Q4 = 0). Results must not depend on which variant we happened to code.
 "Chao2", "coverage" and the other estimators mean in every
 pre-registration. A change after the v1 freeze is a deviation.
 
+## D-009: How the E00-R003 estimators are provided (2026-10-22)
+
+**Status:** accepted (Santosh); Kushal to review with the E00 results
+**Context:** The E00 pre-registration listed log-linear models and
+`breakaway_nof1` "through rpy2". rpy2's current release does not load
+against the conda-forge R builds available here, and rpy2 would make every
+user of the library (Kaggle notebooks, CI) depend on an R installation.
+The Chiu-Chao (2016) singleton correction could not be confirmed: the
+paper is unreachable from the sandbox and no Chao-lab package implements it.
+**Options:**
+- log-linear: A, rpy2 to Rcapture; B, a native port validated against
+  Rcapture.
+- breakaway_nof1: A, rpy2; B, `Rscript` subprocess with JSON in/out; C, port
+  it (several hundred lines of nls model selection with fallbacks).
+**Decision:**
+- Log-linear models are ported (`crsafety.loglinear`, `crsafety.closedp`),
+  matching Rcapture's design matrices, history order and Chao (LB)
+  negative-eta refits. Standard errors are evaluated at the MLE (Rcapture's
+  printed s.e. carries O(√ε) error from glm's `vcov()`).
+- `breakaway_nof1` is called through `Rscript` (`crsafety.rbridge`). It is a
+  sensitivity estimator only, never primary, so needing R is acceptable.
+- The Chiu-Chao correction is left out, as the E00 contingency prescribes;
+  `breakaway_nof1` is the f1-free option. E05 correction (c) and E04 H4c
+  use `breakaway_nof1` until Q-D10 is resolved.
+- `generalized_chao` uses the binomial (incidence) form derived from Böhning
+  et al. (2013); validated against `glm` and its exact reduction to Chao2.
+**Why:** a native port has no runtime dependency and is validated to
+≤ 3e-12 (E00-R003); the subprocess bridge is exact by construction and
+robust to R/rpy2 version skew.
+**Consequences:** E00 §2 Methods text updated (not frozen). E05 and E04 refer
+to "the f1-free estimator" and are unaffected in design.
+**Affects pre-registered analysis:** yes, before any freeze: it fixes which
+implementation "log-linear", "f1-free" and "singleton-corrected" mean.

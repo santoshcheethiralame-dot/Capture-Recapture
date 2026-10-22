@@ -28,7 +28,7 @@ revision or snapshot ID, and a sha256 for files.
 | Open models (pinned at freeze, Q-D14) | HF: Qwen (7–8B instruct; also 3B/14B-AWQ for L2), Llama (≤ 8B instruct), Gemma (Gemma-2-2B-it organism base; ≤ 9B auditor), Mistral (≤ 8B target), Phi or OLMo (judge) | E04, E08–E10, E12, E14, E15, E17 | per model licence (Llama and Gemma have use policies) | via Kaggle | | All run locally with vLLM; no API terms involved |
 | Gemma Scope (Gemma-2-2B) | HF `google/gemma-scope-2b-pt-*` | E09 (T3 tool), E11 | CC-BY-4.0 (reported) | via Kaggle | | Used as the white-box audit tool |
 | Kansal repos | GitHub `ParitKansal/undiscovered-failures`, `label-error-capture-recapture` | baselines | MIT (code), CC BY 4.0 (text) | GitHub OK | | |
-| R packages | conda-forge: `r-rcapture`, `r-inext`, `r-breakaway`, `r-vgam`; GitHub `cran/<pkg>` mirror: SpadeR, SPECIES, LCMCR, dga, SparseMSE | E00, all | GPL (varies) | **works in sandbox** via micromamba | R 4.1.3, Rcapture 1.4.4, iNEXT 3.0.0, breakaway 3.0 (tested by an agent) | |
+| R packages | conda-forge (+ bioconda for phyloseq): `r-base>=4.5`, `r-rcapture`, `r-inext`, `r-vegan`, `r-vgam`, `r-jsonlite`; breakaway built from GitHub `adw96/breakaway` (conda-forge only has 3.0, which pins R 4.1); GitHub `cran/<pkg>` mirror: SpadeR, SPECIES, LCMCR, dga, SparseMSE | E00, all | GPL (varies) | **works in sandbox** via micromamba (fetch the micromamba binary from conda-forge; micro.mamba.pm is blocked) | E00-R001/R003: R 4.5.3, iNEXT 3.0.2, vegan 2.7.5, Rcapture 1.4.4, VGAM 1.1.14, breakaway 5.0.1 (adw96/breakaway commit 35f83d4) | |
 
 ## Artefacts we produce
 
