@@ -24,8 +24,9 @@ the vocabulary in `docs/GLOSSARY.md` ("failure mode", "catcher", "run",
   workshop ~Feb 1; **NeurIPS 2027 main** ~May 15 (primary); fallbacks SaTML
   2028 / ICLR 2028 / TMLR (D-003).
 - **Status (2026-10-22):** pre-registration v0.1 drafting, nothing frozen.
-  E00 R001–R004 succeeded (awaiting Kushal's review). Freeze of prereg v1.0
-  targeted Nov 6–8.
+  E00 R001–R004 and E01 R001–R008 done (awaiting Kushal's review); gate G1
+  passed. Prereg is draft v0.2 (interval method changed, D-010). Freeze of
+  prereg v1.0 targeted Nov 6–8.
 
 ## Team and who I work for
 
@@ -58,18 +59,20 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
    breakaway_nof1 bridge; Chiu-Chao left out per contingency, Q-D10 open;
    D-009).
 2. Kushal to review E00 (R001–R004 summaries) and D-008/D-009 (four-eyes).
-3. **E01** simulation on `crsafety` (design in
-   `notebook/experiments/E01-simulation-study.md`): base cell N=500, K=10,
-   logit-normal mean 0.2 σ=1; one-factor-at-a-time blocks; n_sim=500; master
-   seed 20261022 + 1 via `SeedSequence`; report MCSE everywhere. H1a–H1f.
-   Then set † thresholds in `docs/PREREGISTRATION.md` (may not loosen beyond
-   2× the E01 achievable value).
+3. ~~E01~~ done 2026-10-22 (H1a clean/G1, H1d–f supported; H1a literal,
+   H1b, H1c not). Key findings: iNEXT bootstrap CI under-covers realized C
+   (0.76) → `crsafety.coverage_interval` (0.906 on fresh data); per-cell
+   PH1 tolerance unattainable at N = 14–20. † threshold proposals in D-010
+   part B: **joint decision at the freeze**, not applied.
+4. Next: E05-R001 (identity-error injection on E01 histories: regenerate
+   them from the E01 seeds with `crsafety.sim`); E02 is blocked on Hugging
+   Face access (Q-D1) — download on Kaggle instead.
 
 ## Repository map
 
 | Path | What |
 |---|---|
-| `src/crsafety/` | Estimator library: `estimators.py` (IncidenceData, chapman, chapman_pairs, darroch_mt, chao2, chao2_ci, ichao2, jackknife, ice, coverage, good_turing_coverage, extrapolate, huggins, generalized_chao, report), `loglin.py` (loglinear, closedp: Rcapture models + run interactions), `rbridge.py` (breakaway_nof1 via Rscript; env `CRSAFETY_RSCRIPT`), `bootstrap.py` (iNEXT-style pseudo-population, B=2000), `histories.py` (read_cell / write_cell, PROTOCOLS §10) |
+| `src/crsafety/` | `sim.py` (E01 data-generating mechanisms, `Cell`, `simulate`), `manifest.py` (PROTOCOLS §5 manifests: `start`/`finish`), `histories.py` also has `check_cell` (`python -m crsafety.histories check <dir>`), `bootstrap.py` also has `coverage_interval`/`delta_interval` (primary intervals, D-010). Estimator library: `estimators.py` (IncidenceData, chapman, chapman_pairs, darroch_mt, chao2, chao2_ci, ichao2, jackknife, ice, coverage, good_turing_coverage, extrapolate, huggins, generalized_chao, report), `loglin.py` (loglinear, closedp: Rcapture models + run interactions), `rbridge.py` (breakaway_nof1 via Rscript; env `CRSAFETY_RSCRIPT`), `bootstrap.py` (iNEXT-style pseudo-population, B=2000), `histories.py` (read_cell / write_cell, PROTOCOLS §10) |
 | `tests/test_estimators.py` | 377 property tests (E00-R002) |
 | `validation/e00/` | R reference comparison (`run.sh`, `reference.R`, `compare.py`, `make_synthetic.py`) |
 | `results/EXX/<run_id>/` | Run outputs (small files only; large ones external with sha256) |
@@ -78,6 +81,8 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 | `research/` | Literature dossier (`README.md`), reading list, 13 agent reports in `notes/` |
 | `pilot/` | Early simulation (`simulate.py`, `estimators.py`, `results.md`) |
 | `tools/notebook.py` | `new`, `set`, `render`, `freeze`, `check` |
+| `configs/e01/cells.json`, `analysis/e01/` | E01 cells and seeds; `run.py R00X` runner, `analyse.py` → `results/E01/analysis/` |
+| `requirements.lock` | uv-compiled lock (numpy 2.5.4, scipy 1.18.1); hashed into manifests |
 
 ## Commands
 
@@ -154,7 +159,9 @@ D-001 safety framing · D-002 coverage + Δ headline, counts as lower bounds ·
 D-003 venues · D-004 plain-git notebook · D-005 tiered prereg with prior
 knowledge disclosed · D-006 (proposed, needs owner) code MIT, docs/data
 CC BY 4.0 · D-007 $0 plan · D-008 estimator formula conventions · D-009
-log-linear ported, breakaway_nof1 via Rscript, Chiu-Chao left out.
+log-linear ported, breakaway_nof1 via Rscript, Chiu-Chao left out · D-010
+realized-coverage bootstrap intervals (A accepted) + † proposals (B, for
+the freeze).
 
 ## Study hypotheses (PREREGISTRATION.md)
 PH1 coverage estimable (\|Ĉ−C\| ≤ 0.05† in ≥ 80%† cells) · PH2 counts are
@@ -168,3 +175,19 @@ Q-D1 (HF/arXiv access), Q-D2 (zoo contents), Q-D10 (Chiu-Chao formula),
 Q-D13 (SAELens seed unused), Q-D15 (Gemma Scope on Kaggle), Q-N2 (E16
 novelty), Q-N1 (E15 novelty), Q-B3 (Kaggle quota). Weekly scoop check
 alternates between the two (RISKS.md).
+
+## Working conventions learned in practice
+
+- Commit code **before** launching a registered run; the manifest records
+  the git state (notebook/ and results/ are excluded from the dirty check,
+  other edits are not). Don't edit tracked code while runs are in flight
+  (stash if needed).
+- Smoke-test runners with `--n-sim 2 --out <scratchpad>`; never treat smoke
+  output as results, and disclose in LOG if any numbers were seen.
+- Anything designed after seeing results is a new run labelled
+  "exploratory" in title/notes, page and summary; replicate on fresh seeds
+  with a criterion fixed beforehand before adopting it.
+- Prereg changes that set thresholds are proposals for the joint freeze
+  (four-eyes); interval/estimator conventions in Santosh's remit can be
+  accepted with "Kushal to review".
+

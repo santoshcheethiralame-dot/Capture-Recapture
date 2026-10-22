@@ -10,8 +10,11 @@ frozen experiment that uses it.
   Validated in E00. No estimator may be used as primary until E00 marks it
   validated.
 - **Primary:**
-  - Chao-Jost incidence coverage Ĉ (bootstrap CI, B = 1,000);
-  - Chao et al. (2014) Δ̂(m) for m ≤ K (bootstrap CI);
+  - Chao-Jost incidence coverage Ĉ, with the realized-coverage bootstrap
+    interval `crsafety.coverage_interval` (B = 1,000; D-010). The iNEXT
+    interval is reported as secondary;
+  - Chao et al. (2014) Δ̂(m) for m ≤ K, with `crsafety.delta_interval`
+    (bias-corrected, B = 1,000; D-010);
   - bias-corrected Chao2, labelled "lower bound".
 - **Secondary:** iChao2 (K ≥ 4), jackknife 1 and 2, ICE, Chapman for every
   run pair, Darroch Mt.

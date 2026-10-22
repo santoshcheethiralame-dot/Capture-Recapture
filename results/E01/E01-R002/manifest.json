@@ -1,0 +1,171 @@
+{
+  "run_id": "E01-R002",
+  "experiment": "E01",
+  "prereg": {
+    "frozen": false,
+    "block_sha256": "af4b1869e42868ea42341bd14d9a3dd802262bf18a64651ad4c18b699458a874",
+    "note": "Stage 1 exploratory; run before the v1 freeze"
+  },
+  "confirmatory": false,
+  "git_sha": "c20a293",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e01/run.py R002",
+  "config": {
+    "cells": [
+      {
+        "id": "fam1",
+        "idx": 11,
+        "run": "R002",
+        "block": "family",
+        "params": {
+          "families": 1
+        }
+      },
+      {
+        "id": "fam2",
+        "idx": 12,
+        "run": "R002",
+        "block": "family",
+        "params": {
+          "families": 2
+        }
+      },
+      {
+        "id": "fam3",
+        "idx": 13,
+        "run": "R002",
+        "block": "family",
+        "params": {
+          "families": 3
+        }
+      },
+      {
+        "id": "fam6",
+        "idx": 14,
+        "run": "R002",
+        "block": "family",
+        "params": {
+          "families": 6
+        }
+      },
+      {
+        "id": "dep1/3",
+        "idx": 15,
+        "run": "R002",
+        "block": "dependence",
+        "params": {
+          "dep_or": 0.3333333333333333
+        }
+      },
+      {
+        "id": "dep1",
+        "idx": 16,
+        "run": "R002",
+        "block": "dependence",
+        "params": {
+          "dep_or": 1.0
+        }
+      },
+      {
+        "id": "dep3",
+        "idx": 17,
+        "run": "R002",
+        "block": "dependence",
+        "params": {
+          "dep_or": 3.0
+        }
+      },
+      {
+        "id": "beh0.5",
+        "idx": 18,
+        "run": "R002",
+        "block": "adaptivity",
+        "params": {
+          "c": 0.5
+        }
+      },
+      {
+        "id": "beh2",
+        "idx": 19,
+        "run": "R002",
+        "block": "adaptivity",
+        "params": {
+          "c": 2.0
+        }
+      },
+      {
+        "id": "nest3",
+        "idx": 20,
+        "run": "R002",
+        "block": "nested",
+        "params": {
+          "K": 6,
+          "nested_k": 3.0
+        }
+      },
+      {
+        "id": "nest10",
+        "idx": 21,
+        "run": "R002",
+        "block": "nested",
+        "params": {
+          "K": 6,
+          "nested_k": 10.0
+        }
+      }
+    ],
+    "n_sim": 500,
+    "bootstrap": null,
+    "config_file": "configs/e01/cells.json"
+  },
+  "config_sha256": "ef416131365989800a2fd16e2c4f7543020180e295699faed01de08f36d4be31",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261022,
+    "rule": "cell seed = SeedSequence(master_seed, spawn_key=(idx,)) (= SeedSequence(master_seed).spawn(n)[idx]); replicate r uses SeedSequence(master_seed, spawn_key=(idx, r)); its R005 bootstrap uses spawn_key=(idx, r, 1)",
+    "cells": {
+      "fam1": 11,
+      "fam2": 12,
+      "fam3": 13,
+      "fam6": 14,
+      "dep1/3": 15,
+      "dep1": 16,
+      "dep3": 17,
+      "beh0.5": 18,
+      "beh2": 19,
+      "nest3": 20,
+      "nest10": 21
+    }
+  },
+  "inputs": [
+    {
+      "path": "/home/user/MissingMass/configs/e01/cells.json",
+      "sha256": "45aaf4984aef7eb40fbd6e9952f4524dca25ff38a011e726a91e1cf39f32c3f5"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-22T15:41:03+00:00",
+  "finished_utc": "2026-10-22T15:45:15+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E01/E01-R002/replicates.csv.gz"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "cpu_seconds_wall": 251.9,
+  "replicates_sha256": "bf6259603e0b436bfc07f6a0fba6e8b9f36daf66e465ebf6b0ba16e652224424"
+}

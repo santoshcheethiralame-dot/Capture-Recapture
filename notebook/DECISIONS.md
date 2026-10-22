@@ -225,3 +225,52 @@ robust to R/rpy2 version skew.
 to "the f1-free estimator" and are unaffected in design.
 **Affects pre-registered analysis:** yes, before any freeze: it fixes which
 implementation "log-linear", "f1-free" and "singleton-corrected" mean.
+
+## D-010: Intervals for coverage and new items; proposals for the † thresholds (2026-10-22)
+
+**Status:** part A accepted (Santosh), Kushal to review; part B **proposed**
+for the joint v1 freeze.
+**Context:** E01-R005: the pre-registered iNEXT-style bootstrap interval for
+Ĉ covers the realized coverage C in 0.760 (MCSE 0.019) of base-cell
+replicates and 0.73–0.91 across clean cells, so E01 decision rule 1 (CI
+coverage ≥ 0.90 in the base cell) fails for it. Two causes: C is a
+property of the sample, so the relevant error is Ĉ − C, not the spread of
+Ĉ; and the pseudo-population bootstrap underestimates sd(Ĉ) (0.0095 vs
+0.0123). E01-R006 shows that a per-cell tolerance |Ĉ − C| ≤ 0.05 is
+unattainable at the item counts of E09 (14) and E10 (20).
+
+**A. Interval method (accepted).**
+- Primary interval for C: `crsafety.coverage_interval` (bootstrap of
+  Ĉ* − C* from the Chao pseudo-population, B = 1,000), uncorrected.
+  Primary interval for Δ(m): `crsafety.delta_interval`, bias-corrected.
+  The one-sided lower bound of `coverage_interval` is the bound used by
+  the E13 R-lower stopping rule.
+- The iNEXT interval is still reported, as secondary, for comparability.
+- Evidence: E01-R007 (same datasets as R005) and E01-R008 (fresh datasets,
+  criterion fixed before running): coverage of C 0.89–0.97 and
+  0.896–0.950 in clean cells; base cell 0.922 and 0.906. Exploratory: the
+  method was designed after R005 was seen.
+- Known weakness: about 0.92 coverage for nominal 0.95. E13 should check
+  R-lower with it; a calibrated level (e.g. nominal 0.97) is an exploratory
+  option, not adopted.
+
+**B. Proposals for the † thresholds (for the v1 freeze; not applied).**
+- *PH1 tolerance.* Keep |Ĉ − C| ≤ 0.05 in ≥ 80% of cells for testbeds
+  with hundreds of items or more (E02, E06): E01's 80th percentile of
+  |Ĉ − C| is 0.043 at K = 5 and ≤ 0.02 at K ≥ 10. For E09 and E10 replace
+  the per-cell criterion: pooled |mean(Ĉ − C)| ≤ 0.03 across cells **and**
+  the realized-coverage interval covers C in ≥ 0.85 of cells. Reason (R006):
+  at N = 14, K = 8 even an unbiased Ĉ is within 0.05 of C in only 33–73% of
+  replicates. Alternative: a size-specific tolerance from R006 (0.10–0.15),
+  which the "no more than twice" rule may not allow.
+- *PH3a ratio ≥ 2.* E01 cannot calibrate the matcher; keep 2 and revisit
+  after the E03 pilot.
+- *PH4 and PH5 (≥ 0.05).* These are minimal meaningful effects, not
+  accuracy tolerances; E01 shows such effects arise (one family vs six
+  +0.20; c = 2 +0.07). Keep 0.05.
+- *PH2 (no †).* Its interval half fails at N = 50 (Chao2 CI covers N in
+  0.92 of replicates). Discuss at the freeze: restrict the claim to
+  N ≥ 500, or keep it and expect "not supported" in small-N testbeds.
+**Affects pre-registered analysis:** yes. A defines the interval used by
+PH1, PH6 and every coverage report (before any freeze). B changes nothing
+until both people agree at the freeze.

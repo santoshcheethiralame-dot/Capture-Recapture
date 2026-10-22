@@ -27,7 +27,7 @@ Budget: $0 (D-007). The per-person plan, handoffs and git workflow are in
 
 | Gate | When | Test | If it fails |
 |---|---|---|---|
-| **G1** | after E01 (~Nov 5) | Coverage estimator \|bias\| ≤ 0.03 in clean simulation cells (H1a) | Stop. Check E00. If the code is right, re-scope the paper to "coverage also fails, and here is why", before any Stage 2 spend. Record a decision. |
+| **G1** | after E01 (~Nov 5) | Coverage estimator \|bias\| ≤ 0.03 in clean simulation cells (H1a) | Stop. Check E00. If the code is right, re-scope the paper to "coverage also fails, and here is why", before any Stage 2 spend. Record a decision. **Passed 2026-10-22:** max \|bias\| 0.009 over 14 clean cells (E01). |
 | **G2** | after E02 + E03 (~Dec 5) | Some matcher reaches pair F1 ≥ 0.9 on frequent features (H3a) | Phase 1 headline becomes "identity is the bottleneck". Shift weight to testbeds with identity by construction (E10, E09). |
 | **G3** | ~Jan 10 | Do the AuditBench-lite organisms pass implant verification (E09-R002)? | Pre-freeze switch to a ≤ 9B base model, or drop the white-box configuration (T3) and report SH1 as untested. |
 | **G4** | ~Apr 1 | Core experiments E08, E09, E10, E13 done or on track | If not: submit the strongest subset to NeurIPS only if the safety claims (PH4 or PH5) are supported; otherwise retarget SaTML 2028 / ICLR 2028. |

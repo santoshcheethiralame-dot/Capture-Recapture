@@ -204,3 +204,63 @@ claim.
 
 **Next:** run E01-R001 to R005 from the committed code; analyse.
 
+## 2026-10-22 (night, last): E01 run and analysed; gate G1 passed
+
+Santosh (with Claude).
+
+**Did:**
+- Ran E01-R001 to R005 (40 cells × 500 replicates, plus the bootstrap
+  subset) from commit c20a293; every manifest records a clean tree.
+- Fixed one presentation bug in the analysis after the first look:
+  estimators undefined by design (iChao2 at K = 3, the log-linear fit at
+  K = 20) were shown as "fail 100%". They are now "not applicable". No
+  number changed.
+- Added three exploratory runs, labelled as such: R006 (small-N
+  calibration), R007 (a new bootstrap interval, on the R005 datasets) and
+  R008 (the same on fresh datasets, criterion fixed beforehand).
+- Wrote E01 §5, D-010, RESULTS rows; PREREGISTRATION v0.2 (draft): interval
+  method only.
+- Added `crsafety.histories.check_cell` (H2 handoff validator).
+
+**Saw:**
+- Gate G1 passes: max |bias of Ĉ| over the 14 clean cells is 0.009.
+- H1d, H1e and H1f are supported; H1a (literal set), H1b and H1c are not
+  (E01 §5 has the numbers).
+- Surprise 1: the pre-registered bootstrap interval for Ĉ covers the
+  realized C in only 76% of base-cell replicates. It measures the spread of
+  Ĉ, but C itself varies from sample to sample. Bootstrapping Ĉ* − C*
+  fixes most of it: 0.906 on fresh datasets (R008).
+- Surprise 2: H1c failed because the dependence factor sits on σ = 1
+  heterogeneity, whose marginal odds ratio (2.6) cancels θ = 1/3. Chapman
+  moved 16.5 points, but from −35%.
+- Surprise 3: at E09/E10 sizes (14–20 items) an unbiased Ĉ is often more
+  than 0.05 from C. PH1's per-cell tolerance will need changing for those
+  testbeds (proposal in D-010, for the freeze).
+- Shared families are the worst violation (+0.23 with one family at
+  K = 10) and more runs barely help (+0.21 at K = 12). This supports E08's
+  design: diversity of catchers matters more than their number.
+
+**Scoop check (week of 2026-10-19; Santosh's turn).** Searched arXiv,
+OpenReview and the Alignment Forum through a web search tool for
+capture-recapture with LLM audits, red teams or SAEs; "audit coverage";
+unseen failure modes; and the near-miss authors. **No scoop found.** Worth
+citing:
+- METR, "Alignment assessment proposal" (2026-10-14): asks whether the
+  assessor's search "missed some serious misalignment incidents", without
+  an estimator. Good motivation for the introduction.
+- Three June 2026 SAE seed-stability papers relevant to E06/E11:
+  "Ablating Archetypes" (arXiv 2606.02061) says reported stability comes
+  from identical initialisation across runs; "Aligned Training"
+  (2605.18629) and L2 weight regularisation (2603.04198, ICML 2026)
+  improve cross-seed stability. E06's initialisation-only vs data-only
+  seed cells speak to the first.
+- arXiv 2609.15803 uses "auditing robust coverage" for a different
+  (complexity-theoretic) notion; avoid the name clash in the paper.
+
+**Next:**
+- Kushal reviews E00 (R001–R004), E01 (R001–R008), D-008, D-009, D-010.
+- Joint: decide D-010 part B at the v1 freeze (6–8 Nov).
+- Santosh: E05-R001 (injection grid on E01 histories, which regenerate
+  from the E01 seeds) and preparation for E02 (blocked on Hugging Face
+  access, Q-D1).
+

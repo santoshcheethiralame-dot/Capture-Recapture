@@ -1,0 +1,89 @@
+{
+  "run_id": "E01-R003",
+  "experiment": "E01",
+  "prereg": {
+    "frozen": false,
+    "block_sha256": "af4b1869e42868ea42341bd14d9a3dd802262bf18a64651ad4c18b699458a874",
+    "note": "Stage 1 exploratory; run before the v1 freeze"
+  },
+  "confirmatory": false,
+  "git_sha": "c20a293",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e01/run.py R003",
+  "config": {
+    "cells": [
+      {
+        "id": "ghost0.05",
+        "idx": 22,
+        "run": "R003",
+        "block": "identity",
+        "params": {
+          "ghost": 0.05
+        }
+      },
+      {
+        "id": "ghost0.15",
+        "idx": 23,
+        "run": "R003",
+        "block": "identity",
+        "params": {
+          "ghost": 0.15
+        }
+      },
+      {
+        "id": "merge0.05",
+        "idx": 24,
+        "run": "R003",
+        "block": "identity",
+        "params": {
+          "merge": 0.05
+        }
+      }
+    ],
+    "n_sim": 500,
+    "bootstrap": null,
+    "config_file": "configs/e01/cells.json"
+  },
+  "config_sha256": "95ced72265da6ada019eae75829b4042fb0d7ab34bf48d65b450394ef74dd064",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261022,
+    "rule": "cell seed = SeedSequence(master_seed, spawn_key=(idx,)) (= SeedSequence(master_seed).spawn(n)[idx]); replicate r uses SeedSequence(master_seed, spawn_key=(idx, r)); its R005 bootstrap uses spawn_key=(idx, r, 1)",
+    "cells": {
+      "ghost0.05": 22,
+      "ghost0.15": 23,
+      "merge0.05": 24
+    }
+  },
+  "inputs": [
+    {
+      "path": "/home/user/MissingMass/configs/e01/cells.json",
+      "sha256": "45aaf4984aef7eb40fbd6e9952f4524dca25ff38a011e726a91e1cf39f32c3f5"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-22T15:45:16+00:00",
+  "finished_utc": "2026-10-22T15:46:34+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E01/E01-R003/replicates.csv.gz"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "cpu_seconds_wall": 78.5,
+  "replicates_sha256": "8835ab9b67504f9a8c1dc34b97c01d285d47bcf81e982f12e9e0ae91b0a6cd4b"
+}

@@ -94,3 +94,5 @@ Anthropic list prices (per 1M tokens, 2026-10-06): Haiku 4.5 $1/$5, Haiku
 
 | Exp | Account | GPU-h | Including failed and exploratory runs? |
 |---|---|---|---|
+| E00 (R001–R004) | sandbox CPU | 0 | yes: about 5 CPU-min (R reference runs 3.5 + 1.3 min, pytest seconds), plus harness debugging runs of similar size |
+| E01 (R001–R008) | sandbox CPU (4 cores) | 0 | yes: wall time R001 4.1 min, R002 4.2, R003 1.3, R004 18.7, R005 8.2, R006 0.1, R007 8.9, R008 ≈ 9; ≈ 55 min on 4 cores (vs the 1–3 h estimate) |
