@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | Status | proposed (pending novelty check, Q-N3) |
+| Owner | Kushal |
 | Tier | stretch (links to idea 1) |
 | Stage | 3 |
 | Depends on | E09 or E12 harness; E01 simulation code |
 | Study hypotheses | exploratory |
 | Testbed | simulation first; then organisms trained to remove vs suppress a quirk |
-| Compute | fine-tuning + API |
+| Compute | $0; QLoRA on Kaggle T4 + local auditors |
 | Pre-registration | not frozen |
 
 ## 1. Question
@@ -59,7 +60,7 @@ comparison does not.
 |---|---|---|---|
 | R001 | Novelty check | — | — |
 | R002 | Simulation | 500 per cell | CPU |
-| R003 | Organisms + audits | 6 organisms × 3 time points × 12 | GPU + API |
+| R003 | Organisms + audits | 6 organisms × 3 time points × 12 | Kaggle GPU |
 
 ### Sample size
 Simulation n_sim = 500. The organism study is small and exploratory.

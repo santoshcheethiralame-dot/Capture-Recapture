@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | Status | proposed |
+| Owner | Kushal |
 | Tier | stretch |
 | Stage | 3 |
 | Depends on | E10 |
 | Study hypotheses | exploratory |
 | Testbed | E10 planted-blind-spot monitor |
-| Compute | API (more attacker runs at larger budget) |
+| Compute | $0; Kaggle T4 (more attacker runs at larger budget) |
 | Pre-registration | not frozen |
 
 ## 1. Question

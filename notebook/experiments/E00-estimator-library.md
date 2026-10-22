@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | registered |
+| Owner | Santosh |
 | Tier | core |
 | Stage | 0 infra |
 | Depends on | none |
@@ -101,10 +102,10 @@ library and may not be a primary estimator.
 ## 4. Runs
 
 <!-- runs:start -->
-| Run | Title | Status | Started | Finished | Commit | Summary |
-|---|---|---|---|---|---|---|
-| E00-R001 | Reference comparison against R packages and worked examples | planned |  |  | fa922b4+dirty |  |
-| E00-R002 | Property tests (pytest) | planned |  |  | fa922b4+dirty |  |
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E00-R001 | Reference comparison against R packages and worked examples | Santosh | planned |  |  | fa922b4+dirty |  |
+| E00-R002 | Property tests (pytest) | Santosh | planned |  |  | fa922b4+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results

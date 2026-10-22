@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | Status | proposed |
+| Owner | Santosh |
 | Tier | stretch |
 | Stage | 3 application |
 | Depends on | E03 (identity rule), E05 (correction), E06 (validated settings) |
 | Study hypotheses | SH4 |
-| Testbed | Pythia-70M / 160M (own seeds); Gemma Scope ladders; board-game SAEs; random-transformer null |
-| Compute | 1 GPU; see `docs/COMPUTE.md` |
+| Testbed | Pythia-70M (own seeds); Gemma Scope ladders; board-game SAEs; random-transformer null |
+| Compute | $0; Kaggle T4; about 30–45 GPU-hours (see `docs/COMPUTE.md`) |
 | Pre-registration | not frozen |
 
 ## 1. Question
@@ -27,10 +28,11 @@ Apply the validated pipeline to real models. Test invariance. Calibrate
 against partial truth.
 
 ### Testbeds
-1. **Replicate seeds:** Pythia-70M (layer 3 residual) and Pythia-160M
-   (layer 6 residual), BatchTopK at width 16k and L0 = 32. K = 12 seeds with
-   independent data streams, plus 4 seeds with shared data order for the
-   dependence comparison.
+1. **Replicate seeds (scaled for free GPUs, D-007):** Pythia-70M, layer 3
+   residual, BatchTopK at width 8k and L0 = 32, 50M tokens. K = 8 seeds with
+   independent data streams, plus 4 seeds sharing one data order, for the
+   dependence comparison. Pythia-160M is dropped (it would move to E18 if
+   funded).
 2. **Nested ladder:** Gemma Scope on Gemma-2-2B (residual, one mid layer),
    widths 16k → 1M at a matched L0. These are treated as nested, dependent
    occasions.
@@ -42,7 +44,7 @@ against partial truth.
 **Seeding.** In SAELens 6.54, `LanguageModelSAERunnerConfig.seed` is not
 read by the training runner (code inspection). So seed initialisation with
 `torch.manual_seed`, and shuffle the token stream with an explicit seed for
-each data order. R000 checks this by hashing `W_dec` at step 0 and the first
+each data order. R001 checks this by hashing `W_dec` at step 0 and the first
 batch, as in E06.
 
 ### Estimands
@@ -72,10 +74,9 @@ Identity rule from E03, correction from E05, primary estimators.
 
 | Run | Configuration | Replicates | Expected cost |
 |---|---|---|---|
-| R000 | Seeding check (hashes of `W_dec` at step 0 and the first batch) | 4 short runs | minutes |
-| R001 | Timing pilot, Pythia-70M | 1 | < 2 GPU-h |
-| R002 | Pythia-70M seeds (12 + 4) | 16 | per COMPUTE.md |
-| R003 | Pythia-160M seeds | 16 | |
+| R001 | Seeding check (hashes of `W_dec` at step 0 and the first batch) | 4 short runs | minutes |
+| R002 | Timing pilot, Pythia-70M | 1 | < 2 GPU-h |
+| R003 | Pythia-70M seeds (8 + 4) | 12 | per COMPUTE.md |
 | R004 | Gemma Scope ladder analysis | — | download + CPU/GPU |
 | R005 | Board-game SAE analysis | — | download |
 | R006 | Random-transformer null | 4 | |

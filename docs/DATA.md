@@ -25,6 +25,8 @@ revision or snapshot ID, and a sha256 for files.
 | Pythia-70M / 160M | HF `EleutherAI/pythia-*` | E11, E15 | Apache-2.0 | blocked (HF) | | |
 | Gemma Scope | HF `google/gemma-scope*` | E11 | CC-BY-4.0 (reported) | blocked (HF) | | Nested width ladders |
 | Board-game SAEs | HF `adamkarvonen/chess_saes`, `othello_saes`; GitHub `adamkarvonen/SAE_BoardGameEval` | E11 | check | HF blocked | | |
+| Open models (pinned at freeze, Q-D14) | HF: Qwen (7–8B instruct; also 3B/14B-AWQ for L2), Llama (≤ 8B instruct), Gemma (Gemma-2-2B-it organism base; ≤ 9B auditor), Mistral (≤ 8B target), Phi or OLMo (judge) | E04, E08–E10, E12, E14, E15, E17 | per model licence (Llama and Gemma have use policies) | via Kaggle | | All run locally with vLLM; no API terms involved |
+| Gemma Scope (Gemma-2-2B) | HF `google/gemma-scope-2b-pt-*` | E09 (T3 tool), E11 | CC-BY-4.0 (reported) | via Kaggle | | Used as the white-box audit tool |
 | Kansal repos | GitHub `ParitKansal/undiscovered-failures`, `label-error-capture-recapture` | baselines | MIT (code), CC BY 4.0 (text) | GitHub OK | | |
 | R packages | conda-forge: `r-rcapture`, `r-inext`, `r-breakaway`, `r-vgam`; GitHub `cran/<pkg>` mirror: SpadeR, SPECIES, LCMCR, dga, SparseMSE | E00, all | GPL (varies) | **works in sandbox** via micromamba | R 4.1.3, Rcapture 1.4.4, iNEXT 3.0.0, breakaway 3.0 (tested by an agent) | |
 

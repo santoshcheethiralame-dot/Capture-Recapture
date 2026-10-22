@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | registered |
+| Owner | Santosh |
 | Tier | core |
 | Stage | 2 confirmatory |
 | Depends on | E00; E01 (freeze); data access to the zoo |
@@ -146,9 +147,9 @@ contingencies.
 ## 4. Runs
 
 <!-- runs:start -->
-| Run | Title | Status | Started | Finished | Commit | Summary |
-|---|---|---|---|---|---|---|
-| E02-R001 | Download, checksum and inventory zoo | planned |  |  | fa922b4+dirty |  |
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E02-R001 | Download, checksum and inventory zoo | Santosh | planned |  |  | fa922b4+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results

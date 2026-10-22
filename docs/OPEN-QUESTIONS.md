@@ -18,14 +18,16 @@ gate an experiment.
 | Q-D9 | Model snapshots and prices for the E08 ladder (4 families) | E08 budget | Provider pages | open |
 | Q-D10 | Chiu-Chao (2016) singleton-correction formula (exact) | E00, E05 | Read PeerJ 4:e1634 and Chao lab R code | open |
 | Q-D12 | LinuxArena source code location (only Docker Hub images `linuxarena/env-*` found) | E10 human-attack comparator (optional) | arXiv page of 2604.15384; ask the authors | open |
-| Q-D13 | Is `LanguageModelSAERunnerConfig.seed` really unused in the SAELens version we pin? | E06, E11 | R000 seeding check | open |
+| Q-D13 | Is `LanguageModelSAERunnerConfig.seed` really unused in the SAELens version we pin? | E06, E11 | R001 seeding check | open |
+| Q-D14 | Which open models to pin: auditor and attacker (Qwen, 7–8B), L3 families (Llama, Gemma), target (Mistral), judge (Phi or OLMo), organism base (Gemma-2-2B-it). Do they all run on T4 (fp16 or AWQ)? | E08, E09, E10 | E08-R001 and E09 pilots | open |
+| Q-D15 | Is the Gemma Scope SAE set for Gemma-2-2B (residual, a mid layer) loadable on Kaggle, with feature labels usable offline? | E09 T3 | E09-R003 | open |
 
 ## Budget
 
 | ID | Question | Blocks | Status |
 |---|---|---|---|
-| Q-B1 | **What budget is available** (API and GPU)? Decides lean vs planned designs (`COMPUTE.md`) | v1 freeze (E06, E08, E09 designs) | **open: owner decision** |
-| Q-B2 | Which GPU source (Kaggle/Colab, rental, institutional)? | E06, E09, E11 | open |
+| Q-B3 | Current Kaggle GPU quota and session limits for both accounts | scheduling | open (check in each account's settings) |
+| Q-B4 | Apply for API credits (e.g. the OpenAI researcher programme) to enable E18? | E18 | optional |
 
 ## Novelty checks (before running the novelty-upgrade experiments)
 
@@ -66,4 +68,6 @@ From `research/README.md` §7:
 | Q-D2 (part) | The zoo's 5 "seeds" are not controlled: the seed is only used in output paths, so SAE initialisation and the data stream vary jointly and unseeded | `sweep_l0.py`; SAELens 6.54.12 has no training seed | 2026-10-22 |
 | Q-D4 (part) | Official repo is `safety-research/auditing-agents`. Per-run outputs: `transcript.json`, `research_log.md`, `quirks/*.md`. Judge: `claude-sonnet-4-6`. Targets need 2–4 × 80 GB GPUs; the GPU-free `system_prompt` suite has 16 quirks. Default `--max-tokens` differs between scripts, so set 25000. No public per-run logs | repo README and code | 2026-10-22 |
 | Q-D11 | BAITBENCH (MIT) releases derived evidence packets for 1,258 runs, not raw transcripts, and has only 3 shortcut families. Not a richness testbed | `DATA_MANIFEST.md`, dataset tally | 2026-10-22 |
+| Q-B1 | Budget is **$0** for now: open models, sandbox CPU, free Kaggle GPUs. Frontier replication only via E18 | D-007 | 2026-10-22 |
+| Q-B2 | GPU source: Kaggle, one account each (Santosh: SAE track; Kushal: LLM track) | D-007, `docs/TEAM.md` | 2026-10-22 |
 | R tooling | R 4.1.3 + Rcapture 1.4.4 + iNEXT 3.0.0 + breakaway 3.0 install in this sandbox via micromamba/conda-forge; CRAN-only packages are cloneable from `github.com/cran/<pkg>` | agent smoke test (`closedpCI.0`, Mh Chao) | 2026-10-22 |

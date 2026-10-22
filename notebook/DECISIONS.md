@@ -110,3 +110,53 @@ usually use CC BY 4.0 (the precedent in Kansal's repos).
 - never redistribute upstream data whose licence is unconfirmed: release
   derived statistics plus a regeneration script instead.
 **Affects pre-registered analysis:** no.
+
+## D-007: $0 plan: open-weight models on free compute; frontier APIs only as an optional extension (2026-10-22)
+
+**Status:** accepted
+**Context:** The available budget is $0 for now (resolves Q-B1).
+Resources:
+- this sandbox (CPU, R via conda-forge);
+- free Kaggle GPUs (2 × T4 or P100, about 30 GPU-hours a week per account,
+  roughly 12-hour sessions; check current limits). Two team members means
+  two accounts.
+
+**Options:**
+- A: wait for funding;
+- B: run everything at $0, with open 7–9B models as auditors, attackers,
+  targets and judges, and scaled-down GPU grids;
+- C: use free API tiers.
+
+**Decision:** B. Frontier-model replication becomes E18 (proposed),
+triggered only if credits arrive (for example the OpenAI researcher
+programme).
+
+**Why:**
+- B keeps every confirmatory hypothesis testable.
+- It is fully reproducible (open weights, no API drift, no provider terms).
+- It fits the GPU quota: about 150 core GPU-hours across two accounts.
+
+C was rejected for the confirmatory design: free tiers have rate limits,
+often let providers train on our prompts, and some forbid red-team use.
+
+**Changes (all before any freeze, so they are not deviations):**
+- **E06:** a smaller synthetic world: 4,096 features, d = 256, width
+  1,024; budgets 20M and 50M samples.
+- **E08:** open-model auditor ladder: Qwen (L0, L1, L2 sizes); Qwen + Llama
+  + Gemma (L3). Mistral target with the AuditBench system-prompt quirks. Phi
+  or OLMo judge.
+- **E09 → "AuditBench-lite":** the 14 AuditBench behaviours implanted by
+  QLoRA fine-tuning into Gemma-2-2B-it. Three tool configurations, including
+  a white-box Gemma Scope SAE tool.
+- **E10:** open-model attackers; a harmless proxy goal (smuggling a fake
+  secret token past the monitor).
+- **E11:** Pythia-70M only, 8 + 4 + 4 seeds, 50M tokens.
+- **E04, E12, E15, E17:** local models; QLoRA fine-tuning on Kaggle.
+
+**Consequences:**
+- The safety claims are "for auditors and red teams built on open 7–9B
+  models". Generality to frontier models is a stated limitation, until E18.
+- Risk of floor effects with small auditors; checked in every pilot before
+  freezing.
+**Affects pre-registered analysis:** yes; it defines the testbeds of E06,
+E08–E11 before the v1 freeze.

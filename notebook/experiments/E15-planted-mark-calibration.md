@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | Status | proposed (pending novelty check, `docs/OPEN-QUESTIONS.md` Q-N1) |
+| Owner | Santosh (SAE arm); Kushal (audit arm) |
 | Tier | important (novelty upgrade) |
 | Stage | 3 |
 | Depends on | E02/E06 (synthetic validation), E09/E11 (real testbeds) |
 | Study hypotheses | SH2 |
 | Testbed | SAE arm: Pythia-70M activations with injected directions; audit arm: real model plus planted quirks |
-| Compute | 1 GPU + API |
+| Compute | $0; Kaggle T4 (SAE seeds, QLoRA, local auditors) |
 | Pre-registration | not frozen |
 
 ## 1. Question
@@ -70,7 +71,7 @@ planted items.
 |---|---|---|---|
 | R001 | Novelty check (literature) before anything else | — | — |
 | R002 | SAE arm: injection + 12 seeds | 12 | per COMPUTE.md |
-| R003 | Audit arm: implant + verify + 16 audits | 16 | GPU + API |
+| R003 | Audit arm: implant + verify + 16 audits | 16 | Kaggle GPU |
 | R004 | Calibration analysis | — | CPU |
 
 ### Sample size

@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | registered |
+| Owner | Santosh |
 | Tier | core |
 | Stage | 1 exploratory (sets † thresholds before the v1 freeze) |
 | Depends on | E00 |
@@ -138,13 +139,13 @@ None. Estimator failures are counted, not dropped.
 ## 4. Runs
 
 <!-- runs:start -->
-| Run | Title | Status | Started | Finished | Commit | Summary |
-|---|---|---|---|---|---|---|
-| E01-R001 | Base cell + N, K, heterogeneity blocks | planned |  |  | fa922b4+dirty |  |
-| E01-R002 | Family, dependence, adaptivity, nested blocks | planned |  |  | fa922b4+dirty |  |
-| E01-R003 | Identity-error blocks | planned |  |  | fa922b4+dirty |  |
-| E01-R004 | Two-way interactions | planned |  |  | fa922b4+dirty |  |
-| E01-R005 | Bootstrap interval coverage subset | planned |  |  | fa922b4+dirty |  |
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E01-R001 | Base cell + N, K, heterogeneity blocks | Santosh | planned |  |  | fa922b4+dirty |  |
+| E01-R002 | Family, dependence, adaptivity, nested blocks | Santosh | planned |  |  | fa922b4+dirty |  |
+| E01-R003 | Identity-error blocks | Santosh | planned |  |  | fa922b4+dirty |  |
+| E01-R004 | Two-way interactions | Santosh | planned |  |  | fa922b4+dirty |  |
+| E01-R005 | Bootstrap interval coverage subset | Santosh | planned |  |  | fa922b4+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results

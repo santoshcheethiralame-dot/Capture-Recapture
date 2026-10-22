@@ -20,7 +20,8 @@ changed and the change is not in here, the paper cannot claim it was planned.
 
 The study-level pre-registration (the paper's confirmatory hypotheses) is in
 [`../docs/PREREGISTRATION.md`](../docs/PREREGISTRATION.md). Experiment pages
-refer to its hypotheses by ID (PH1 to PH6).
+refer to its hypotheses by ID (PH1 to PH6). Who owns what, the handoffs and
+the git workflow for two people are in [`../docs/TEAM.md`](../docs/TEAM.md).
 
 ## IDs
 
@@ -51,7 +52,7 @@ Runs: `planned` → `running` → `succeeded` | `failed` | `aborted`.
    `python tools/notebook.py freeze E02 --note "prereg v1"`, then commit. The
    commit is the timestamp. Tag study-level freezes (`prereg-v1`).
 3. **Register each run before launching it:**
-   `python tools/notebook.py new E02 --title "..." --config configs/e02/r001.yaml`.
+   `python tools/notebook.py new E02 --owner Santosh --title "..." --config configs/e02/r001.yaml`.
    Planned runs can be registered ahead of time with the default status
    `planned`.
 4. **Run.** Set `status=running` when it starts. The tool stamps the commit.

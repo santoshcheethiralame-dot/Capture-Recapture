@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | proposed (pending novelty check, Q-N2) |
+| Owner | Santosh |
 | Tier | stretch (novelty upgrade) |
 | Stage | 3 |
 | Depends on | E02, E06, E11 |

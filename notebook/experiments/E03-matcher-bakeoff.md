@@ -3,6 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | registered |
+| Owner | Santosh |
 | Tier | core |
 | Stage | 2 confirmatory |
 | Depends on | E00, E02-R001/R002 (zoo and oracle histories) |

@@ -9,7 +9,11 @@ interpretability tools miss.
 before any confirmatory data is collected (target: 6 November 2026). Git
 timestamps are self-reported, so the freeze uses a chain of external
 anchors:
-1. Lock every Stage 2 experiment block: `tools/notebook.py freeze EXX`.
+1. Lock the Stage 2 experiment blocks whose pilots are complete (E02, E03,
+   E05, E08, E10): `tools/notebook.py freeze EXX`, each reviewed by the
+   other researcher. Experiments whose pilots come later (E06, E09, E13 and
+   Stage 3) are frozen one by one, after their pilot and before any
+   confirmatory run. Each lock is a later commit referring back to v1.0.
 2. Commit with no results in the tree.
 3. Annotated tag `prereg-v1.0` (signed if a key is available).
 4. Create a GitHub Release on that tag. Zenodo archives the release and
@@ -133,8 +137,14 @@ Everything else is exploratory and labelled so.
 - **Stage 3 (application and stretch):** E07, E11, E12, E14, E15, E16, E17.
   Each is frozen separately before it runs.
 
-No human participants are involved. The study uses public models and
-datasets, and API access to commercial models.
+No human participants are involved, apart from the two researchers
+hand-labelling findings to validate the judges.
+
+**Compute:** every confirmatory experiment runs at $0 on open-weight models,
+using this sandbox's CPU and free Kaggle GPUs (decision D-007). Auditors,
+attackers, targets and judges are open 7–9B instruct models (or smaller),
+pinned at the freeze. Replication with frontier API models is an optional
+extension (E18), with its own pre-registration.
 
 ## 5. Sampling plan
 
@@ -144,8 +154,10 @@ datasets, and API access to commercial models.
   reported with every bias.
 - **Synthetic SAE cells:** K = 5 seeds (released zoo) and K = 16 seeds (our
   own). Cells are listed in E02 and E06.
-- **Audits:** K = 16 runs per target per configuration (as in AuditBench). A
-  reduced design is pre-specified in E09 if the budget is cut.
+- **Audits:** K = 16 runs per target per configuration (8 for estimation, 8
+  as the reference pool). E08: 16 system-prompt organisms × 3 auditor
+  levels. E09 (AuditBench-lite): 14 fine-tuned organisms × 3 tool
+  configurations.
 - **Red teams:** K = 12 attacker runs per arm, with M = 20 planted blind
   spots. The budget per run is fixed in E10 after a declared difficulty pilot
   on separate seeds.

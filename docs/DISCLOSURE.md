@@ -5,6 +5,11 @@ estimators, synthetic SAEs, coverage statistics. The exposure is in the red
 team and audit experiments, which produce attack transcripts and catalogues
 of monitor weaknesses.
 
+Under the $0 plan (D-007), all attackers, auditors and targets are open
+models we run ourselves, and the red-team goal is a harmless proxy (a fake
+token). This lowers the exposure. The rules below still apply, and become
+central if E18 (frontier models) runs.
+
 ## Risk assessment
 
 | Artefact | What a misuser gains | Tier |

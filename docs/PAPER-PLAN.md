@@ -10,6 +10,10 @@ missed failures cannot be estimated, and the estimates fail in predictable,
 diagnosable ways when auditors share a base model, search adaptively, or
 mis-cluster their findings.
 
+**Scope under the $0 plan (D-007):** auditors, attackers and targets are
+open 7–9B models. Say so in the abstract. Frontier replication (E18) is
+added only if funded.
+
 ## Claim → evidence map
 
 Every claim in the abstract and introduction must appear here, with its
@@ -72,7 +76,8 @@ evidence. Claims without confirmatory evidence are worded as exploratory.
    - Planted ≠ real.
    - K costs.
    - Judge-based identity.
-   - Snapshot drift of API models.
+   - Open 7–9B catchers only (frontier replication in E18, if funded).
+   - Model version drift.
 8. **Conclusion and recommendations for labs (0.25 page).** A short
    reporting checklist.
 

@@ -1,86 +1,96 @@
 # Compute and budget
 
-Estimates as of 22 October 2026. Every figure marked *(est)* comes from
-arithmetic on token counts and list prices, not from published per-run
-costs. **Measure 5 pilot runs per testbed before committing a budget**, and
-update this page with real numbers from the run manifests.
+**Budget: $0** (decision D-007, 2026-10-22). Everything confirmatory runs on
+this sandbox's CPU and on free Kaggle GPUs, using open-weight models. Paid
+compute only enters through E18 (frontier replication), if credits arrive.
 
-## Where things can run
+Estimates are *(est)* until measured. **Every testbed's pilot records actual
+GPU-hours per unit**; update this page from the run manifests.
 
-| Resource | Has | Good for |
-|---|---|---|
-| This cloud sandbox | 4 CPU, 15 GB RAM, **no GPU, no Docker daemon**; PyPI, conda-forge and GitHub reachable; Hugging Face, arXiv, CRAN, Zenodo blocked | E00 (R via conda-forge works), E01, E05, E13, analysis of anything already downloaded |
-| Free GPU (Kaggle T4 / Colab) | 16 GB GPU, session caps (check current quotas) | Pythia-70M SAEs (E11), small pilots (E06 at 50M samples) |
-| Rented GPU | H100 / A100, about $2–4 per GPU-hour *(est)* | E06 grid, E11, fine-tuning (E12, E15, E17), 70B AuditBench serving (E09) |
-| APIs | Anthropic, OpenAI, Google, open-weights hosts | E04, E08, E09 agents and judges, E10 attackers |
+## Resources
 
-## Per-experiment estimates
-
-| Exp | Compute | Estimate | Basis |
+| Resource | What it has | Limits (check current terms) | Used for |
 |---|---|---|---|
-| E00 | CPU | minutes | — |
-| E01 | CPU | 1–3 h on 8 cores | pilot timing scaled |
-| E02 | Download 0.6 GB (25 SAEs, one L0) to about 5 GB (all 175); CPU for decoder matching; GPU helpful for activation sampling | < 5 GPU-h | SAE size ~25 MB each *(est)* |
-| E03 | GPU for activation matching (M3) | 2–4 GPU-h | — |
-| E04 | CPU + LLM calls | < $30 | ~1–3k cheap calls |
-| E05 | CPU | hours | — |
-| E06 | GPU: about 15–20 min per SAE on an H100 at 200M samples (SAELens tutorial). 11 cells × 24 seeds = 264 SAEs | **70–90 H100-h ≈ $150–350**; 2–4× longer on consumer GPUs | tutorial timing *(est)* |
-| E07 | CPU | hours | — |
-| E08 | API: Petri audits, about $0.5–2 each *(est)*; 5 ladder levels × 16 targets × 16 runs = 1,280 audits | **$650–2,600**; cheaper auditors cut this (and change the catcher) | Petri token estimate |
-| E09 | API: investigator (Haiku 4.5) about $0.4–1.0 per run, plus judge (Sonnet 4.6) about $0.03–0.12 *(est)*. GPU: Llama-3.3-70B + LoRAs needs 2–4 × 80 GB GPUs | **Full** (3,584 runs): $1.5–4k API + ~$200–500 GPU. **Reduced** (1,344 runs): $0.6–1.5k API + ~$100–200 GPU | repo defaults *(est)* |
-| E10 | API: attacker runs on a purpose-built monitor, about $1 per run with a Sonnet-class attacker *(est)*; ~110 runs | **$100–300** | — |
-| E10 (BashArena stretch) | Docker + API: about $3–8 per attack trajectory (Sonnet-class attacker + mini monitor) *(est)* | $2.4–6.4k for 800 trajectories; under $400 with a Haiku-class attacker | BashArena reference runner |
-| E11 | GPU: Pythia-70M SAE about 0.5–1.5 h on a 24 GB card *(est)*; ~36 SAEs | 20–50 GPU-h ≈ $50–150 | ensembling-paper timings *(est)* |
-| E12 | GPU (LoRA fine-tune 8B × 4) + API audits (~300) | ~$300–800 | *(est)* |
-| E13 | CPU | hours | — |
-| E14 | API | ~$50–150 | — |
-| E15 | GPU (12 SAEs + fine-tune) + API (16 audits) | ~$100–300 | *(est)* |
-| E16 | CPU/GPU | small | — |
-| E17 | GPU (fine-tunes) + API | ~$200–500 | *(est)* |
+| This cloud sandbox | 4 CPU, 15 GB RAM, no GPU, no Docker; PyPI, conda-forge, GitHub reachable; Hugging Face and arXiv blocked | session-based; commit everything | E00, E01, E05, E07, E13, analysis |
+| Kaggle notebooks, **Santosh's account** | 2 × T4 (16 GB each) or 1 × P100; internet and Hugging Face access | historically about 30 GPU-hours a week; sessions about 12 h; about 20 GB of `/kaggle/working` output | SAE work: E02, E03, E06, E11, E15 (SAE arm) |
+| Kaggle notebooks, **Kushal's account** | same | same | LLM work: E04 (attack arm), E08, E09, E10, E12, E14, E15 (audit arm), E17 |
+| Local machines (if any) | — | — | optional |
 
-## Budget scenarios for the NeurIPS paper (core + important tiers)
+Two accounts give about **60 free GPU-hours a week**. Kaggle needs phone
+verification for GPU and internet access, and sessions can be cut off, so:
+- checkpoint every 30 minutes;
+- cache every LLM call (PROTOCOLS §6);
+- write results to a Kaggle dataset at the end of each session.
 
-| Scenario | API | GPU | Notes |
-|---|---|---|---|
-| **Lean** | ~$1.2–2.5k | ~$200 | E09 reduced design; E08 with cheaper auditors at L0/L1; E06 cut to 6 cells |
-| **Planned** | ~$3–6k | ~$500–800 | As pre-registered |
-| **Minimum viable** (workshop only) | ~$300 | ~$50 | E02/E03/E05 + E09 system-prompt suite (GPU-free) + E10 |
+## T4 practicalities
 
-> **Decision needed (Q-B1):** what budget is available? It decides between
-> the lean and planned designs, and must be settled **before the v1
-> freeze**, because the reduced designs are pre-specified alternatives.
+- **No bf16 on T4:** use fp16, or AWQ/GPTQ 4-bit. Some models (e.g. Gemma 2)
+  can overflow in fp16. Test in the pilot and switch to a quantised variant
+  if needed.
+- **LLM serving:** vLLM with tensor parallel 2 on 2 × T4 for 7–9B fp16
+  models, or a single T4 for AWQ. Batch many audits concurrently;
+  throughput, not latency, matters.
+- **Fine-tuning:** QLoRA (e.g. Unsloth or PEFT + bitsandbytes) fits 2B
+  models easily and 7–8B models with care on a T4.
+- **SAE training:** SAELens on GPU; the synthetic generator also runs on
+  GPU.
 
-## Cost controls
+## Per-experiment estimates (Kaggle GPU-hours)
 
-- Cache every LLM call (PROTOCOLS §6). Use batch APIs for judges where
-  latency does not matter (about 50% cheaper).
-- Pilot 5 runs per testbed. If measured cost is more than 1.5× the estimate,
-  apply the experiment's pre-declared cuts and log a deviation.
-- Track spend per experiment in the manifests. Review weekly against this
-  table.
-- A stretch experiment never takes budget from a core experiment.
+| Exp | Owner | Where | GPU-h *(est)* | Notes |
+|---|---|---|---|---|
+| E00 | Santosh | sandbox | 0 | R via conda-forge |
+| E01 | Santosh | sandbox | 0 | 2–6 CPU-h |
+| E02 | Santosh | Kaggle | 2–5 | zoo download 0.6–5 GB; decoder matching on GPU or CPU |
+| E03 | Santosh | Kaggle | 2–4 | activation matching (M3) |
+| E04 | Santosh + Kushal | sandbox + Kaggle | 1–2 | attack variants from a local model |
+| E05 | Santosh | sandbox | 0 | |
+| E06 | Santosh | Kaggle | 20–40 | scaled world (4,096 features, d = 256); 264 SAEs; measured in R002 |
+| E07 | Santosh | sandbox | 0 | |
+| E08 | Kushal | Kaggle | 15–30 | 768 confirmatory audits (+256 at L2) |
+| E09 | Kushal | Kaggle | 30–45 | implants about 8–11, audits about 20–30, SAE tool about 1 |
+| E10 | Kushal | sandbox + Kaggle | 5–10 | monitor on CPU, attackers on GPU |
+| E11 | Santosh | Kaggle | 30–45 | 16 Pythia-70M SAEs + Gemma Scope analysis |
+| E12 | Kushal | Kaggle | 15–25 | stretch |
+| E13 | Santosh | sandbox | 0 | |
+| E14 | Kushal | Kaggle | 3–5 | stretch |
+| E15 | Santosh + Kushal | Kaggle | 15–25 | important; after the novelty check |
+| E16 | Santosh | Kaggle | 2–5 | stretch |
+| E17 | Kushal | Kaggle | 10–20 | stretch |
+| E18 | Kushal | API + rented GPUs | — | only if funded |
 
-## Prices used (per 1M tokens, USD)
+**Totals:**
 
-Anthropic list prices are from the Claude API reference dated 2026-10-06.
-Others are from aggregators and **unverified**: check vendor pages before
-spending.
-
-| Model | Input | Output |
+| Scope | Santosh | Kushal |
 |---|---|---|
-| Claude Haiku 4.5 | 1.00 | 5.00 |
-| Claude Haiku 5.5 | 0.10 | 0.50 |
-| Claude Sonnet 5.5 | 2.00 | 10.00 |
-| Claude Sonnet 4.6 | 3.00 | 15.00 |
-| Claude Opus 5.5 | 4.00 | 20.00 |
-| GPT-5 mini *(unverified)* | 0.25 | 2.00 |
-| Gemini 3 Flash *(unverified)* | 0.50 | 3.00 |
-| DeepSeek V3.2 *(unverified)* | ~0.25 | ~0.40 |
-| Llama 3.3 70B via a host *(unverified)* | 0.10–0.23 | 0.32–0.40 |
+| Core + important, to NeurIPS | ~60–100 GPU-h | ~55–90 GPU-h |
+| Workshop subset (E02, E03, E05 + E08 L0/L3 + E10), by 25 January | ~5–10 GPU-h | ~15–25 GPU-h |
+
+Both fit within about 2–4 weeks of each account's quota, spread over six
+months.
+
+## Rules
+
+- Pilot first. If a pilot measures more than 1.5× the estimate, apply the
+  experiment's pre-declared cuts before freezing.
+- Stretch experiments never use quota needed by core experiments.
+- Either account can run any experiment, since seeds and configs are
+  deterministic. If one account is blocked, the other takes over, and the
+  run's manifest records which account ran it.
+- Record GPU-hours per run in the manifest (`cost.gpu_hours`). The NeurIPS
+  checklist asks for total compute, **including failed and exploratory
+  runs**.
+
+## If money appears later
+
+See E18 and `research/README.md` for API cost estimates. Indicative figures:
+- original AuditBench: about $0.4–1 per run plus 2–4 × 80 GB GPUs;
+- a frontier E08 ladder: about $0.5–2 per audit.
+
+Anthropic list prices (per 1M tokens, 2026-10-06): Haiku 4.5 $1/$5, Haiku
+5.5 $0.10/$0.50, Sonnet 5.5 $2/$10. Other providers' prices are unverified.
 
 ## Actuals
 
-Filled from the run manifests.
-
-| Exp | GPU-h | API $ | Including failed and exploratory runs? |
+| Exp | Account | GPU-h | Including failed and exploratory runs? |
 |---|---|---|---|

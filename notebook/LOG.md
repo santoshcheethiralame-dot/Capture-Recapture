@@ -61,7 +61,7 @@ testbed feasibility (I2).
   p_min = 1e-6.
 - **Zoo seeds are uncontrolled.** Initialisation and data vary jointly and
   unseeded. SAELens does not seed training. → E06 and E11 seed explicitly,
-  with an R000 hash check.
+  with an R001 hash check.
 - **AuditBench:** repo `safety-research/auditing-agents`; per-run
   `quirks/*.md` outputs; 70B targets need 2–4 × 80 GB GPUs; a GPU-free
   system-prompt suite (16 quirks) exists; the investigator is hard-wired to
@@ -72,3 +72,28 @@ testbed feasibility (I2).
 
 **Next:** Owner decisions on budget (Q-B1), licences (D-006) and the
 disclosure notice window. Then E00.
+
+## 2026-10-22 (evening): $0 plan and team split
+
+**Decided:**
+- **D-007:** run everything at $0, with open models on the sandbox CPU and
+  free Kaggle GPUs. Frontier replication moves to E18 (only if credits
+  arrive).
+- **Team:** Santosh owns statistics, estimators and the SAE track; Kushal
+  owns the safety testbeds (E08–E10), LLM infrastructure and judges. Each
+  runs the confirmatory analysis on the other's data. See `docs/TEAM.md`.
+
+**Changed (pre-freeze, not deviations):**
+- E06: scaled-down world.
+- E08: open-model auditor ladder.
+- E09: AuditBench-lite (fine-tuned Gemma-2-2B organisms; Gemma Scope
+  white-box tool).
+- E10: open attackers with a harmless proxy goal.
+- E11: Pythia-70M only.
+- New page: E18.
+- `tools/notebook.py` now requires `--owner` on every run.
+- Detection-history format: PROTOCOLS §10.
+- CI checks the notebook on every push.
+
+**Next:** Santosh: E00. Kushal: Kaggle LLM stack and model pinning (Q-D14),
+E10 monitor (E10-R001). Freeze target: 8 November.

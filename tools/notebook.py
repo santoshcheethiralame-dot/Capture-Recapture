@@ -5,7 +5,7 @@ The run registry `notebook/runs.csv` is the source of truth for every run.
 This tool appends and updates runs, renders the run tables inside the
 experiment pages, locks pre-registrations, and checks the notebook.
 
-    python tools/notebook.py new E02 --title "Zoo, BatchTopK, oracle histories" --config configs/e02.yaml
+    python tools/notebook.py new E02 --owner Santosh --title "Zoo, BatchTopK, oracle histories" --config configs/e02.yaml
     python tools/notebook.py set E02-R001 status=succeeded summary="coverage err 0.02"
     python tools/notebook.py render
     python tools/notebook.py freeze E02
@@ -28,7 +28,7 @@ LOCKS = NB / "prereg-locks.csv"
 EXP_DIR = NB / "experiments"
 
 FIELDS = [
-    "run_id", "experiment", "title", "status", "started", "finished",
+    "run_id", "experiment", "title", "owner", "status", "started", "finished",
     "commit", "config", "command", "outputs", "summary", "notes",
 ]
 LOCK_FIELDS = ["experiment", "sha256", "commit", "date", "note"]
@@ -109,7 +109,7 @@ def cmd_new(args):
     row = dict.fromkeys(FIELDS, "")
     row.update(
         run_id=f"{exp}-R{n:03d}", experiment=exp, title=args.title,
-        status=args.status, config=args.config or "", command=args.command or "",
+        owner=args.owner, status=args.status, config=args.config or "", command=args.command or "",
         notes=args.notes or "", commit=git_commit(),
     )
     if args.status != "planned":
@@ -146,9 +146,9 @@ def cmd_set(args):
 def run_table(rows):
     if not rows:
         return "_No runs yet._"
-    head = "| Run | Title | Status | Started | Finished | Commit | Summary |\n|---|---|---|---|---|---|---|"
+    head = "| Run | Title | Owner | Status | Started | Finished | Commit | Summary |\n|---|---|---|---|---|---|---|---|"
     lines = [
-        f"| {r['run_id']} | {r['title']} | {r['status']} | {r['started']} | "
+        f"| {r['run_id']} | {r['title']} | {r['owner']} | {r['status']} | {r['started']} | "
         f"{r['finished']} | {r['commit']} | {r['summary']} |"
         for r in rows
     ]
@@ -212,6 +212,8 @@ def cmd_check(_args):
             errors.append(f"{r['run_id']}: bad status {r['status']!r}")
         if r["experiment"] not in pages:
             errors.append(f"{r['run_id']}: no page for {r['experiment']}")
+        if not r["owner"]:
+            warnings.append(f"{r['run_id']}: no owner")
         if r["status"] in ("succeeded", "failed") and not r["summary"]:
             warnings.append(f"{r['run_id']}: {r['status']} but no summary")
     for exp, page in pages.items():
@@ -252,6 +254,7 @@ def main():
     p = sub.add_parser("new", help="register a run")
     p.add_argument("experiment")
     p.add_argument("--title", required=True)
+    p.add_argument("--owner", required=True, help="who runs it (e.g. Santosh, Kushal)")
     p.add_argument("--status", default="planned", choices=sorted(STATUSES))
     p.add_argument("--config")
     p.add_argument("--command")

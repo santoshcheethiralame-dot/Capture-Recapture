@@ -12,6 +12,10 @@ discovery tool can estimate:
 The method comes from capture-recapture statistics, and is first validated
 on testbeds where the failures were planted and the truth is known.
 
+**Team:** Santosh (statistics and interpretability) and Kushal (safety
+testbeds and agents); see [`docs/TEAM.md`](docs/TEAM.md). **Budget:** $0:
+open-weight models on CPU and free Kaggle GPUs (decision D-007).
+
 **Status:** pre-registration drafting (v0.1). No confirmatory results yet.
 Target venues: an arXiv preprint (December 2026), an ICLR 2027 workshop, and
 NeurIPS 2027.
@@ -20,7 +24,7 @@ NeurIPS 2027.
 
 | Path | Contents |
 |---|---|
-| [`notebook/`](notebook/) | **Lab notebook.** Experiment registry (E00–E17), one pre-registered page per experiment with contingencies, run registry (`runs.csv`), daily log, decisions, deviations, results. Start with [`notebook/README.md`](notebook/README.md). |
+| [`notebook/`](notebook/) | **Lab notebook.** Experiment registry (E00–E18), one pre-registered page per experiment with contingencies, run registry (`runs.csv`), daily log, decisions, deviations, results. Start with [`notebook/README.md`](notebook/README.md). |
 | [`docs/`](docs/) | Study pre-registration, roadmap and gates, protocols, paper plan, risks, compute, data registry, disclosure policy, open questions, NeurIPS checklist, glossary. Index: [`docs/README.md`](docs/README.md). |
 | [`research/`](research/) | Literature dossier ([`research/README.md`](research/README.md)), reading list, 13 underlying research reports, and the original proposal. |
 | [`pilot/`](pilot/) | Pilot simulation of the estimators under uneven detectability, heavy tails, similar catchers and matching errors. |
@@ -32,7 +36,7 @@ NeurIPS 2027.
 pip install numpy scipy
 python pilot/simulate.py                 # pilot simulation
 python tools/notebook.py check           # validate the notebook
-python tools/notebook.py new E01 --title "Base cell"   # register a run
+python tools/notebook.py new E01 --owner Santosh --title "Base cell"   # register a run
 ```
 
 ## Citation

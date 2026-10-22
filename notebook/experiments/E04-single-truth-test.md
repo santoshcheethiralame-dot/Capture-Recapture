@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | Status | registered |
+| Owner | Santosh (SAE arm); Kushal (attack arm) |
 | Tier | important |
 | Stage | 2 confirmatory |
 | Depends on | E00, E03 (default matcher), E10 identity pipeline (attack arm) |
 | Study hypotheses | PH3 (supporting) |
 | Testbed | synthetic re-expressions of known items |
-| Compute | CPU + a few dollars of API calls |
+| Compute | $0; CPU + a local open model on Kaggle (attack arm) |
 | Pre-registration | not frozen |
 
 ## 1. Question
@@ -71,7 +72,7 @@ absorbed into real clusters.
 
 ### Sample size
 R001: 200 replicates per level gives MCSE of the cluster ratio < 0.02.
-R002: limited by API cost; reported with bootstrap CIs.
+R002: limited by Kaggle GPU time; reported with bootstrap CIs.
 
 ### Analysis plan
 - **Confirmatory:** H4a to H4c.

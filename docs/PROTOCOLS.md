@@ -75,9 +75,11 @@ frozen experiment that uses it.
 - **Fixed budgets** per run (tokens, queries, wall-clock), pre-registered.
 - **Sampling:** temperature as the catcher's default, unless
   pre-registered. Every run's random seed is recorded.
-- **Model snapshots:** pin API model identifiers to dated snapshots where
-  the provider allows it. Record the exact identifier string in the
-  manifest.
+- **Model versions:** open models are pinned to a Hugging Face revision
+  (commit hash) and quantisation, recorded in the manifest. API models (E18
+  only) are pinned to dated snapshots.
+- **Local serving:** vLLM on Kaggle (fp16 or AWQ on T4). Record the vLLM
+  version, `max_model_len` and the sampling parameters in the manifest.
 
 ## 4. Seeds
 
@@ -163,3 +165,54 @@ started_utc, finished_utc, status, outputs [paths], cost {gpu_hours, api_usd}
 - Tests (`pytest`) must pass before any run is registered as confirmatory.
 - Every figure and table in the paper is produced by a script from
   `results/`. No hand-edited numbers.
+
+## 10. Data interface: detection histories
+
+This is the handoff format between whoever produces runs (Kushal for audits
+and red teams; Santosh for SAEs) and the analysis code. Agreed by both;
+changing it after a freeze is a deviation.
+
+Each experiment cell writes one directory
+`results/EXX/<run_id>/histories/<cell_id>/` containing three CSV files:
+
+**`detections.csv`**: one row per (item, run) where the item was found.
+Rows for "not found" are implicit.
+
+| column | type | meaning |
+|---|---|---|
+| `cell_id` | str | experiment cell (e.g. `L0`, `T3`, `btk_l0-25`) |
+| `run_idx` | int | 1..K, the occasion index inside the cell |
+| `item_id` | str | identity of the finding under the stated identity rule |
+| `identity` | str | `oracle`, `instrumented`, `judge:<rubric_version>`, or `matched:<matcher>@<tau>` |
+| `evidence` | str | pointer to the raw finding (file path, latent index, report line) |
+| `score` | float | match score or judge confidence (blank if instrumented or oracle) |
+
+**`runs.csv`**: one row per run in the cell (including runs that found
+nothing).
+
+| column | type | meaning |
+|---|---|---|
+| `cell_id` | str | |
+| `run_idx` | int | |
+| `catcher` | str | model, revision, scaffold and configuration |
+| `seed` | int | |
+| `role` | str | `estimation` or `reference` |
+| `status` | str | `ok`, `crashed_rerun`, `failed_counted_as_none` |
+| `cost_gpu_h` | float | |
+
+**`items.csv`**: one row per known item, in testbeds with truth.
+
+| column | type | meaning |
+|---|---|---|
+| `item_id` | str | |
+| `planted` | bool | true for planted or known items |
+| `covariates` | json | e.g. `{"p": 0.003, "subtlety": "hard"}` |
+
+Rules:
+- Item IDs under `oracle` or `instrumented` identity are stable across
+  cells, so cells can be compared. Matched or judge IDs are only meaningful
+  within a cell.
+- A cell's estimation and reference runs are in the same files, separated
+  by `role`.
+- The analysis code reads only these files. If an analysis needs anything
+  else, add a column here first, through a PR approved by both people.

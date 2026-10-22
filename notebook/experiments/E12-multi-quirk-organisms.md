@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | Status | proposed |
+| Owner | Kushal |
 | Tier | stretch |
 | Stage | 3 |
 | Depends on | E09 harness; fine-tuning access |
 | Study hypotheses | PH1 (extension), PH2 |
 | Testbed | own organisms: Q = 8 quirks planted in one 7–8B model |
-| Compute | LoRA fine-tuning (GPU) + auditor API calls |
+| Compute | $0; QLoRA on Kaggle T4 + local open-model auditors |
 | Pre-registration | not frozen |
 
 ## 1. Question
@@ -37,7 +38,7 @@ prompts.
 Per organism: 8 items; true π_i from 8 reference runs; C(K).
 
 ### Methods
-Investigator agent (E09 harness), Petri and Bloom. K = 16 runs each. Primary
+The E08 interview scaffold with a local open-model auditor, plus Petri and Bloom if they run with open models (decided in the pilot). K = 16 runs each. Primary
 estimators.
 
 ### Hypotheses and decision rules
@@ -53,9 +54,9 @@ estimators.
 | Run | Configuration | Replicates | Expected cost |
 |---|---|---|---|
 | R001 | Implant + verification, 4 organisms | 4 | GPU-hours |
-| R002 | Investigator runs | 4 × 24 | API |
-| R003 | Petri runs | 4 × 24 | API |
-| R004 | Bloom runs | 4 × 24 | API |
+| R002 | Interview-scaffold audits (local auditor) | 4 × 24 | Kaggle GPU |
+| R003 | Petri runs (if they run with open models) | 4 × 24 | Kaggle GPU |
+| R004 | Bloom runs (if they run with open models) | 4 × 24 | Kaggle GPU |
 
 ### Sample size
 4 organisms are few. This experiment is a feasibility demonstration with

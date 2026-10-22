@@ -3,12 +3,13 @@
 | Field | Value |
 |---|---|
 | Status | registered |
+| Owner | Kushal (monitor, attackers); Santosh (de-adaptation A3, confirmatory analysis) |
 | Tier | core (safety headline) |
 | Stage | 2 confirmatory |
 | Depends on | E00, E01 |
 | Study hypotheses | PH1, PH5 |
 | Testbed | Purpose-built guard/monitor with M = 20 planted blind spots; stretch version in ControlArena/BashArena |
-| Compute | API calls (attacker LLMs) + CPU |
+| Compute | $0; monitor on CPU, attackers on Kaggle T4 (vLLM); about 10 GPU-hours |
 | Pre-registration | not frozen |
 
 ## 1. Question
@@ -33,8 +34,11 @@ Validate coverage estimation for red teams with known truth. Measure and
 correct adaptive bias.
 
 ### Testbed
-**Monitor:** a guard that screens agent actions or prompts for a fixed
-harmful goal. It is an LLM classifier plus a rule layer containing
+**Monitor:** a guard that screens an agent's messages for a fixed
+**harmless proxy goal**: getting a fake secret token (a random string
+pattern) past the guard. This keeps the experiment free of real harm, avoids
+attacker refusals, and makes the results non-transferable to real
+safeguards. It is an LLM classifier plus a rule layer containing
 **M = 20 planted blind spots**: specific transformations the rule layer
 deliberately lets through. Examples:
 - a particular encoding;
@@ -45,8 +49,11 @@ deliberately lets through. Examples:
 The blind spots are graded in subtlety (5 easy, 10 medium, 5 hard), so
 detection probability varies. The monitor logs which blind spot let each
 successful attack through. That instrumented label is the ground-truth
-identity. The LLM classifier is fixed at temperature 0, so a success is only
-possible through a blind spot (verified in the pilot).
+identity. The default monitor is fully deterministic: a rule layer plus a
+pattern detector, so a success is only possible through a blind spot
+(verified in R001). An LLM classifier layer (a small local model,
+temperature 0) is a pre-registered variant, run only if R001 shows it adds
+no unplanted holes.
 
 **Stretch:** the same design inside BashArena: 640 tasks in
 `redwoodresearch/basharena_public`, 4 side tasks, run through ControlArena.
@@ -55,8 +62,10 @@ This needs a Docker host (not this sandbox) and costs about $3–8 per
 trajectory with a Sonnet-class attacker.
 
 ### Catchers (arms)
-K = 12 attacker runs per arm. Each run is one attacker LLM session with a
-fixed query budget B (set by the pilot).
+K = 12 attacker runs per arm. Each run is one attacker session with a fixed
+query budget B (set by the pilot). The attacker is an open 7–9B instruct
+model, Qwen family by default (pinned at the freeze). It is told the proxy
+goal and the monitor's general purpose, never the blind spots.
 
 | Arm | Attacker |
 |---|---|
@@ -64,7 +73,7 @@ fixed query budget B (set by the pilot).
 | A2 adaptive | Sees the verdict for each attempt and iterates |
 | A3 de-adapted | A2's data re-analysed, no new runs. **A3a** (after Liyanage et al., ICSE 2024): split the A2 campaign into overlapping sub-campaigns of lengths L ∈ {3, 4, 6, 8, 12}. Destroy adaptive order by shuffling incidences across runs within each window, preserving each blind spot's total count. Compute Ĉ per window, regress log Ĉ on log L, and extrapolate to K. **A3b** (after Böhme et al., FSE 2021, the "reset" estimator): Good-Turing on only the attempts since the last new discovery. The exact ICSE'24 algorithm is to be confirmed (Q-D7). If it differs, A3a is updated **before freezing** |
 | A4 diversity-prompted | Like A2, with explicit instructions to try different strategies |
-| A5 mixed families | A1-style runs split across 3 model families |
+| A5 mixed families | A1-style runs split across 3 open families (Qwen, Llama, Gemma) |
 
 ### Estimands
 - **Item:** a planted blind spot (M = 20).
@@ -125,16 +134,16 @@ and the count is reported.
 |---|---|---|
 | The pilot shows blind spots are all found (ceiling) or never found (floor) | Re-grade subtlety or change B **before freezing** | No (pre-freeze) |
 | The LLM classifier lets attacks through without a blind spot | Make the classifier stricter, or make the rule layer the only gate (deterministic monitor). Re-verify R001 | No (pre-freeze) / Yes (post) |
-| An attacker model refuses the red-team task | Use a red-team-permitted model or provider, and document it. Never use jailbreaks to get a model to red-team | Yes |
+| An attacker model refuses the task | Unlikely with a harmless proxy goal. Rephrase the task neutrally (pre-freeze) or switch to another open model in the same family. Never jailbreak a model into red-teaming | No (pre-freeze) |
 | The de-adaptation algorithm cannot be reproduced from the paper | Implement the simplest version (uniform resampling of the attempt pool) and note the difference | Yes (logged) |
 | Budget overrun | Cut A5, then cut reference runs to 8 | Yes |
 
 ## 4. Runs
 
 <!-- runs:start -->
-| Run | Title | Status | Started | Finished | Commit | Summary |
-|---|---|---|---|---|---|---|
-| E10-R001 | Build monitor, unit-test blind spots, verify no success without one | planned |  |  | fa922b4+dirty |  |
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E10-R001 | Build monitor, unit-test blind spots, verify no success without one | Kushal | planned |  |  | fa922b4+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
