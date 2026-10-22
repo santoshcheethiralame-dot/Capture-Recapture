@@ -127,6 +127,85 @@ reported for every bias and coverage figure. Seeds come from
 None. Estimator failures are counted, not dropped.
 <!-- prereg:end -->
 
+## 2a. Implementation choices fixed before the first run (2026-10-22)
+
+§2 leaves these open. They were fixed in code (`src/crsafety/sim.py`,
+`configs/e01/cells.json`, `analysis/e01/`) and committed before E01-R001
+started. They are not changes to §2.
+
+**Data-generating mechanisms**
+- *Logit-normal "mean 0.2":* μ is solved (80-point Gauss-Hermite) so that
+  E[π] = 0.2 at every σ; σ = 0 is the homogeneous cell π = 0.2.
+- *Zipf:* π_i = max(0.9 i^−α, 0.001), as in the pilot.
+- *Mixture:* 20% of items (rounded) have π = 0; the rest are logit-normal,
+  σ = 1, mean 0.2. N = |U| = 400; N_all = 500 is also reported.
+- *Families (F):* run j belongs to family j mod F. Logit π_ij = μ + z_i +
+  u_{i,f(j)}, z_i ~ N(0, 0.5²), u ~ N(0, τ² = 1.5²), μ such that the
+  marginal mean is 0.2 (pilot structure). With K = 10 and F = 3 or 6,
+  families have unequal sizes.
+- *List dependence (odds ratio θ):* block A = runs 1..K/2, block B = the
+  rest. Runs in A are independent Bernoulli(π_i); runs in B have their
+  detection odds multiplied by θ for items found in block A. The achieved
+  odds ratio is reported.
+- *Behavioural response (c):* after an item's first detection its detection
+  probability in later runs is min(cπ_i, 1).
+- *Nested runs:* u_i ~ N(0, 1); six cut-offs c_j = Φ⁻¹(1 − r_j),
+  r = 0.35, 0.29, …, 0.05 (mean 0.2); π_ij = expit(k(u_i − c_j)); K = 6.
+- *Identity errors:* ghosts move each detection, with probability f, onto
+  a new singleton row; merges then OR round(g · S_obs) random pairs of
+  observed rows.
+- *Δ(K):* new true items found by K more runs of the same process. Families
+  continue with the same families; adaptive runs continue from the items
+  found; dependent and nested runs repeat their block or ladder structure.
+
+**Estimands**
+- π_i is the probability that one new, independent run of the catcher class
+  finds item i, unaffected by earlier runs. For families this means a run
+  from a *new* family, so π_i is averaged over the family effect. For
+  adaptive and dependent cells it is the base π_i. For nested cells it is
+  the mean over the six cut-offs. C = Σ_{found} π_i / Σ_{U} π_i.
+- N_LB is Chao2 computed from the expected frequency counts of the *true*
+  histories, estimated by their mean over the 500 replicates (S̄ +
+  (K−1)/K · Q̄1²/(2Q̄2)).
+
+**Estimators** (E00 suite; validated): Chao-Jost coverage, Turing
+coverage 1 − Q1/U, Δ̂(K), Chao2 (iNEXT form) with its log-normal CI,
+Chao2-bc, iChao2, jackknife 1 and 2, ICE, Darroch Mt, Chapman (mean over
+all pairs and over cross-block pairs i < K/2 ≤ j), and Mh Chao (LB)
+log-linear (3 ≤ K ≤ 12). `breakaway_nof1` needs R and is used in E05,
+not here.
+
+**Interaction grids** (levels §2 does not list): heterogeneity × ghosts
+uses σ ∈ {0, 1, 2} × f ∈ {0, 0.05, 0.15}; shared families × K uses
+F ∈ {1, 2, 3, 6} × K ∈ {6, 10, 12}. A cell already defined in an earlier
+run (e.g. σ = 1, K = 10 is the base cell) is reused, not re-simulated.
+40 distinct cells in R001–R004.
+
+**R005 cells** (§2 says "a subset of 12"): base, N50, N5000, K5, K20,
+homog, ln2, zipf1.0, mix20, fam1, beh2, ghost0.15. R005 re-draws the same
+datasets (same seeds) and adds iNEXT-style bootstrap intervals (B = 500;
+normal and percentile) for C and Δ(K).
+
+**Seeds:** cell idx (its position in `configs/e01/cells.json`) uses
+`SeedSequence(20261022, spawn_key=(idx,))`, i.e.
+`SeedSequence(20261022).spawn(n)[idx]`; replicate r uses
+`spawn_key=(idx, r)`; its bootstrap uses `spawn_key=(idx, r, 1)`.
+
+**Analysis sets for H1a and H1b** (the wording "without identity error or
+adaptivity" could include dependent runs):
+- *H1a, literal set:* every cell with f = g = 0, c = 1 and K ≥ 5. This
+  includes the family, dependence and nested cells.
+- *H1a, clean set:* the literal set restricted to independent runs from a
+  fixed π (no families, θ ∈ {none, 1}, no nesting). **Gate G1 uses the
+  clean set** ("clean simulation cells", ROADMAP). Both verdicts are
+  reported.
+- *H1b set:* clean cells with logit-normal σ ≥ 1, including the mixture
+  cell (target N = |U|).
+- H1c uses Chapman averaged over cross-block pairs. H1f compares
+  mean(Ĉ − C) between fam1 and fam6, with MCSE √(MCSE₁² + MCSE₆²).
+- Verdicts use the point estimates against the §2 thresholds. MCSE is
+  reported beside each estimate.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |

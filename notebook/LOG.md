@@ -180,3 +180,27 @@ Santosh (with Claude).
 
 **Next:** Kushal reviews E00 (R001–R004) and D-008/D-009. Santosh: E01
 simulation study.
+
+## 2026-10-22 (night, later): E01 code and pre-run choices
+
+Santosh (with Claude).
+
+**Did:**
+- Wrote `src/crsafety/sim.py` (the E01 data-generating mechanisms),
+  `src/crsafety/manifest.py` (run manifests, PROTOCOLS §5),
+  `configs/e01/cells.json` (40 cells, seeds, R005 subset),
+  `analysis/e01/run.py` and `analysis/e01/analyse.py`, plus 38 tests.
+- Added `requirements.lock` (uv pip compile); installed the locked NumPy
+  2.5.4 / SciPy 1.18.1.
+- Fixed every choice §2 leaves open in E01 §2a, before any E01 run.
+
+**Disclosure:** a 3-replicate smoke test of each run, written to the
+scratch directory, checked that the code runs (R001–R005 take seconds at
+n_sim = 3). The analysis printout of that test showed the H1e and H1f lines
+on those 3 replicates, which are the first 3 replicates of the real runs.
+The analysis sets and rules were already in code and were not changed after
+that. E01 is Stage 1 (exploratory), so this does not affect any confirmatory
+claim.
+
+**Next:** run E01-R001 to R005 from the committed code; analyse.
+
