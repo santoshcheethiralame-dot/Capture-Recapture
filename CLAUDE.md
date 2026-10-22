@@ -75,9 +75,11 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
    real SAELens 6.54.12 output (installable here: `pip install torch
    "sae-lens==6.54.12"`; the PyTorch CPU index is blocked, PyPI works).
 8. M3 matcher done (`analysis/e03/act_corr.py`; bakeoff `--m3`, `--fire-counts`).
-9. Next candidates: run E02-R001 inventory on Kaggle (needs Santosh's
-   account); ratio-regression f1-free estimator + E00 run if chosen at the
-   freeze.
+9. f1-free alternative (`betabinomial_nof1`) tried on E05 pilot tables and
+   rejected; FREEZE-V1 item 6 recommends reporting breakaway_nof1's failure.
+10. Everything left needs people: run E02-R001 (+ fire_counts, act_corr) on
+    Santosh's Kaggle account; Kushal's reviews; the joint freeze decisions in
+    `docs/FREEZE-V1.md`.
 
 ## Repository map
 
@@ -99,7 +101,7 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 
 ```bash
 python -m pip install -e ".[dev]"     # use python -m: the bare `pytest` on PATH is a uv tool without numpy
-python -m pytest -q                   # 662 tests (1 skipped without R + breakaway)
+python -m pytest -q                   # 664 tests (1 skipped without R + breakaway)
 python tools/notebook.py check        # CI runs this + py_compile + pytest
 python tools/notebook.py new E01 --owner Santosh --title "..." [--config ...]
 python tools/notebook.py set E01-R001 status=running
