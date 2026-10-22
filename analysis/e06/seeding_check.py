@@ -78,7 +78,7 @@ def main():
     (out / "seeding_check.json").write_text(json.dumps(res, indent=2) + "\n")
     print(json.dumps({k: v for k, v in res.items() if k != "rows"}, indent=2))
     if m is not None:
-        manifest.finish(m, outputs=[(out / "seeding_check.json").relative_to(ROOT)],
+        manifest.finish(m, outputs=[(out / "seeding_check.json").resolve().relative_to(ROOT)],
                         status="succeeded" if res["passed"] else "failed")
 
 
