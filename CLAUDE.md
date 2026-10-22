@@ -66,9 +66,14 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
    part B: **joint decision at the freeze**, not applied.
 4. E05: model + corrections in `crsafety.linkage`; pilot done (R004–R005);
    §2a written. Confirmatory R001–R003 **wait for the v1 freeze** (Stage 2).
-5. Next candidates: E02 Kaggle notebook prep (HF blocked in sandbox, Q-D1);
-   E13 stopping-rule code on simulated campaigns; ratio-regression f1-free
-   estimator + E00 validation run (freeze question from E05 pilot).
+5. Done 2026-10-22: `crsafety.matching`; `crsafety.stopping` + E13 pilot
+   (R003; R002 failed on a bug); E02 Kaggle scripts (`analysis/e02/zoo.py`,
+   `evaluate.py`) and E03 `analysis/e03/bakeoff.py`, all tested on a fake zoo.
+6. **Freeze packet: `docs/FREEZE-V1.md`** lists every open decision (D-010B,
+   D-011, E05 MI/f1-free, D-006 licences, disclosure window) and pages to lock.
+7. Next candidates: run E02-R001 inventory on Kaggle (needs Santosh's
+   account); GPU script for per-latent firing counts (dead latents, M3);
+   ratio-regression f1-free estimator + E00 run if chosen at the freeze.
 
 ## Repository map
 
