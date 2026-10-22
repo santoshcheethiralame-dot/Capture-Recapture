@@ -138,8 +138,10 @@ contingencies.
   `analysis/e02/evaluate.py` (R004). Both run on a fake zoo in the SAELens
   layout; R001 checks the real layout. Kaggle steps: `analysis/e02/README.md`.
 - Intervals for Ĉ are the realized-coverage bootstrap (D-010).
-- Dead-latent removal needs per-latent firing counts from a GPU step that
-  is not written yet; `zoo.py` warns when they are absent.
+- Dead latents: `analysis/e02/fire_counts.py` (SAELens 6.54.12, GPU) counts
+  firings on 10^6 generator samples; `zoo.py --fire-counts` drops them and
+  warns if counts are absent. The pipeline was tested end to end on SAEs
+  trained with SAELens's own runner (real file layout).
 - **Open for the freeze (D-011, proposed):** use the leave-cell-out truth
   as primary. The pooled truth is biased upwards by up to +0.07 under
   heavy-tailed detectability.

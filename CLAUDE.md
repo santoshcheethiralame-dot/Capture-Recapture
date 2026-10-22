@@ -71,8 +71,11 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
    `evaluate.py`) and E03 `analysis/e03/bakeoff.py`, all tested on a fake zoo.
 6. **Freeze packet: `docs/FREEZE-V1.md`** lists every open decision (D-010B,
    D-011, E05 MI/f1-free, D-006 licences, disclosure window) and pages to lock.
-7. Next candidates: run E02-R001 inventory on Kaggle (needs Santosh's
-   account); GPU script for per-latent firing counts (dead latents, M3);
+7. E02 pipeline complete incl. `fire_counts.py` (dead latents), tested on
+   real SAELens 6.54.12 output (installable here: `pip install torch
+   "sae-lens==6.54.12"`; the PyTorch CPU index is blocked, PyPI works).
+8. Next candidates: run E02-R001 inventory on Kaggle (needs Santosh's
+   account); M3 activation-correlation matcher (E03-R002, GPU);
    ratio-regression f1-free estimator + E00 run if chosen at the freeze.
 
 ## Repository map
