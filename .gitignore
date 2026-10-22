@@ -7,3 +7,4 @@ results/**/large/
 *.safetensors
 *.pt
 *.npz
+*.egg-info/
