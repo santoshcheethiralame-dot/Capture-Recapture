@@ -1,0 +1,11 @@
+run_id,experiment,title,status,started,finished,commit,config,command,outputs,summary,notes
+E00-R001,E00,Reference comparison against R packages and worked examples,planned,,,fa922b4+dirty,,,,,
+E00-R002,E00,Property tests (pytest),planned,,,fa922b4+dirty,,,,,
+E01-R001,E01,"Base cell + N, K, heterogeneity blocks",planned,,,fa922b4+dirty,,,,,
+E01-R002,E01,"Family, dependence, adaptivity, nested blocks",planned,,,fa922b4+dirty,,,,,
+E01-R003,E01,Identity-error blocks,planned,,,fa922b4+dirty,,,,,
+E01-R004,E01,Two-way interactions,planned,,,fa922b4+dirty,,,,,
+E01-R005,E01,Bootstrap interval coverage subset,planned,,,fa922b4+dirty,,,,,
+E02-R001,E02,"Download, checksum and inventory zoo",planned,,,fa922b4+dirty,,,,,
+E09-R001,E09,"Setup: serve one target, one investigation, check per-run outputs",planned,,,fa922b4+dirty,,,,,
+E10-R001,E10,"Build monitor, unit-test blind spots, verify no success without one",planned,,,fa922b4+dirty,,,,,

@@ -3,7 +3,8 @@
 These are the working notes behind [`../README.md`](../README.md). Each file
 was written by one research agent with a fixed brief, in two rounds:
 seven topic agents first, then four gap-filling agents for what the first
-round could not reach. Read the main report first. Come here for the full
+round could not reach, then two agents for documentation practice and
+testbed feasibility (I1, I2). Read the main report first. Come here for the full
 paper-by-paper detail, numbers and search logs.
 
 | File | Topic |
@@ -19,6 +20,8 @@ paper-by-paper detail, numbers and search logs.
 | [H2-redteam-gaps.md](H2-redteam-gaps.md) | AuditBench details, which public datasets have per-person IDs, reward-hacking catalogues (BAITBENCH, MALT, ImpossibleBench), control settings, Petri and Bloom. |
 | [H3-sae-gaps.md](H3-sae-gaps.md) | SynthSAEBench details and its released multi-seed SAE zoo, Sharkey et al., identifiability theory, frequency spectra, and matching methods. |
 | [H4-validation-evidence.md](H4-validation-evidence.md) | Where capture-recapture was checked against a known total, plus HRDAG, Census PES, record-linkage error correction, and singleton correction. |
+| [I1-documentation-best-practices.md](I1-documentation-best-practices.md) | Pre-registration (OSF, ADEMP, Hofman two-stage), Monte Carlo error formulas, lab-notebook practice, NeurIPS checklist, disclosure norms, release documentation. Basis for `docs/` and `notebook/`. |
+| [I2-testbed-feasibility.md](I2-testbed-feasibility.md) | Practical facts from reading the testbed repos: SynthSAEBench config and seeding, AuditBench harness and costs, Petri/Bloom, BashArena/ControlArena, Böhme de-adaptation, API prices, R tooling. Basis for `docs/COMPUTE.md` and `docs/DATA.md`. |
 | [scripts/](scripts/) | The agents' scratch simulations, which produce the "[sim]" numbers in notes A and B. They are rough but they run: `python research/notes/scripts/check1.py`. |
 
 ## How much to trust these notes

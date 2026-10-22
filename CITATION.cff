@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "How complete was the audit? Estimating what red teams, auditors and interpretability tools miss"
+authors:
+  - family-names: Cheethirala
+    given-names: Santosh
+version: "0.1.0"
+license: MIT
+repository-code: "https://github.com/santoshcheethiralame-dot/Capture-Recapture"
+keywords:
+  - AI safety
+  - alignment auditing
+  - red teaming
+  - interpretability
+  - sparse autoencoders
+  - capture-recapture
+  - evaluation coverage
+abstract: >-
+  Research code, lab notebook and pre-registrations for estimating the
+  coverage of AI-safety discovery tools (alignment audits, red teams,
+  sparse autoencoders) from the overlap between repeated runs, validated on
+  testbeds with planted, known failures.
