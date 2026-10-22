@@ -170,11 +170,11 @@ about 15 min plus 1–2.5 h for (d).
 <!-- runs:start -->
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
-| E05-R001 | Injection grid on E01 histories | Santosh | planned |  |  | f377619 |  |
-| E05-R002 | Injection grid on E02 oracle histories | Santosh | planned |  |  | f377619+dirty |  |
-| E05-R003 | Corrections (a)-(f) | Santosh | planned |  |  | f377619+dirty |  |
-| E05-R004 | Pilot (declared, separate seeds): feasibility and cost of corrections | Santosh | succeeded | 2026-10-22 | 2026-10-22 | f377619+dirty | Pilot, 320 injections, 40 s: no failures; MI 0.018 s/injection (20 imputations OK); first-order count correction removes ghost bias (base f=0.10: Chao2 +35% -> 0%); free-mixture MI relinks real singletons (-26% at f=0, g=0.05); breakaway_nof1 falls back to Poisson in 59% of injections (median -34%) |
-| E05-R005 | Pilot v2 (declared, same separate seeds): adds labelled-calibrated MI | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 6e99f0c+dirty | Pilot v2, 320 injections: labelled-calibrated MI (n_v=200) Chao2 -0% at f=0.10 and -6% at f=0, g=0.05 (= naive merge effect; free mixture -26%); count correction b +0 to +18%; breakaway_nof1 median -18% to -43% |
+| E05-R001 | Injection grid on E01 histories | Santosh | planned |  |  | 999589e |  |
+| E05-R002 | Injection grid on E02 oracle histories | Santosh | planned |  |  | 999589e+dirty |  |
+| E05-R003 | Corrections (a)-(f) | Santosh | planned |  |  | 999589e+dirty |  |
+| E05-R004 | Pilot (declared, separate seeds): feasibility and cost of corrections | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 999589e+dirty | Pilot, 320 injections, 40 s: no failures; MI 0.018 s/injection (20 imputations OK); first-order count correction removes ghost bias (base f=0.10: Chao2 +35% -> 0%); free-mixture MI relinks real singletons (-26% at f=0, g=0.05); breakaway_nof1 falls back to Poisson in 59% of injections (median -34%) |
+| E05-R005 | Pilot v2 (declared, same separate seeds): adds labelled-calibrated MI | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 87d6193+dirty | Pilot v2, 320 injections: labelled-calibrated MI (n_v=200) Chao2 -0% at f=0.10 and -6% at f=0, g=0.05 (= naive merge effect; free mixture -26%); count correction b +0 to +18%; breakaway_nof1 median -18% to -43% |
 <!-- runs:end -->
 
 ## 5. Results

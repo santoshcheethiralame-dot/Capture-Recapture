@@ -220,20 +220,20 @@ adaptivity" could include dependent runs):
 <!-- runs:start -->
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
-| E01-R001 | Base cell + N, K, heterogeneity blocks | Santosh | succeeded | 2026-10-22 | 2026-10-22 | c20a293 | 11 cells x 500: |bias of C_hat| <= 0.009 at K >= 5 (0.013 at K=3); Delta_hat(K) -3% to -11%; Chao2 log-normal CI covers N in 0.00 (N5000) to 0.92 (N50) of replicates; covers N_LB 0.88-0.95 |
-| E01-R002 | Family, dependence, adaptivity, nested blocks | Santosh | succeeded | 2026-10-22 | 2026-10-22 | c20a293+dirty | 13 cells: C_hat bias fam1 +0.225 / fam6 +0.028; dep1/3 -0.080, dep3 +0.053; beh2 +0.071, beh0.5 -0.148; nest10 -0.017; Chapman cross-block at OR 1/3 -18.5% (vs -35% at OR 1) |
-| E01-R003 | Identity-error blocks | Santosh | succeeded | 2026-10-22 | 2026-10-22 | c20a293+dirty | ghost f=0.05: C_hat -0.053, Chao2 +16%; f=0.15: C_hat -0.158, Chao2 +81%; merge g=0.05: C_hat +0.011, Chao2 -15% (all vs N) |
-| E01-R004 | Two-way interactions | Santosh | succeeded | 2026-10-22 | 2026-10-22 | c20a293+dirty | 13 new interaction cells: clean cells |bias of C_hat| <= 0.006; fam1K6 +0.262; N50K5 80th pct |C_hat - C| 0.122 (only 35% of replicates within 0.05) |
-| E01-R005 | Bootstrap interval coverage subset | Santosh | succeeded | 2026-10-22 | 2026-10-22 | c20a293+dirty | iNEXT-style normal 95% bootstrap CI for C_hat covers the realized C in 0.73-0.91 of replicates in clean cells (base 0.760, MCSE 0.019); percentile CI 0.008-0.84; Delta normal CI 0.32-0.87; bootstrap s.e. underestimates sd(C_hat) (0.0095 vs 0.0123, base) |
-| E01-R006 | Exploratory: small-N calibration of the PH1 tolerance (E09/E10 sizes) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 62d2f1e+dirty | Exploratory, 24 small-N cells: C_hat unbiased (|bias| <= 0.013) but |C_hat - C| <= 0.05 in only 33-73% of replicates at N=14, K=8 (p 0.2-0.4); 80th pct |C_hat - C| 0.06-0.14 at N=14-20, 0.02-0.08 at N=50 |
-| E01-R007 | Exploratory: realized-coverage bootstrap intervals on the R005 datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 62d2f1e+dirty | Exploratory: realized-coverage bootstrap 95% interval covers C in 0.89-0.97 of replicates in clean cells (base 0.922) vs 0.73-0.91 for the iNEXT interval on the same datasets; one-sided 95% lower bound holds in 0.89-0.94; Delta bias-corrected interval 0.89-0.95 |
-| E01-R008 | Exploratory: realized-coverage bootstrap replicated on fresh datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 738c31d+dirty | Exploratory replication on fresh datasets: realized-coverage interval covers C in 0.896-0.950 of replicates in clean cells; base 0.906 (MCSE 0.013) meets the pre-set >= 0.90 criterion; Delta bias-corrected 0.898-0.954 |
+| E01-R001 | Base cell + N, K, heterogeneity blocks | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 7765a22 | 11 cells x 500: |bias of C_hat| <= 0.009 at K >= 5 (0.013 at K=3); Delta_hat(K) -3% to -11%; Chao2 log-normal CI covers N in 0.00 (N5000) to 0.92 (N50) of replicates; covers N_LB 0.88-0.95 |
+| E01-R002 | Family, dependence, adaptivity, nested blocks | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 7765a22+dirty | 13 cells: C_hat bias fam1 +0.225 / fam6 +0.028; dep1/3 -0.080, dep3 +0.053; beh2 +0.071, beh0.5 -0.148; nest10 -0.017; Chapman cross-block at OR 1/3 -18.5% (vs -35% at OR 1) |
+| E01-R003 | Identity-error blocks | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 7765a22+dirty | ghost f=0.05: C_hat -0.053, Chao2 +16%; f=0.15: C_hat -0.158, Chao2 +81%; merge g=0.05: C_hat +0.011, Chao2 -15% (all vs N) |
+| E01-R004 | Two-way interactions | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 7765a22+dirty | 13 new interaction cells: clean cells |bias of C_hat| <= 0.006; fam1K6 +0.262; N50K5 80th pct |C_hat - C| 0.122 (only 35% of replicates within 0.05) |
+| E01-R005 | Bootstrap interval coverage subset | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 7765a22+dirty | iNEXT-style normal 95% bootstrap CI for C_hat covers the realized C in 0.73-0.91 of replicates in clean cells (base 0.760, MCSE 0.019); percentile CI 0.008-0.84; Delta normal CI 0.32-0.87; bootstrap s.e. underestimates sd(C_hat) (0.0095 vs 0.0123, base) |
+| E01-R006 | Exploratory: small-N calibration of the PH1 tolerance (E09/E10 sizes) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | dc94c94+dirty | Exploratory, 24 small-N cells: C_hat unbiased (|bias| <= 0.013) but |C_hat - C| <= 0.05 in only 33-73% of replicates at N=14, K=8 (p 0.2-0.4); 80th pct |C_hat - C| 0.06-0.14 at N=14-20, 0.02-0.08 at N=50 |
+| E01-R007 | Exploratory: realized-coverage bootstrap intervals on the R005 datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | dc94c94+dirty | Exploratory: realized-coverage bootstrap 95% interval covers C in 0.89-0.97 of replicates in clean cells (base 0.922) vs 0.73-0.91 for the iNEXT interval on the same datasets; one-sided 95% lower bound holds in 0.89-0.94; Delta bias-corrected interval 0.89-0.95 |
+| E01-R008 | Exploratory: realized-coverage bootstrap replicated on fresh datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | b136211+dirty | Exploratory replication on fresh datasets: realized-coverage interval covers C in 0.896-0.950 of replicates in clean cells; base 0.906 (MCSE 0.013) meets the pre-set >= 0.90 criterion; Delta bias-corrected 0.898-0.954 |
 <!-- runs:end -->
 
 ## 5. Results
 
 Code: `src/crsafety/sim.py`, `analysis/e01/` (R001–R005 from commit
-c20a293; R006–R007 from 62d2f1e; R008 from 738c31d; every manifest records a
+7765a22; R006–R007 from dc94c94; R008 from b136211; every manifest records a
 clean tree). Analysis: `python analysis/e01/analyse.py` →
 `results/E01/analysis/` (`summary.md` has every table; `performance.csv`,
 `cells.csv`, `hypotheses.csv`, `bootstrap_cells.csv`,

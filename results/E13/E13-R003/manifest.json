@@ -6,7 +6,7 @@
     "note": "declared pilot on simulated campaigns"
   },
   "confirmatory": false,
-  "git_sha": "c8ef140",
+  "git_sha": "5870a84",
   "git_dirty": false,
   "diff_sha256": null,
   "command": "analysis/e13/pilot.py --run E13-R003",

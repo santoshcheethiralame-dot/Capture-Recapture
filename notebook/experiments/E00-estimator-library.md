@@ -106,8 +106,8 @@ library and may not be a primary estimator.
 |---|---|---|---|---|---|---|---|
 | E00-R001 | Reference comparison against R packages and worked examples | Santosh | succeeded | 2026-10-22 | 2026-10-22 | f792c71 | 437/437 comparisons pass on 34 datasets: deterministic max rel. diff 2.8e-10 (H0a); bootstrap s.e. within 3 MCSE (H0b) |
 | E00-R002 | Property tests (pytest) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | f792c71 | 377/377 property tests pass (H0c) |
-| E00-R003 | Remaining estimators: Chiu-Chao singleton correction, log-linear (Rcapture), breakaway_nof1, Böhning generalised Chao | Santosh | succeeded | 2026-10-22 | 2026-10-22 | bbf71a7 | 1744/1744 comparisons pass on 29 datasets: log-linear N, s.e., deviance, AIC, BIC vs Rcapture (12 closedp.t models + 5 interaction designs) max rel. diff 3.0e-12; generalised Chao vs glm 3.7e-15 and = iNEXT Chao2 without covariates; breakaway_nof1 bridge exact (H0a). Chiu-Chao not implemented (contingency; Q-D10) |
-| E00-R004 | Property tests incl. R003 estimators (pytest) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | bbf71a7+dirty | 595/595 pytest cases pass (377 original + 218 for log-linear models, generalised Chao and the R bridge) (H0c) |
+| E00-R003 | Remaining estimators: Chiu-Chao singleton correction, log-linear (Rcapture), breakaway_nof1, Böhning generalised Chao | Santosh | succeeded | 2026-10-22 | 2026-10-22 | ba80724 | 1744/1744 comparisons pass on 29 datasets: log-linear N, s.e., deviance, AIC, BIC vs Rcapture (12 closedp.t models + 5 interaction designs) max rel. diff 3.0e-12; generalised Chao vs glm 3.7e-15 and = iNEXT Chao2 without covariates; breakaway_nof1 bridge exact (H0a). Chiu-Chao not implemented (contingency; Q-D10) |
+| E00-R004 | Property tests incl. R003 estimators (pytest) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | ba80724+dirty | 595/595 pytest cases pass (377 original + 218 for log-linear models, generalised Chao and the R bridge) (H0c) |
 <!-- runs:end -->
 
 ## 5. Results
@@ -153,7 +153,7 @@ see below and D-009).
 ### E00-R003: remaining estimators (2026-10-22)
 
 Code: `src/crsafety/loglin.py`, `generalized_chao` in
-`src/crsafety/estimators.py`, `src/crsafety/rbridge.py` (commit bbf71a7).
+`src/crsafety/estimators.py`, `src/crsafety/rbridge.py` (commit ba80724).
 Harness: `validation/e00/run_r003.sh`. Outputs: `results/E00/E00-R003/`.
 References: R 4.5.3, Rcapture 1.4.4, breakaway 5.0.1 (built from
 `github.com/adw96/breakaway`), iNEXT 3.0.2. Same 29 datasets as R001 where

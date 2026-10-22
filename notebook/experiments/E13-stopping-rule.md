@@ -85,9 +85,9 @@ the pooled H13a figure.
 <!-- runs:start -->
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
-| E13-R001 | All rules x testbeds | Santosh | planned |  |  | beef322 |  |
-| E13-R002 | Pilot (declared): rules on simulated campaigns | Santosh | failed | 2026-10-22 | 2026-10-22 | beef322+dirty | Bug: crashed before any campaign finished (stop_lower rejected a SeedSequence seed). Fixed with a test; re-run as E13-R003 |
-| E13-R003 | Pilot (declared): rules on simulated campaigns (retry of E13-R002 after bug fix) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | c8ef140+dirty | Pilot, 200 simulated campaigns x 6 worlds: R-lower (D-010 bound) success 0.93-0.985 where the target is reachable, median runs saved 19-69%; R-point 0.50-0.79; both fail with one shared family (0%); Zipf 0.5 never reaches 0.8 within K=16 (rules correctly do not stop) |
+| E13-R001 | All rules x testbeds | Santosh | planned |  |  | 5d46498 |  |
+| E13-R002 | Pilot (declared): rules on simulated campaigns | Santosh | failed | 2026-10-22 | 2026-10-22 | 5d46498+dirty | Bug: crashed before any campaign finished (stop_lower rejected a SeedSequence seed). Fixed with a test; re-run as E13-R003 |
+| E13-R003 | Pilot (declared): rules on simulated campaigns (retry of E13-R002 after bug fix) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 5870a84+dirty | Pilot, 200 simulated campaigns x 6 worlds: R-lower (D-010 bound) success 0.93-0.985 where the target is reachable, median runs saved 19-69%; R-point 0.50-0.79; both fail with one shared family (0%); Zipf 0.5 never reaches 0.8 within K=16 (rules correctly do not stop) |
 <!-- runs:end -->
 
 ## 5. Results

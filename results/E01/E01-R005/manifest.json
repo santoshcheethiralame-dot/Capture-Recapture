@@ -7,7 +7,7 @@
     "note": "Stage 1 exploratory; run before the v1 freeze"
   },
   "confirmatory": false,
-  "git_sha": "c20a293",
+  "git_sha": "7765a22",
   "git_dirty": false,
   "diff_sha256": null,
   "command": "analysis/e01/run.py R005",

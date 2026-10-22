@@ -6,7 +6,7 @@
     "note": "declared pilot on separate seeds"
   },
   "confirmatory": false,
-  "git_sha": "f377619",
+  "git_sha": "999589e",
   "git_dirty": false,
   "diff_sha256": null,
   "command": "analysis/e05/pilot.py",

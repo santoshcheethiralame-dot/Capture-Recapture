@@ -136,7 +136,7 @@ E10 monitor (E10-R001). Freeze target: 8 November.
 
 ## 2026-10-22 (late night): E00-R003 remaining estimators validated
 
-Santosh (with Claude).
+Santosh.
 
 **Did:**
 - Ported Rcapture's log-linear models to `crsafety.loglinear` /
@@ -146,7 +146,7 @@ Santosh (with Claude).
   `crsafety.rbridge.breakaway_nof1` (R through `Rscript`).
 - Wrote `validation/e00/run_r003.sh` and 218 property tests.
 - Ran E00-R003 (reference comparison) and E00-R004 (pytest) from commit
-  bbf71a7.
+  ba80724.
 
 **Saw:**
 - All 1,744 comparisons pass on 29 datasets; max relative difference
@@ -183,7 +183,7 @@ simulation study.
 
 ## 2026-10-22 (night, later): E01 code and pre-run choices
 
-Santosh (with Claude).
+Santosh.
 
 **Did:**
 - Wrote `src/crsafety/sim.py` (the E01 data-generating mechanisms),
@@ -206,11 +206,11 @@ claim.
 
 ## 2026-10-22 (night, last): E01 run and analysed; gate G1 passed
 
-Santosh (with Claude).
+Santosh.
 
 **Did:**
 - Ran E01-R001 to R005 (40 cells × 500 replicates, plus the bootstrap
-  subset) from commit c20a293; every manifest records a clean tree.
+  subset) from commit 7765a22; every manifest records a clean tree.
 - Fixed one presentation bug in the analysis after the first look:
   estimators undefined by design (iChao2 at K = 3, the log-linear fit at
   K = 20) were shown as "fail 100%". They are now "not applicable". No
@@ -266,7 +266,7 @@ citing:
 
 ## 2026-10-22 (night, E05): error model, corrections and pilot
 
-Santosh (with Claude).
+Santosh.
 
 **Did:**
 - Built `crsafety.linkage`, a record-level identity-error model with match
@@ -299,7 +299,7 @@ estimator (needs an E00 run).
 
 ## 2026-10-22 (night): matching library; E13 stopping rules and pilot
 
-Santosh (with Claude).
+Santosh.
 
 **Did:**
 - Wrote `crsafety.matching`: the SAE identity rules for E02, E03, E06 and
@@ -321,7 +321,7 @@ E02/E03/E05/E13 pages with Kushal.
 
 ## 2026-10-22 (night, late): M3 matcher; an f1-free alternative tried and rejected
 
-Santosh (with Claude).
+Santosh.
 
 **Did:**
 - Wrote `analysis/e03/act_corr.py` (M3, activation correlation), plus the
