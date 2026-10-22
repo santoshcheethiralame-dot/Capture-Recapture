@@ -97,6 +97,24 @@ Fixed by the zoo.
 None.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-22, before any E03 data)
+
+- Code: `analysis/e03/bakeoff.py` (R001 + R004 in one pass: M1, M2, M4
+  over the τ grid; plateau rule; H3a–H3c), using `crsafety.matching` and
+  the E02 zoo reader. Tested on a fake zoo; it runs on Kaggle like E02.
+- True identity of a latent = its oracle feature (GT-MCC at τ_gt = 0.7).
+  Latents with no true feature never form true pairs.
+- Frequency quartiles are taken over the firing probabilities of the
+  caught features (all seeds of the cell).
+- Downstream truth C follows D-011 (default: leave-cell-out; `--truth
+  pooled` for the §2 variant).
+- M3 (R002): `analysis/e03/act_corr.py` accumulates every seed pair's
+  latent-activation correlation on 10^6 shared generator samples (GPU) and
+  saves only the Hungarian assignment on |corr|; `bakeoff.py --m3 <dir>`
+  thresholds it like M1. Tested end to end with M1–M4 on SAEs trained by
+  SAELens's own runner. M5 depends on public code existing (R003).
+- `bakeoff.py --fire-counts` applies the same dead-latent removal as E02.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |

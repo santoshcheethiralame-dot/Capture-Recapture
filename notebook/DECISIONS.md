@@ -192,3 +192,116 @@ Q4 = 0). Results must not depend on which variant we happened to code.
 "Chao2", "coverage" and the other estimators mean in every
 pre-registration. A change after the v1 freeze is a deviation.
 
+## D-009: How the E00-R003 estimators are provided (2026-10-22)
+
+**Status:** accepted (Santosh); Kushal to review with the E00 results
+**Context:** The E00 pre-registration listed log-linear models and
+`breakaway_nof1` "through rpy2". rpy2's current release does not load
+against the conda-forge R builds available here, and rpy2 would make every
+user of the library (Kaggle notebooks, CI) depend on an R installation.
+The Chiu-Chao (2016) singleton correction could not be confirmed: the
+paper is unreachable from the sandbox and no Chao-lab package implements it.
+**Options:**
+- log-linear: A, rpy2 to Rcapture; B, a native port validated against
+  Rcapture.
+- breakaway_nof1: A, rpy2; B, `Rscript` subprocess with JSON in/out; C, port
+  it (several hundred lines of nls model selection with fallbacks).
+**Decision:**
+- Log-linear models are ported (`crsafety.loglinear`, `crsafety.closedp`),
+  matching Rcapture's design matrices, history order and Chao (LB)
+  negative-eta refits. Standard errors are evaluated at the MLE (Rcapture's
+  printed s.e. carries O(√ε) error from glm's `vcov()`).
+- `breakaway_nof1` is called through `Rscript` (`crsafety.rbridge`). It is a
+  sensitivity estimator only, never primary, so needing R is acceptable.
+- The Chiu-Chao correction is left out, as the E00 contingency prescribes;
+  `breakaway_nof1` is the f1-free option. E05 correction (c) and E04 H4c
+  use `breakaway_nof1` until Q-D10 is resolved.
+- `generalized_chao` uses the binomial (incidence) form derived from Böhning
+  et al. (2013); validated against `glm` and its exact reduction to Chao2.
+**Why:** a native port has no runtime dependency and is validated to
+≤ 3e-12 (E00-R003); the subprocess bridge is exact by construction and
+robust to R/rpy2 version skew.
+**Consequences:** E00 §2 Methods text updated (not frozen). E05 and E04 refer
+to "the f1-free estimator" and are unaffected in design.
+**Affects pre-registered analysis:** yes, before any freeze: it fixes which
+implementation "log-linear", "f1-free" and "singleton-corrected" mean.
+
+## D-010: Intervals for coverage and new items; proposals for the † thresholds (2026-10-22)
+
+**Status:** part A accepted (Santosh), Kushal to review; part B **proposed**
+for the joint v1 freeze.
+**Context:** E01-R005: the pre-registered iNEXT-style bootstrap interval for
+Ĉ covers the realized coverage C in 0.760 (MCSE 0.019) of base-cell
+replicates and 0.73–0.91 across clean cells, so E01 decision rule 1 (CI
+coverage ≥ 0.90 in the base cell) fails for it. Two causes: C is a
+property of the sample, so the relevant error is Ĉ − C, not the spread of
+Ĉ; and the pseudo-population bootstrap underestimates sd(Ĉ) (0.0095 vs
+0.0123). E01-R006 shows that a per-cell tolerance |Ĉ − C| ≤ 0.05 is
+unattainable at the item counts of E09 (14) and E10 (20).
+
+**A. Interval method (accepted).**
+- Primary interval for C: `crsafety.coverage_interval` (bootstrap of
+  Ĉ* − C* from the Chao pseudo-population, B = 1,000), uncorrected.
+  Primary interval for Δ(m): `crsafety.delta_interval`, bias-corrected.
+  The one-sided lower bound of `coverage_interval` is the bound used by
+  the E13 R-lower stopping rule.
+- The iNEXT interval is still reported, as secondary, for comparability.
+- Evidence: E01-R007 (same datasets as R005) and E01-R008 (fresh datasets,
+  criterion fixed before running): coverage of C 0.89–0.97 and
+  0.896–0.950 in clean cells; base cell 0.922 and 0.906. Exploratory: the
+  method was designed after R005 was seen.
+- Known weakness: about 0.92 coverage for nominal 0.95. E13 should check
+  R-lower with it; a calibrated level (e.g. nominal 0.97) is an exploratory
+  option, not adopted.
+
+**B. Proposals for the † thresholds (for the v1 freeze; not applied).**
+- *PH1 tolerance.* Keep |Ĉ − C| ≤ 0.05 in ≥ 80% of cells for testbeds
+  with hundreds of items or more (E02, E06): E01's 80th percentile of
+  |Ĉ − C| is 0.043 at K = 5 and ≤ 0.02 at K ≥ 10. For E09 and E10 replace
+  the per-cell criterion: pooled |mean(Ĉ − C)| ≤ 0.03 across cells **and**
+  the realized-coverage interval covers C in ≥ 0.85 of cells. Reason (R006):
+  at N = 14, K = 8 even an unbiased Ĉ is within 0.05 of C in only 33–73% of
+  replicates. Alternative: a size-specific tolerance from R006 (0.10–0.15),
+  which the "no more than twice" rule may not allow.
+- *PH3a ratio ≥ 2.* E01 cannot calibrate the matcher; keep 2 and revisit
+  after the E03 pilot.
+- *PH4 and PH5 (≥ 0.05).* These are minimal meaningful effects, not
+  accuracy tolerances; E01 shows such effects arise (one family vs six
+  +0.20; c = 2 +0.07). Keep 0.05.
+- *PH2 (no †).* Its interval half fails at N = 50 (Chao2 CI covers N in
+  0.92 of replicates). Discuss at the freeze: restrict the claim to
+  N ≥ 500, or keep it and expect "not supported" in small-N testbeds.
+**Affects pre-registered analysis:** yes. A defines the interval used by
+PH1, PH6 and every coverage report (before any freeze). B changes nothing
+until both people agree at the freeze.
+
+## D-011 (proposed): Truth for E02/E06 coverage uses detectability estimated without the evaluated runs (2026-10-22)
+
+**Status:** proposed for the joint v1 freeze; not applied.
+**Context:** E02 §2 estimates each feature's catch rate π̃ from the
+architecture's reference pool of 35 SAEs. That pool *includes* the 5 seeds
+being evaluated, and a leave-cell-out variant is "also reported". The
+items a cell found get an inflated π̃, so the pooled truth C is biased
+upwards. Simulated with 4,000 features, 35 runs and Beta-distributed
+detectability (200 replicates; analysis/e02 development, not a registered
+run):
+
+| detectability | pooled C − true C | leave-cell-out C − true C |
+|---|---|---|
+| Beta(2, 2) | +0.007 | −0.000 |
+| Beta(0.5, 3) | +0.035 | −0.000 |
+| Beta(0.3, 6) | +0.066 | +0.000 |
+
+The bias is the size of H2a's 0.05 tolerance under heavy tails, which is
+the regime the project cares about.
+**Proposal:**
+- E02: the confirmatory truth for H2a and H2c is the leave-cell-out C
+  (π̃ from the other 6 L0 cells of the same architecture, 30 SAEs); the
+  pooled C becomes the secondary variant. Both remain approximations,
+  since catch rates differ between L0 values.
+- E06: compute π̃ from the 8 reference seeds only (not the 16 evaluation
+  seeds), with U still the union over all 24. With 8 reference seeds, rare
+  features have π̃ = 0 although caught; report how much mass this drops.
+**Affects pre-registered analysis:** yes (E02 H2a/H2c, E06 H6a), if adopted
+at the freeze. `analysis/e02/evaluate.py` already computes both variants.
+

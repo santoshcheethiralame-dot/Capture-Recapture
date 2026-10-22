@@ -10,15 +10,22 @@ frozen experiment that uses it.
   Validated in E00. No estimator may be used as primary until E00 marks it
   validated.
 - **Primary:**
-  - Chao-Jost incidence coverage Ĉ (bootstrap CI, B = 1,000);
-  - Chao et al. (2014) Δ̂(m) for m ≤ K (bootstrap CI);
+  - Chao-Jost incidence coverage Ĉ, with the realized-coverage bootstrap
+    interval `crsafety.coverage_interval` (B = 1,000; D-010). The iNEXT
+    interval is reported as secondary;
+  - Chao et al. (2014) Δ̂(m) for m ≤ K, with `crsafety.delta_interval`
+    (bias-corrected, B = 1,000; D-010);
   - bias-corrected Chao2, labelled "lower bound".
 - **Secondary:** iChao2 (K ≥ 4), jackknife 1 and 2, ICE, Chapman for every
   run pair, Darroch Mt.
 - **As named in experiments:**
   - Huggins / Böhning (covariates);
-  - log-linear (`Rcapture`, `dga`) for K ≥ 3 with dependence;
-  - f1-free (`breakaway_nof1`);
+  - log-linear models for K ≥ 3 with dependence: `crsafety.loglinear`
+    (Rcapture's `closedp.t` models, plus run interactions as in
+    `closedpCI.t`; validated in E00-R003). `dga` is not ported;
+  - f1-free: `crsafety.rbridge.breakaway_nof1` (R `breakaway` through
+    `Rscript`; needs R);
+  - generalised Chao with covariates: `crsafety.generalized_chao`;
   - dependence-robust interval (Sun et al. 2023).
 - **Always print** K, S_obs, f1 to f4, Ĉ, Δ̂(K), Chao2, and the identity
   rule with its threshold. See the reporting recipe (§8).
@@ -47,6 +54,11 @@ frozen experiment that uses it.
      E05-corrected sensitivity bands.
 4. **Oracle catch (testbeds):** \|cos\| ≥ τ_gt = 0.7 to the true direction
    under one-to-one Hungarian assignment.
+5. **Code:** `crsafety.matching` (`preprocess`, `hungarian`, `strict`,
+   `mutual_nn`, `cluster_seeds`, `sweep`, `oracle_catch`, `plateau`,
+   `pair_scores`, `ari`). One Hungarian assignment of 4,096 × 4,096
+   latents takes about 2 s on the sandbox CPU; an oracle catch against
+   16,384 true features about 4 s.
 
 ### Attack strategies and audit findings
 
@@ -216,3 +228,6 @@ Rules:
   by `role`.
 - The analysis code reads only these files. If an analysis needs anything
   else, add a column here first, through a PR approved by both people.
+- Before handing a cell over, run
+  `python -m crsafety.histories check results/EXX/<run_id>/histories/*/`.
+  It lists every violation of the rules above (exit code 1 if any).

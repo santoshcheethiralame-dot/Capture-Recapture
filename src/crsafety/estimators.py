@@ -308,6 +308,105 @@ def huggins(X, Z):
     return N_hat, res.x, converged
 
 
+def generalized_chao(X, Z=None):
+    """Böhning et al. (2013) generalised Chao estimator, incidence (binomial) form.
+
+    Uses only items found once or twice. Under a binomial model over K runs
+    with odds theta_i = p_i / (1 - p_i), P(found twice | found once or twice)
+    has logit log((K - 1) / 2) + log theta_i, so log theta_i = [1, Z_i] beta
+    is fitted by logistic regression with that offset. Then
+    f0 = sum over those items of 1 / (K theta_i + K (K - 1) / 2 theta_i^2).
+    Without covariates this equals classic Chao2 exactly.
+
+    ``Z`` has one row per detected item (as in :func:`huggins`), or None.
+    Returns (N_hat, beta, converged); NaN when Q1 = 0 or Q2 = 0 (no finite MLE).
+    """
+    d = _data(X)
+    K, y = d.K, d.y
+    if K < 2:
+        return np.nan, np.array([]), False
+    D = np.ones((d.S, 1))
+    if Z is not None:
+        Z = np.asarray(Z, dtype=float)
+        Z = Z[:, None] if Z.ndim == 1 else Z
+        if Z.shape[0] != d.S:
+            raise ValueError("Z needs one row per detected item")
+        D = np.column_stack([D, Z])
+    low = (y == 1) | (y == 2)
+    D, r = D[low], (y[low] == 2).astype(float)
+    if r.sum() == 0 or r.sum() == r.size:
+        return np.nan, np.full(D.shape[1], np.nan), False
+    offset = np.log((K - 1) / 2)
+    beta = np.zeros(D.shape[1])
+    beta[0] = np.log(r.mean() / (1 - r.mean())) - offset
+    converged = False
+    for _ in range(100):  # Newton-Raphson for the logistic likelihood
+        pr = 1 / (1 + np.exp(-(D @ beta + offset)))
+        step = np.linalg.solve(D.T @ (D * (pr * (1 - pr))[:, None]), D.T @ (r - pr))
+        beta += step
+        if np.max(np.abs(step)) < 1e-12 * (1 + np.max(np.abs(beta))):
+            converged = True
+            break
+    theta = np.exp(D @ beta)
+    f0 = np.sum(1 / (K * theta + K * (K - 1) / 2 * theta**2))
+    return float(d.S + f0), beta, converged
+
+
+def betabinomial_nof1(X, return_details=False):
+    """f1-free richness estimate: a beta-binomial fitted to items found >= 2 times.
+
+    Detection counts of items found at least twice are modelled as
+    Beta-Binomial(K, a, b) truncated to y >= 2 (maximum likelihood over the
+    logit of the mean and the log of a + b, bounded). With P0, P1 the model probabilities of 0 and 1 detections,
+    N_hat = S_{>=2} / (1 - P0 - P1); the predicted singletons are N_hat * P1.
+    The observed singleton count is never used, so ghosts (spurious
+    singletons) do not affect it. Exact in expectation when detectability is
+    Beta-distributed. Needs K >= 4 and at least two distinct counts >= 2;
+    otherwise NaN. Built as a candidate for E05 correction (d) and **not
+    recommended**: on the E05 pilot worlds (K = 10) it overshoots (median
+    +8% to +220% vs the oracle Chao2) and diverges toward a -> 0 on
+    heavy-tailed worlds (LOG 2026-10-22). Not validated in an E00 run; do not
+    use in an experiment.
+    """
+    from scipy.special import betaln, gammaln
+
+    d = _data(X)
+    K = d.K
+    y = d.y[d.y >= 2]
+    nan = (np.nan, dict()) if return_details else np.nan
+    if K < 4 or y.size < 3 or np.unique(y).size < 2:
+        return nan
+    k = np.arange(K + 1)
+    lc = gammaln(K + 1) - gammaln(k + 1) - gammaln(K - k + 1)
+
+    def logpmf(t):  # t = (logit of the mean a / (a + b), log of a + b)
+        m, c = 1 / (1 + np.exp(-t[0])), np.exp(t[1])
+        a, b = m * c, (1 - m) * c
+        return lc + betaln(k + a, K - k + b) - betaln(a, b)
+
+    cnt = np.bincount(y, minlength=K + 1).astype(float)
+
+    def nll(t):
+        lp = logpmf(t)
+        trunc = np.logaddexp.reduce(lp[2:])  # log P(y >= 2), computed stably
+        return -(cnt[2:] * (lp[2:] - trunc)).sum()
+
+    best = None
+    for start in ((-1.5, 0.0), (-1.5, 2.0), (-0.5, 1.0), (-3.0, -1.0)):
+        r = minimize(nll, np.array(start), method="L-BFGS-B", bounds=[(-12, 12), (-8, 10)])
+        if best is None or r.fun < best.fun:
+            best = r
+    lp = logpmf(best.x)
+    p0, p1 = np.exp(lp[0]), np.exp(lp[1])
+    m, c = 1 / (1 + np.exp(-best.x[0])), np.exp(best.x[1])
+    N = y.size / max(1 - p0 - p1, 1e-12)
+    if not return_details:
+        return float(d.S - d.Q(1) + N * p1 + N * p0)
+    return float(d.S - d.Q(1) + N * p1 + N * p0), dict(a=float(m * c), b=float((1 - m) * c),
+                                                      f1_hat=float(N * p1), f0_hat=float(N * p0),
+                                                      converged=bool(best.success))
+
+
 # ---------------------------------------------------------------- report
 
 def report(X):

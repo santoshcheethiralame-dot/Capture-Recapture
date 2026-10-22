@@ -43,3 +43,36 @@ Rcapture 1.4.4, VGAM 1.1.14, installed from conda-forge with micromamba
 ```bash
 micromamba create -n rcr -c conda-forge r-base r-inext r-vegan r-rcapture r-vgam r-jsonlite
 ```
+
+## E00-R003: log-linear models, generalised Chao, breakaway_nof1
+
+```bash
+validation/e00/run_r003.sh [Rscript command]
+```
+
+Writes `results/E00/E00-R003/` (`summary.md`, `comparison.csv`,
+`reference.json`, input data). Needs R with Rcapture, iNEXT, vegan,
+jsonlite and **breakaway ≥ 5**, which conda-forge does not have (its
+`r-breakaway` 3.0 pins R 4.1). Environment used on 2026-10-22:
+
+```bash
+# micromamba itself from conda-forge (micro.mamba.pm may be blocked):
+curl -sSLO https://conda.anaconda.org/conda-forge/linux-64/micromamba-2.3.0-0.tar.bz2
+tar -xjf micromamba-2.3.0-0.tar.bz2 bin/micromamba
+micromamba create -n r45 -c conda-forge -c bioconda "r-base>=4.5" r-inext r-vegan \
+  r-rcapture r-vgam r-jsonlite r-ggplot2 r-lme4 r-magrittr r-tibble r-reformulas \
+  bioconductor-phyloseq
+git clone https://github.com/adw96/breakaway && <env>/bin/R CMD INSTALL breakaway
+```
+
+| Quantity | Reference |
+|---|---|
+| Log-linear N, deviance, AIC, BIC (12 models) | `Rcapture::closedp.t` |
+| Log-linear models with run interactions (± heterogeneity) | `Rcapture::closedpCI.t` with an `mX` formula |
+| Log-linear s.e. | Fisher information at Rcapture's fitted coefficients, Rcapture's s.e. formulas (the printed s.e. is compared as information, tolerance 1e-4) |
+| Generalised Chao (binomial form), N and coefficients | `stats::glm(binomial, offset = log((K-1)/2))`; without covariates also `iNEXT::ChaoRichness` |
+| `breakaway_nof1` through `crsafety.rbridge` | `breakaway::breakaway_nof1` called directly |
+
+The reference script replaces Rcapture's internal `glm.call` so that every
+fit, including the Chao (LB) refits after dropping a negative eta, uses
+`epsilon = 1e-14`. This changes convergence precision only.

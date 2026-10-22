@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | in progress (R001, R002 succeeded; R003 planned) |
+| Status | analysed (R001–R004 succeeded; awaiting Kushal's review) |
 | Owner | Santosh |
 | Tier | core |
 | Stage | 0 infra |
@@ -45,8 +45,8 @@ Estimators: Chapman; Darroch Mt (MLE); Chao2 bias-corrected and classic;
 iChao2; jackknife 1 and 2; ICE; Chao-Jost incidence coverage; Chao et al.
 (2014) incidence extrapolation Δ(m); Good-Turing f1/U; Huggins conditional
 likelihood with Horvitz-Thompson; Böhning generalised Chao; log-linear models
-(through `rpy2` to `Rcapture`); `breakaway_nof1` (through `rpy2`); Chao
-incidence bootstrap.
+(ported from `Rcapture`, validated against it); `breakaway_nof1` (called in R
+through `Rscript`; see D-009); Chao incidence bootstrap.
 
 ### Performance measures
 Absolute and relative difference from the reference. Bootstrap outputs are
@@ -106,7 +106,8 @@ library and may not be a primary estimator.
 |---|---|---|---|---|---|---|---|
 | E00-R001 | Reference comparison against R packages and worked examples | Santosh | succeeded | 2026-10-22 | 2026-10-22 | f792c71 | 437/437 comparisons pass on 34 datasets: deterministic max rel. diff 2.8e-10 (H0a); bootstrap s.e. within 3 MCSE (H0b) |
 | E00-R002 | Property tests (pytest) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | f792c71 | 377/377 property tests pass (H0c) |
-| E00-R003 | Remaining estimators: Chiu-Chao singleton correction, log-linear (Rcapture), breakaway_nof1, Böhning generalised Chao | Santosh | planned |  |  | f792c71+dirty |  |
+| E00-R003 | Remaining estimators: Chiu-Chao singleton correction, log-linear (Rcapture), breakaway_nof1, Böhning generalised Chao | Santosh | succeeded | 2026-10-22 | 2026-10-22 | ba80724 | 1744/1744 comparisons pass on 29 datasets: log-linear N, s.e., deviance, AIC, BIC vs Rcapture (12 closedp.t models + 5 interaction designs) max rel. diff 3.0e-12; generalised Chao vs glm 3.7e-15 and = iNEXT Chao2 without covariates; breakaway_nof1 bridge exact (H0a). Chiu-Chao not implemented (contingency; Q-D10) |
+| E00-R004 | Property tests incl. R003 estimators (pytest) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | ba80724+dirty | 595/595 pytest cases pass (377 original + 218 for log-linear models, generalised Chao and the R bridge) (H0c) |
 <!-- runs:end -->
 
 ## 5. Results
@@ -141,13 +142,69 @@ worlds, and 18 bundled with R packages (iNEXT `ant` ×5, `ciliates` ×3;
 Rcapture `hare`, `mvole`, `bunting`, `duck`, `HIV`, `lesbian`, `rbvole`;
 vegan `dune`, `mite`, `BCI`).
 
-**Scope delivered against the plan in §2.** Validated: Chapman and
+**Scope delivered against the plan in §2.** Validated in R001: Chapman and
 Good-Turing (hand-computed values in tests; no R reference), Darroch Mt,
 Chao2 (both forms), iChao2, jackknife 1 and 2, ICE, coverage,
-extrapolation, Huggins, Chao bootstrap. **Not yet implemented:** Böhning
-generalised Chao, log-linear models, `breakaway_nof1`, Chiu-Chao singleton
-correction. These are registered as E00-R003. Under the §2 exclusion rule,
-no experiment may use them until R003 succeeds.
+extrapolation, Huggins, Chao bootstrap. Validated in R003: log-linear
+models, Böhning generalised Chao, `breakaway_nof1` (see below). **Not
+implemented:** the Chiu-Chao singleton correction (contingency applied;
+see below and D-009).
+
+### E00-R003: remaining estimators (2026-10-22)
+
+Code: `src/crsafety/loglin.py`, `generalized_chao` in
+`src/crsafety/estimators.py`, `src/crsafety/rbridge.py` (commit ba80724).
+Harness: `validation/e00/run_r003.sh`. Outputs: `results/E00/E00-R003/`.
+References: R 4.5.3, Rcapture 1.4.4, breakaway 5.0.1 (built from
+`github.com/adw96/breakaway`), iNEXT 3.0.2. Same 29 datasets as R001 where
+the estimator applies (log-linear models need K ≤ 12 and at least one
+recapture).
+
+| Quantity | Reference | Comparisons | Max rel. diff | Verdict (H0a) |
+|---|---|---|---|---|
+| Log-linear N, all 12 `closedp.t` models (M0, Mt, Mh/Mth × Chao (LB), Poisson2, Darroch, Gamma3.5, Mb, Mbh) | `Rcapture::closedp.t` | 195 | 4.2e-13 | supported |
+| Same, s.e. | Fisher information at Rcapture's MLE, Rcapture's formulas | 194 | 2.9e-12 | supported |
+| Same, deviance / AIC / BIC | `Rcapture::closedp.t` | 585 | 3.9e-14 | supported |
+| Interaction models (Mt + c1:c2; + Chao, Poisson2, Darroch heterogeneity; Mt + all pairs of runs 1–3) N, s.e., deviance, AIC, BIC | `Rcapture::closedpCI.t` | 388 | 3.0e-12 | supported |
+| Generalised Chao, no covariates | logistic fit by `stats::glm`; also `iNEXT::ChaoRichness` (classic Chao2) | 46 | 3.7e-15 | supported |
+| Generalised Chao with covariates: N and coefficients | `stats::glm` (binomial, offset) | 10 | 2.3e-14 | supported |
+| `breakaway_nof1` through the bridge: estimate and s.e. | `breakaway::breakaway_nof1` called directly in R | 52 | 0 | supported |
+
+E00-R004: 595 / 595 pytest cases pass (H0c), including 218 new property
+tests (history order, Mt = Darroch MLE, M0 likelihood equation,
+permutation invariance, bounds, generalised Chao = Chao2 without
+covariates and ≈ unbiased with an oracle covariate, breakaway_nof1
+unaffected by added singletons).
+
+**Notes for users of these estimators:**
+- The s.e. that Rcapture prints uses glm's `vcov()`, evaluated at the IRLS
+  weights of the previous iteration, so it carries O(√ε) error (up to
+  2.3e-6 relative here). `crsafety` evaluates the information at the MLE.
+  Rcapture's Chao (LB) refits also ignore the user's glm tolerance; the
+  reference script forces a tight tolerance on every fit.
+- When N̂ = S exactly (the intercept diverges to −∞, e.g. `Mt+pairs123` on
+  two edge datasets), the s.e. is numerical noise near 0 in both
+  implementations; it is compared in absolute terms.
+- `breakaway_nof1` predicts f1 as well as f0, so its estimate does not
+  change when singletons are added or removed. It is applied to incidence
+  frequency counts as if they were abundance counts; it is a sensitivity
+  check, not a primary estimator.
+- The generalised Chao estimator is the binomial (incidence) form of
+  Böhning et al. (2013): logistic regression of "found twice" vs "found
+  once" with offset log((K − 1)/2); f0 = Σ 1/(Kθ_i + K(K − 1)θ_i²/2).
+  No published implementation exists for the binomial form; R003 checks
+  the fit against `glm` and the exact reduction to Chao2. With an oracle
+  covariate its median error was < 1% in 200 simulated worlds, but its
+  Horvitz-Thompson weights make the mean unstable under heavy tails (see
+  E07's weight-truncation contingency).
+
+**Chiu-Chao singleton correction: not implemented (contingency row 3).**
+The formula (Chiu and Chao 2016, PeerJ 4:e1634) could not be read from this
+environment: peerj.com, PubMed Central and arXiv are blocked, and no Chao
+lab package on GitHub (SpadeR, iNEXT, iNEXT.3D, iNEXT.4steps,
+iNEXT.beta3D) implements it. Following the contingency, `breakaway_nof1`
+is the f1-free option. Q-D10 stays open; if someone reads the paper,
+implementing and validating the correction is a new E00 run.
 
 ### Exploratory
 

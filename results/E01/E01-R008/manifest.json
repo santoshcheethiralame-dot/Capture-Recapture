@@ -1,0 +1,184 @@
+{
+  "run_id": "E01-R008",
+  "experiment": "E01",
+  "prereg": {
+    "frozen": false,
+    "block_sha256": "af4b1869e42868ea42341bd14d9a3dd802262bf18a64651ad4c18b699458a874",
+    "note": "Stage 1 exploratory; run before the v1 freeze"
+  },
+  "confirmatory": false,
+  "git_sha": "b136211",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e01/run.py R008",
+  "config": {
+    "cells": [
+      {
+        "id": "base",
+        "idx": 0,
+        "run": "R001",
+        "block": "base",
+        "params": {}
+      },
+      {
+        "id": "N50",
+        "idx": 1,
+        "run": "R001",
+        "block": "N",
+        "params": {
+          "N": 50
+        }
+      },
+      {
+        "id": "N5000",
+        "idx": 2,
+        "run": "R001",
+        "block": "N",
+        "params": {
+          "N": 5000
+        }
+      },
+      {
+        "id": "K5",
+        "idx": 4,
+        "run": "R001",
+        "block": "K",
+        "params": {
+          "K": 5
+        }
+      },
+      {
+        "id": "K20",
+        "idx": 5,
+        "run": "R001",
+        "block": "K",
+        "params": {
+          "K": 20
+        }
+      },
+      {
+        "id": "homog",
+        "idx": 6,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "het": "homog",
+          "sigma": 0.0
+        }
+      },
+      {
+        "id": "ln2",
+        "idx": 7,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "sigma": 2.0
+        }
+      },
+      {
+        "id": "zipf1.0",
+        "idx": 9,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "het": "zipf",
+          "alpha": 1.0
+        }
+      },
+      {
+        "id": "mix20",
+        "idx": 10,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "het": "mixture"
+        }
+      },
+      {
+        "id": "fam1",
+        "idx": 11,
+        "run": "R002",
+        "block": "family",
+        "params": {
+          "families": 1
+        }
+      },
+      {
+        "id": "beh2",
+        "idx": 19,
+        "run": "R002",
+        "block": "adaptivity",
+        "params": {
+          "c": 2.0
+        }
+      },
+      {
+        "id": "ghost0.15",
+        "idx": 23,
+        "run": "R003",
+        "block": "identity",
+        "params": {
+          "ghost": 0.15
+        }
+      }
+    ],
+    "n_sim": 500,
+    "bootstrap": null,
+    "realized": {
+      "B": 500,
+      "level": 0.95,
+      "rep_offset": 10000
+    },
+    "config_file": "configs/e01/cells.json"
+  },
+  "config_sha256": "171ff16f6c265791a3994f71d89688921f093d1181b9b7e69758b20c44206e55",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261022,
+    "rule": "cell seed = SeedSequence(master_seed, spawn_key=(idx,)) (= SeedSequence(master_seed).spawn(n)[idx]); replicate r uses SeedSequence(master_seed, spawn_key=(idx, r)); its R005 bootstrap uses spawn_key=(idx, r, 1)",
+    "cells": {
+      "base": 0,
+      "N50": 1,
+      "N5000": 2,
+      "K5": 4,
+      "K20": 5,
+      "homog": 6,
+      "ln2": 7,
+      "zipf1.0": 9,
+      "mix20": 10,
+      "fam1": 11,
+      "beh2": 19,
+      "ghost0.15": 23
+    }
+  },
+  "inputs": [
+    {
+      "path": "/home/user/MissingMass/configs/e01/cells.json",
+      "sha256": "6b88fec41c3859e88158fed3980d1e5c7331278c1c4fcb55634e00414c0c27f1"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-22T16:25:41+00:00",
+  "finished_utc": "2026-10-22T16:34:23+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E01/E01-R008/replicates.csv.gz"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "cpu_seconds_wall": 522.5,
+  "replicates_sha256": "9310a001798ecec42cac138d8960c718fd7d8286a32a72babe9a1a775dcc1c1c"
+}

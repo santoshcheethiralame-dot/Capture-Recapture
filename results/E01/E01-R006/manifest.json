@@ -1,0 +1,444 @@
+{
+  "run_id": "E01-R006",
+  "experiment": "E01",
+  "prereg": {
+    "frozen": false,
+    "block_sha256": "af4b1869e42868ea42341bd14d9a3dd802262bf18a64651ad4c18b699458a874",
+    "note": "Stage 1 exploratory; run before the v1 freeze"
+  },
+  "confirmatory": false,
+  "git_sha": "dc94c94",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e01/run.py R006",
+  "config": {
+    "cells": [
+      {
+        "id": "smallN14_K8_s1_p0.2",
+        "idx": 40,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 8,
+          "sigma": 1.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN14_K8_s1_p0.4",
+        "idx": 41,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 8,
+          "sigma": 1.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN14_K8_s2_p0.2",
+        "idx": 42,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 8,
+          "sigma": 2.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN14_K8_s2_p0.4",
+        "idx": 43,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 8,
+          "sigma": 2.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN14_K12_s1_p0.2",
+        "idx": 44,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 12,
+          "sigma": 1.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN14_K12_s1_p0.4",
+        "idx": 45,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 12,
+          "sigma": 1.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN14_K12_s2_p0.2",
+        "idx": 46,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 12,
+          "sigma": 2.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN14_K12_s2_p0.4",
+        "idx": 47,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 14,
+          "K": 12,
+          "sigma": 2.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K8_s1_p0.2",
+        "idx": 48,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 8,
+          "sigma": 1.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K8_s1_p0.4",
+        "idx": 49,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 8,
+          "sigma": 1.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K8_s2_p0.2",
+        "idx": 50,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 8,
+          "sigma": 2.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K8_s2_p0.4",
+        "idx": 51,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 8,
+          "sigma": 2.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K12_s1_p0.2",
+        "idx": 52,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 12,
+          "sigma": 1.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K12_s1_p0.4",
+        "idx": 53,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 12,
+          "sigma": 1.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K12_s2_p0.2",
+        "idx": 54,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 12,
+          "sigma": 2.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN20_K12_s2_p0.4",
+        "idx": 55,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 20,
+          "K": 12,
+          "sigma": 2.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K8_s1_p0.2",
+        "idx": 56,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 8,
+          "sigma": 1.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K8_s1_p0.4",
+        "idx": 57,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 8,
+          "sigma": 1.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K8_s2_p0.2",
+        "idx": 58,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 8,
+          "sigma": 2.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K8_s2_p0.4",
+        "idx": 59,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 8,
+          "sigma": 2.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K12_s1_p0.2",
+        "idx": 60,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 12,
+          "sigma": 1.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K12_s1_p0.4",
+        "idx": 61,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 12,
+          "sigma": 1.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K12_s2_p0.2",
+        "idx": 62,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 12,
+          "sigma": 2.0,
+          "mean_p": 0.2
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      },
+      {
+        "id": "smallN50_K12_s2_p0.4",
+        "idx": 63,
+        "run": "R006",
+        "block": "small N (exploratory)",
+        "params": {
+          "N": 50,
+          "K": 12,
+          "sigma": 2.0,
+          "mean_p": 0.4
+        },
+        "skip": [
+          "mh_chao_ll"
+        ]
+      }
+    ],
+    "n_sim": 500,
+    "bootstrap": null,
+    "realized": null,
+    "config_file": "configs/e01/cells.json"
+  },
+  "config_sha256": "9c005628b5a41dc5a11bea13c42b4977be9f5a8b2021719c9c5ac27983a391c9",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261022,
+    "rule": "cell seed = SeedSequence(master_seed, spawn_key=(idx,)) (= SeedSequence(master_seed).spawn(n)[idx]); replicate r uses SeedSequence(master_seed, spawn_key=(idx, r)); its R005 bootstrap uses spawn_key=(idx, r, 1)",
+    "cells": {
+      "smallN14_K8_s1_p0.2": 40,
+      "smallN14_K8_s1_p0.4": 41,
+      "smallN14_K8_s2_p0.2": 42,
+      "smallN14_K8_s2_p0.4": 43,
+      "smallN14_K12_s1_p0.2": 44,
+      "smallN14_K12_s1_p0.4": 45,
+      "smallN14_K12_s2_p0.2": 46,
+      "smallN14_K12_s2_p0.4": 47,
+      "smallN20_K8_s1_p0.2": 48,
+      "smallN20_K8_s1_p0.4": 49,
+      "smallN20_K8_s2_p0.2": 50,
+      "smallN20_K8_s2_p0.4": 51,
+      "smallN20_K12_s1_p0.2": 52,
+      "smallN20_K12_s1_p0.4": 53,
+      "smallN20_K12_s2_p0.2": 54,
+      "smallN20_K12_s2_p0.4": 55,
+      "smallN50_K8_s1_p0.2": 56,
+      "smallN50_K8_s1_p0.4": 57,
+      "smallN50_K8_s2_p0.2": 58,
+      "smallN50_K8_s2_p0.4": 59,
+      "smallN50_K12_s1_p0.2": 60,
+      "smallN50_K12_s1_p0.4": 61,
+      "smallN50_K12_s2_p0.2": 62,
+      "smallN50_K12_s2_p0.4": 63
+    }
+  },
+  "inputs": [
+    {
+      "path": "/home/user/MissingMass/configs/e01/cells.json",
+      "sha256": "ebcbd826c15a5dac26cb8bc82a7f4ed48788b924c00a1fa820f0083a96b3b42a"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-22T16:15:56+00:00",
+  "finished_utc": "2026-10-22T16:16:01+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E01/E01-R006/replicates.csv.gz"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "cpu_seconds_wall": 5.4,
+  "replicates_sha256": "355d3f817d54cd5ccae8fff8ed4c3cfb8692ace632393a2de418455939aec48c"
+}

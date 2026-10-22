@@ -217,3 +217,42 @@ def test_histories_reject_mixed_identity(tmp_path):
     with pytest.raises(ValueError):
         read_cell(tmp_path)
     assert read_cell(tmp_path, identity="judge:v1").X.tolist() == [[0, 1]]
+
+
+def test_check_cell_accepts_written_cell(tmp_path):
+    from crsafety.histories import check_cell
+    X = np.array([[1, 0, 1], [0, 1, 0]])
+    write_cell(tmp_path, "L0", X, ["a", "b"], "oracle",
+               items={"a": {"planted": True}, "b": {"planted": True, "covariates": {"p": 0.1}}})
+    assert check_cell(tmp_path) == []
+
+
+def test_check_cell_reports_problems(tmp_path):
+    from crsafety.histories import check_cell, main
+    write_cell(tmp_path, "L0", np.array([[1, 1]]), ["a"], "oracle")
+    (tmp_path / "detections.csv").write_text(
+        "cell_id,run_idx,item_id,identity,evidence,score\n"
+        "L0,1,a,oracle,,0.9\nL0,1,a,oracle,,\nL0,3,b,judge v1,,x\n")
+    (tmp_path / "runs.csv").write_text(
+        "cell_id,run_idx,catcher,seed,role,status,cost_gpu_h\n"
+        "L0,1,q,1,estimation,ok,\nL0,2,q,2,eval,failed_counted_as_none,\n")
+    problems = "\n".join(check_cell(tmp_path))
+    for text in ("score must be blank", "duplicate detection", "is not oracle", "not in runs.csv",
+                 "role 'eval'", "is not a number"):
+        assert text in problems
+    assert main(["check", str(tmp_path)]) == 1
+
+
+def test_coverage_interval_contains_estimate_and_is_reproducible():
+    X = MATRICES[0]
+    a = cr.coverage_interval(X, B=200, seed=1)
+    b = cr.coverage_interval(X, B=200, seed=1)
+    assert a == b
+    lo, hi = a["interval"]
+    assert 0 <= lo <= a["estimate"] <= hi <= 1 and a["lower_one_sided"] >= lo
+    assert cr.coverage_interval(X, B=200, seed=1, level=0.8)["interval"][0] >= lo
+
+
+def test_delta_interval_contains_estimate():
+    r = cr.delta_interval(MATRICES[1], B=200, seed=2)
+    assert r["interval"][0] <= r["estimate"] <= r["interval"][1] and r["se"] > 0

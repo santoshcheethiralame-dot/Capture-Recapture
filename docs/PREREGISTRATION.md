@@ -3,7 +3,7 @@
 **Title:** How complete was the audit? Estimating what red teams, auditors and
 interpretability tools miss.
 
-**Version:** v0.1 (draft). **Status:** not frozen.
+**Version:** v0.2 (draft). **Status:** not frozen.
 
 **Freeze plan.** v1.0 is frozen after the Stage 1 simulation study (E01) and
 before any confirmatory data is collected (target: 6 November 2026). Git
@@ -171,8 +171,9 @@ extension (E18), with its own pre-registration.
   coverage, Chao et al. (2014) extrapolation. Also, where named in an
   experiment: Huggins / Böhning covariate models, log-linear models,
   f1-free estimators, and singleton corrections.
-- **Intervals:** bootstrap (Chao incidence bootstrap, B = 1,000) for coverage
-  and Δ(m). Log-normal Chao interval for Chao2. Dependence-robust interval
+- **Intervals:** for coverage and Δ(m), the realized-coverage bootstrap
+  (`crsafety.coverage_interval`, `delta_interval`; B = 1,000), which
+  bootstraps the error Ĉ* − C* from the Chao pseudo-population (D-010). Log-normal Chao interval for Chao2. Dependence-robust interval
   (Sun et al. 2023) where named.
 - **Primary outcomes:** coverage error Ĉ − C; relative error of Δ̂(m); Chao2
   relative to N, N_LB and N_all; CI coverage of each target.
@@ -210,3 +211,4 @@ extension (E18), with its own pre-registration.
 | Version | Date | Change | Reason |
 |---|---|---|---|
 | v0.1 | 2026-10-22 | First draft | — |
+| v0.2 (draft) | 2026-10-22 | Interval method for C and Δ(m): realized-coverage bootstrap. † thresholds unchanged; proposals for the v1 freeze in D-010 (PH1 tolerance for E09/E10; PH2 at small N) | E01-R005: the iNEXT interval covers C in 0.76 of base-cell replicates (fails E01 decision rule 1); E01-R007/R008: 0.906–0.922. E01-R006: per-cell 0.05 unattainable at N = 14–20 |

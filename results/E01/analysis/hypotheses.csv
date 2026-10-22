@@ -1,0 +1,8 @@
+id,measure,estimate,cells,detail,verdict
+H1a (literal set),max |bias of C_hat| over the set,+0.2624 (MCSE 0.0013) in fam1K6,30,base +0.001; N50 +0.001; N5000 +0.001; K5 +0.003; K20 -0.000; homog -0.002; ln2 -0.000; zipf0.5 -0.001; zipf1.0 +0.009; mix20 +0.001; fam1 +0.225; fam2 +0.123; fam3 +0.081; fam6 +0.028; dep1/3 -0.080; dep1 +0.001; dep3 +0.053; nest3 -0.008; nest10 -0.017; ln2K5 +0.006; ln2K20 +0.000; N50K5 -0.004; fam1K6 +0.262; fam1K12 +0.208; fam2K6 +0.144; fam2K12 +0.112; fam3K6 +0.088; fam3K12 +0.070; fam6K6 -0.001; fam6K12 +0.026,not supported
+H1a (clean set; gate G1),max |bias of C_hat| over the set,+0.0092 (MCSE 0.0034) in zipf1.0,14,base +0.001; N50 +0.001; N5000 +0.001; K5 +0.003; K20 -0.000; homog -0.002; ln2 -0.000; zipf0.5 -0.001; zipf1.0 +0.009; mix20 +0.001; dep1 +0.001; ln2K5 +0.006; ln2K20 +0.000; N50K5 -0.004,supported
+H1b,max Chao2 CI coverage of N over sigma >= 1 cells,0.916 (MCSE 0.012) in N50,11,base 0.454; N50 0.916; N5000 0.000; K5 0.210; K20 0.794; ln2 0.026; mix20 0.542; dep1 0.484; ln2K5 0.002; ln2K20 0.100; N50K5 0.884,not supported
+H1c,"relative bias of Chapman (cross-block pairs), odds ratio 1/3",-0.185 (MCSE 0.003),1,dep1 -0.349; dep3 -0.389,not supported
+H1d,bias of C_hat at c = 2,+0.0708 (MCSE 0.0006),1,beh0.5 -0.1478; base +0.0013,supported
+H1e,sign of C_hat bias and of Chao2 bias (vs N) at f = 0.15,C_hat -0.1580 (MCSE 0.0009); Chao2 +0.809 (MCSE 0.006),1,,supported
+H1f,mean(C_hat - C): 1 family minus 6 families,+0.1972 (MCSE 0.0013),2,fam1 +0.2250; fam2 +0.1234; fam3 +0.0811; fam6 +0.0278,supported

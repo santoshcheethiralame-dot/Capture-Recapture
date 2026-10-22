@@ -1,0 +1,141 @@
+{
+  "run_id": "E13-R002",
+  "experiment": "E13",
+  "prereg": {
+    "frozen": false,
+    "note": "declared pilot on simulated campaigns"
+  },
+  "confirmatory": false,
+  "git_sha": "5d46498",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e13/pilot.py",
+  "config": {
+    "worlds": {
+      "homog_K16": {
+        "N": 500,
+        "K": 16,
+        "het": "homog",
+        "sigma": 0.0,
+        "alpha": 1.0,
+        "families": 0,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.2
+      },
+      "base_K16": {
+        "N": 500,
+        "K": 16,
+        "het": "logitnormal",
+        "sigma": 1.0,
+        "alpha": 1.0,
+        "families": 0,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.2
+      },
+      "ln2_K16": {
+        "N": 500,
+        "K": 16,
+        "het": "logitnormal",
+        "sigma": 2.0,
+        "alpha": 1.0,
+        "families": 0,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.2
+      },
+      "zipf0.5_K16": {
+        "N": 500,
+        "K": 16,
+        "het": "zipf",
+        "sigma": 1.0,
+        "alpha": 0.5,
+        "families": 0,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.2
+      },
+      "base_K12_N20": {
+        "N": 20,
+        "K": 12,
+        "het": "logitnormal",
+        "sigma": 1.0,
+        "alpha": 1.0,
+        "families": 0,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.4
+      },
+      "fam1_K16": {
+        "N": 500,
+        "K": 16,
+        "het": "logitnormal",
+        "sigma": 1.0,
+        "alpha": 1.0,
+        "families": 1,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.2
+      }
+    },
+    "n": 200,
+    "B": 500,
+    "pilot": true
+  },
+  "config_sha256": "f4e52a88dc084cd7557556ff7d7af82b9920430a90d6900e206183d4dfd7b890",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261035,
+    "rule": "spawn_key=(9000 + world, campaign[, 1])"
+  },
+  "inputs": [],
+  "model_ids": [],
+  "started_utc": "2026-10-22T16:49:00+00:00",
+  "finished_utc": "2026-10-22T16:49:14+00:00",
+  "status": "failed",
+  "outputs": [],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "failure": {
+    "cls": "bug",
+    "detail": "stop_lower passed a SeedSequence to SeedSequence(); fixed with a test; re-run as E13-R003"
+  }
+}

@@ -1,0 +1,899 @@
+{
+ "experiment": "E01",
+ "master_seed": 20261022,
+ "n_sim": 500,
+ "seed_rule": "cell seed = SeedSequence(master_seed, spawn_key=(idx,)) (= SeedSequence(master_seed).spawn(n)[idx]); replicate r uses SeedSequence(master_seed, spawn_key=(idx, r)); its R005 bootstrap uses spawn_key=(idx, r, 1)",
+ "base": {
+  "N": 500,
+  "K": 10,
+  "het": "logitnormal",
+  "sigma": 1.0
+ },
+ "cells": [
+  {
+   "id": "base",
+   "idx": 0,
+   "run": "R001",
+   "block": "base",
+   "params": {}
+  },
+  {
+   "id": "N50",
+   "idx": 1,
+   "run": "R001",
+   "block": "N",
+   "params": {
+    "N": 50
+   }
+  },
+  {
+   "id": "N5000",
+   "idx": 2,
+   "run": "R001",
+   "block": "N",
+   "params": {
+    "N": 5000
+   }
+  },
+  {
+   "id": "K3",
+   "idx": 3,
+   "run": "R001",
+   "block": "K",
+   "params": {
+    "K": 3
+   }
+  },
+  {
+   "id": "K5",
+   "idx": 4,
+   "run": "R001",
+   "block": "K",
+   "params": {
+    "K": 5
+   }
+  },
+  {
+   "id": "K20",
+   "idx": 5,
+   "run": "R001",
+   "block": "K",
+   "params": {
+    "K": 20
+   }
+  },
+  {
+   "id": "homog",
+   "idx": 6,
+   "run": "R001",
+   "block": "heterogeneity",
+   "params": {
+    "het": "homog",
+    "sigma": 0.0
+   }
+  },
+  {
+   "id": "ln2",
+   "idx": 7,
+   "run": "R001",
+   "block": "heterogeneity",
+   "params": {
+    "sigma": 2.0
+   }
+  },
+  {
+   "id": "zipf0.5",
+   "idx": 8,
+   "run": "R001",
+   "block": "heterogeneity",
+   "params": {
+    "het": "zipf",
+    "alpha": 0.5
+   }
+  },
+  {
+   "id": "zipf1.0",
+   "idx": 9,
+   "run": "R001",
+   "block": "heterogeneity",
+   "params": {
+    "het": "zipf",
+    "alpha": 1.0
+   }
+  },
+  {
+   "id": "mix20",
+   "idx": 10,
+   "run": "R001",
+   "block": "heterogeneity",
+   "params": {
+    "het": "mixture"
+   }
+  },
+  {
+   "id": "fam1",
+   "idx": 11,
+   "run": "R002",
+   "block": "family",
+   "params": {
+    "families": 1
+   }
+  },
+  {
+   "id": "fam2",
+   "idx": 12,
+   "run": "R002",
+   "block": "family",
+   "params": {
+    "families": 2
+   }
+  },
+  {
+   "id": "fam3",
+   "idx": 13,
+   "run": "R002",
+   "block": "family",
+   "params": {
+    "families": 3
+   }
+  },
+  {
+   "id": "fam6",
+   "idx": 14,
+   "run": "R002",
+   "block": "family",
+   "params": {
+    "families": 6
+   }
+  },
+  {
+   "id": "dep1/3",
+   "idx": 15,
+   "run": "R002",
+   "block": "dependence",
+   "params": {
+    "dep_or": 0.3333333333333333
+   }
+  },
+  {
+   "id": "dep1",
+   "idx": 16,
+   "run": "R002",
+   "block": "dependence",
+   "params": {
+    "dep_or": 1.0
+   }
+  },
+  {
+   "id": "dep3",
+   "idx": 17,
+   "run": "R002",
+   "block": "dependence",
+   "params": {
+    "dep_or": 3.0
+   }
+  },
+  {
+   "id": "beh0.5",
+   "idx": 18,
+   "run": "R002",
+   "block": "adaptivity",
+   "params": {
+    "c": 0.5
+   }
+  },
+  {
+   "id": "beh2",
+   "idx": 19,
+   "run": "R002",
+   "block": "adaptivity",
+   "params": {
+    "c": 2.0
+   }
+  },
+  {
+   "id": "nest3",
+   "idx": 20,
+   "run": "R002",
+   "block": "nested",
+   "params": {
+    "K": 6,
+    "nested_k": 3.0
+   }
+  },
+  {
+   "id": "nest10",
+   "idx": 21,
+   "run": "R002",
+   "block": "nested",
+   "params": {
+    "K": 6,
+    "nested_k": 10.0
+   }
+  },
+  {
+   "id": "ghost0.05",
+   "idx": 22,
+   "run": "R003",
+   "block": "identity",
+   "params": {
+    "ghost": 0.05
+   }
+  },
+  {
+   "id": "ghost0.15",
+   "idx": 23,
+   "run": "R003",
+   "block": "identity",
+   "params": {
+    "ghost": 0.15
+   }
+  },
+  {
+   "id": "merge0.05",
+   "idx": 24,
+   "run": "R003",
+   "block": "identity",
+   "params": {
+    "merge": 0.05
+   }
+  },
+  {
+   "id": "ln2K5",
+   "idx": 25,
+   "run": "R004",
+   "block": "het x K",
+   "params": {
+    "sigma": 2.0,
+    "K": 5
+   }
+  },
+  {
+   "id": "ln2K20",
+   "idx": 26,
+   "run": "R004",
+   "block": "het x K",
+   "params": {
+    "sigma": 2.0,
+    "K": 20
+   }
+  },
+  {
+   "id": "homog_ghost0.05",
+   "idx": 27,
+   "run": "R004",
+   "block": "het x ghosts",
+   "params": {
+    "ghost": 0.05,
+    "het": "homog",
+    "sigma": 0.0
+   }
+  },
+  {
+   "id": "homog_ghost0.15",
+   "idx": 28,
+   "run": "R004",
+   "block": "het x ghosts",
+   "params": {
+    "ghost": 0.15,
+    "het": "homog",
+    "sigma": 0.0
+   }
+  },
+  {
+   "id": "ln2_ghost0.05",
+   "idx": 29,
+   "run": "R004",
+   "block": "het x ghosts",
+   "params": {
+    "ghost": 0.05,
+    "sigma": 2.0
+   }
+  },
+  {
+   "id": "ln2_ghost0.15",
+   "idx": 30,
+   "run": "R004",
+   "block": "het x ghosts",
+   "params": {
+    "ghost": 0.15,
+    "sigma": 2.0
+   }
+  },
+  {
+   "id": "N50K5",
+   "idx": 31,
+   "run": "R004",
+   "block": "N x K",
+   "params": {
+    "N": 50,
+    "K": 5
+   }
+  },
+  {
+   "id": "fam1K6",
+   "idx": 32,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 1,
+    "K": 6
+   }
+  },
+  {
+   "id": "fam1K12",
+   "idx": 33,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 1,
+    "K": 12
+   }
+  },
+  {
+   "id": "fam2K6",
+   "idx": 34,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 2,
+    "K": 6
+   }
+  },
+  {
+   "id": "fam2K12",
+   "idx": 35,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 2,
+    "K": 12
+   }
+  },
+  {
+   "id": "fam3K6",
+   "idx": 36,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 3,
+    "K": 6
+   }
+  },
+  {
+   "id": "fam3K12",
+   "idx": 37,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 3,
+    "K": 12
+   }
+  },
+  {
+   "id": "fam6K6",
+   "idx": 38,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 6,
+    "K": 6
+   }
+  },
+  {
+   "id": "fam6K12",
+   "idx": 39,
+   "run": "R004",
+   "block": "family x K",
+   "params": {
+    "families": 6,
+    "K": 12
+   }
+  },
+  {
+   "id": "smallN14_K8_s1_p0.2",
+   "idx": 40,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 8,
+    "sigma": 1.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN14_K8_s1_p0.4",
+   "idx": 41,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 8,
+    "sigma": 1.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN14_K8_s2_p0.2",
+   "idx": 42,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 8,
+    "sigma": 2.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN14_K8_s2_p0.4",
+   "idx": 43,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 8,
+    "sigma": 2.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN14_K12_s1_p0.2",
+   "idx": 44,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 12,
+    "sigma": 1.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN14_K12_s1_p0.4",
+   "idx": 45,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 12,
+    "sigma": 1.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN14_K12_s2_p0.2",
+   "idx": 46,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 12,
+    "sigma": 2.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN14_K12_s2_p0.4",
+   "idx": 47,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 14,
+    "K": 12,
+    "sigma": 2.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K8_s1_p0.2",
+   "idx": 48,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 8,
+    "sigma": 1.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K8_s1_p0.4",
+   "idx": 49,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 8,
+    "sigma": 1.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K8_s2_p0.2",
+   "idx": 50,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 8,
+    "sigma": 2.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K8_s2_p0.4",
+   "idx": 51,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 8,
+    "sigma": 2.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K12_s1_p0.2",
+   "idx": 52,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 12,
+    "sigma": 1.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K12_s1_p0.4",
+   "idx": 53,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 12,
+    "sigma": 1.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K12_s2_p0.2",
+   "idx": 54,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 12,
+    "sigma": 2.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN20_K12_s2_p0.4",
+   "idx": 55,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 20,
+    "K": 12,
+    "sigma": 2.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K8_s1_p0.2",
+   "idx": 56,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 8,
+    "sigma": 1.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K8_s1_p0.4",
+   "idx": 57,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 8,
+    "sigma": 1.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K8_s2_p0.2",
+   "idx": 58,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 8,
+    "sigma": 2.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K8_s2_p0.4",
+   "idx": 59,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 8,
+    "sigma": 2.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K12_s1_p0.2",
+   "idx": 60,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 12,
+    "sigma": 1.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K12_s1_p0.4",
+   "idx": 61,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 12,
+    "sigma": 1.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K12_s2_p0.2",
+   "idx": 62,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 12,
+    "sigma": 2.0,
+    "mean_p": 0.2
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  },
+  {
+   "id": "smallN50_K12_s2_p0.4",
+   "idx": 63,
+   "run": "R006",
+   "block": "small N (exploratory)",
+   "params": {
+    "N": 50,
+    "K": 12,
+    "sigma": 2.0,
+    "mean_p": 0.4
+   },
+   "skip": [
+    "mh_chao_ll"
+   ]
+  }
+ ],
+ "interaction_grids": {
+  "het x K": {
+   "sigma": [
+    1.0,
+    2.0
+   ],
+   "K": [
+    5,
+    10,
+    20
+   ],
+   "cells": {
+    "1.0,5": "K5",
+    "1.0,10": "base",
+    "1.0,20": "K20",
+    "2.0,5": "ln2K5",
+    "2.0,10": "ln2",
+    "2.0,20": "ln2K20"
+   }
+  },
+  "het x ghosts": {
+   "het": [
+    "homog",
+    "ln1",
+    "ln2"
+   ],
+   "ghost": [
+    0.0,
+    0.05,
+    0.15
+   ],
+   "cells": {
+    "homog,0.0": "homog",
+    "homog,0.05": "homog_ghost0.05",
+    "homog,0.15": "homog_ghost0.15",
+    "ln1,0.0": "base",
+    "ln1,0.05": "ghost0.05",
+    "ln1,0.15": "ghost0.15",
+    "ln2,0.0": "ln2",
+    "ln2,0.05": "ln2_ghost0.05",
+    "ln2,0.15": "ln2_ghost0.15"
+   }
+  },
+  "N x K": {
+   "N": [
+    50,
+    500
+   ],
+   "K": [
+    5,
+    10
+   ],
+   "cells": {
+    "50,5": "N50K5",
+    "50,10": "N50",
+    "500,5": "K5",
+    "500,10": "base"
+   }
+  },
+  "family x K": {
+   "families": [
+    1,
+    2,
+    3,
+    6
+   ],
+   "K": [
+    6,
+    10,
+    12
+   ],
+   "cells": {
+    "1,6": "fam1K6",
+    "1,10": "fam1",
+    "1,12": "fam1K12",
+    "2,6": "fam2K6",
+    "2,10": "fam2",
+    "2,12": "fam2K12",
+    "3,6": "fam3K6",
+    "3,10": "fam3",
+    "3,12": "fam3K12",
+    "6,6": "fam6K6",
+    "6,10": "fam6",
+    "6,12": "fam6K12"
+   }
+  }
+ },
+ "R005": {
+  "cells": [
+   "base",
+   "N50",
+   "N5000",
+   "K5",
+   "K20",
+   "homog",
+   "ln2",
+   "zipf1.0",
+   "mix20",
+   "fam1",
+   "beh2",
+   "ghost0.15"
+  ],
+  "B": 500,
+  "level": 0.95
+ },
+ "R006_note": "Exploratory addition after R001-R004 were seen: PH1 tolerance at the sizes of E09 (14 behaviours, 8 estimation runs) and E10 (20 blind spots, 12 runs). Not in E01 section 2.",
+ "R007": {
+  "cells": [
+   "base",
+   "N50",
+   "N5000",
+   "K5",
+   "K20",
+   "homog",
+   "ln2",
+   "zipf1.0",
+   "mix20",
+   "fam1",
+   "beh2",
+   "ghost0.15"
+  ],
+  "B": 500,
+  "level": 0.95,
+  "note": "Exploratory addition after R005 was seen: realized-coverage bootstrap (crsafety.coverage_interval / delta_interval) on the same datasets as R005; seeds spawn_key=(idx, r, 2)."
+ },
+ "R008": {
+  "cells": [
+   "base",
+   "N50",
+   "N5000",
+   "K5",
+   "K20",
+   "homog",
+   "ln2",
+   "zipf1.0",
+   "mix20",
+   "fam1",
+   "beh2",
+   "ghost0.15"
+  ],
+  "B": 500,
+  "level": 0.95,
+  "rep_offset": 10000,
+  "note": "Exploratory replication of R007 on fresh datasets (replicate r uses spawn_key=(idx, 10000 + r); bootstrap spawn_key=(idx, 10000 + r, 2)). Criterion fixed before running: realized-coverage interval covers C in >= 0.90 of base-cell replicates (decision rule 1 of E01 \u00a72)."
+ }
+}

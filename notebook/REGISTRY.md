@@ -14,12 +14,12 @@ papers.
 
 | ID | Experiment | Owner | Tier | Stage | Status | Depends on | Hypotheses | Testbed ($0 plan, D-007) | Needed by |
 |---|---|---|---|---|---|---|---|---|---|
-| [E00](experiments/E00-estimator-library.md) | Estimator library and reference validation | Santosh | core | 0 | in progress (R001–R002 done) | none | — | R reference data (sandbox) | 2026-11-01 |
-| [E01](experiments/E01-simulation-study.md) | Simulation study under AI-safety violations | Santosh | core | 1 (exploratory) | registered | E00 | PH2; sets † thresholds | simulation (sandbox CPU) | 2026-11-05 (freeze) |
+| [E00](experiments/E00-estimator-library.md) | Estimator library and reference validation | Santosh | core | 0 | analysed (R001–R004 done; awaiting Kushal's review) | none | — | R reference data (sandbox) | 2026-11-01 |
+| [E01](experiments/E01-simulation-study.md) | Simulation study under AI-safety violations | Santosh | core | 1 (exploratory) | analysed (R001–R008; gate G1 passed; awaiting Kushal's review) | E00 | PH2; sets † thresholds | simulation (sandbox CPU) | 2026-11-05 (freeze) |
 | [E02](experiments/E02-synthsaebench-zoo.md) | Coverage of SAEs, released seed zoo | Santosh | core | 2 | registered | E00, E01 | PH1, PH2, PH3a | SynthSAEBench zoo (Kaggle) | 2026-12-05 (preprint) |
 | [E03](experiments/E03-matcher-bakeoff.md) | Matcher bake-off and threshold diagnostics | Santosh | core | 2 | registered | E02 | PH3a | SynthSAEBench zoo (Kaggle) | 2026-12-05 |
 | [E04](experiments/E04-single-truth-test.md) | Single-truth test | Santosh + Kushal | important | 2 | registered | E03, E10 pipeline | PH3 | synthetic + local LLM | 2027-01-20 |
-| [E05](experiments/E05-error-injection-corrections.md) | Identity-error injection and corrections | Santosh | core | 2 | registered | E01, E02 | PH3b | E01 + E02 histories (CPU) | 2026-12-15 |
+| [E05](experiments/E05-error-injection-corrections.md) | Identity-error injection and corrections | Santosh | core | 2 | registered; pilot done (R004–R005) | E01, E02 | PH3b | E01 + E02 histories (CPU) | 2026-12-15 |
 | [E06](experiments/E06-own-seeds-grid.md) | Own SAE seeds across worlds (K = 16) | Santosh | important | 2 | registered | E03 | PH1, PH2, PH4 | scaled synthetic worlds (Kaggle) | 2027-03-15 |
 | [E07](experiments/E07-covariate-models.md) | Covariates of detectability | Santosh | stretch | 3 | proposed | E02, E06 | SH3 | E02/E06 (CPU) | 2027-04-15 |
 | [E08](experiments/E08-auditor-similarity-ladder.md) | Same-model auditors overstate completeness? | Kushal | core | 2 | registered | E00, E01 | PH4 | system-prompt organisms on a Mistral target; Qwen/Llama/Gemma auditors (Kaggle) | 2027-01-25 (workshop: L0 + L3) / 2027-03-15 |
@@ -27,7 +27,7 @@ papers.
 | [E10](experiments/E10-planted-redteam.md) | Red teams vs planted blind spots, adaptive vs not | Kushal | core | 2 | registered | E00, E01 | PH1, PH5 | own monitor (CPU) + open attackers (Kaggle) | 2027-01-25 (workshop) / 2027-03-15 |
 | [E11](experiments/E11-real-saes.md) | Coverage of real-model SAEs | Santosh | stretch | 3 | proposed | E03, E05, E06 | SH4 | Pythia-70M, Gemma Scope, board games (Kaggle) | 2027-04-30 |
 | [E12](experiments/E12-multi-quirk-organisms.md) | Organisms with many planted quirks | Kushal | stretch | 3 | proposed | E09 pipeline | PH1, PH2 (ext.) | QLoRA organisms (Kaggle) | after NeurIPS |
-| [E13](experiments/E13-stopping-rule.md) | Coverage stopping rule | Santosh | core | 2 | registered | E02, E06, E09, E10 | PH6 | resampled campaigns (CPU) | 2027-04-15 |
+| [E13](experiments/E13-stopping-rule.md) | Coverage stopping rule | Santosh | core | 2 | registered; pilot done (R003) | E02, E06, E09, E10 | PH6 | resampled campaigns (CPU) | 2027-04-15 |
 | [E14](experiments/E14-forecasting-comparison.md) | Coverage vs tail forecasting | Kushal | stretch | 3 | proposed | E10 | exploratory | E10 monitor | after NeurIPS |
 | [E15](experiments/E15-planted-mark-calibration.md) | Planted-mark calibration in real systems | Santosh + Kushal | important | 3 | proposed (novelty check Q-N1) | E02/E06, E09/E11 | SH2 | Pythia + organism (Kaggle) | 2027-04-30 |
 | [E16](experiments/E16-two-sided-bounds.md) | Two-sided bounds on missed SAE mass | Santosh | stretch | 3 | proposed (Q-N2) | E06, E11 | exploratory | synthetic + Pythia | after NeurIPS |
@@ -56,12 +56,12 @@ Rendered by `python tools/notebook.py render`.
 <!-- counts:start -->
 | Exp | Runs | Planned | Running | Succeeded | Failed |
 |---|---|---|---|---|---|
-| E00 | 3 | 1 | 0 | 2 | 0 |
-| E01 | 5 | 5 | 0 | 0 | 0 |
+| E00 | 4 | 0 | 0 | 4 | 0 |
+| E01 | 8 | 0 | 0 | 8 | 0 |
 | E02 | 1 | 1 | 0 | 0 | 0 |
 | E03 | 0 | 0 | 0 | 0 | 0 |
 | E04 | 0 | 0 | 0 | 0 | 0 |
-| E05 | 0 | 0 | 0 | 0 | 0 |
+| E05 | 5 | 3 | 0 | 2 | 0 |
 | E06 | 1 | 1 | 0 | 0 | 0 |
 | E07 | 0 | 0 | 0 | 0 | 0 |
 | E08 | 1 | 1 | 0 | 0 | 0 |
@@ -69,7 +69,7 @@ Rendered by `python tools/notebook.py render`.
 | E10 | 1 | 1 | 0 | 0 | 0 |
 | E11 | 0 | 0 | 0 | 0 | 0 |
 | E12 | 0 | 0 | 0 | 0 | 0 |
-| E13 | 0 | 0 | 0 | 0 | 0 |
+| E13 | 3 | 1 | 0 | 1 | 1 |
 | E14 | 0 | 0 | 0 | 0 | 0 |
 | E15 | 0 | 0 | 0 | 0 | 0 |
 | E16 | 0 | 0 | 0 | 0 | 0 |

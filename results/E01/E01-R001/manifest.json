@@ -1,0 +1,170 @@
+{
+  "run_id": "E01-R001",
+  "experiment": "E01",
+  "prereg": {
+    "frozen": false,
+    "block_sha256": "af4b1869e42868ea42341bd14d9a3dd802262bf18a64651ad4c18b699458a874",
+    "note": "Stage 1 exploratory; run before the v1 freeze"
+  },
+  "confirmatory": false,
+  "git_sha": "7765a22",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e01/run.py R001",
+  "config": {
+    "cells": [
+      {
+        "id": "base",
+        "idx": 0,
+        "run": "R001",
+        "block": "base",
+        "params": {}
+      },
+      {
+        "id": "N50",
+        "idx": 1,
+        "run": "R001",
+        "block": "N",
+        "params": {
+          "N": 50
+        }
+      },
+      {
+        "id": "N5000",
+        "idx": 2,
+        "run": "R001",
+        "block": "N",
+        "params": {
+          "N": 5000
+        }
+      },
+      {
+        "id": "K3",
+        "idx": 3,
+        "run": "R001",
+        "block": "K",
+        "params": {
+          "K": 3
+        }
+      },
+      {
+        "id": "K5",
+        "idx": 4,
+        "run": "R001",
+        "block": "K",
+        "params": {
+          "K": 5
+        }
+      },
+      {
+        "id": "K20",
+        "idx": 5,
+        "run": "R001",
+        "block": "K",
+        "params": {
+          "K": 20
+        }
+      },
+      {
+        "id": "homog",
+        "idx": 6,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "het": "homog",
+          "sigma": 0.0
+        }
+      },
+      {
+        "id": "ln2",
+        "idx": 7,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "sigma": 2.0
+        }
+      },
+      {
+        "id": "zipf0.5",
+        "idx": 8,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "het": "zipf",
+          "alpha": 0.5
+        }
+      },
+      {
+        "id": "zipf1.0",
+        "idx": 9,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "het": "zipf",
+          "alpha": 1.0
+        }
+      },
+      {
+        "id": "mix20",
+        "idx": 10,
+        "run": "R001",
+        "block": "heterogeneity",
+        "params": {
+          "het": "mixture"
+        }
+      }
+    ],
+    "n_sim": 500,
+    "bootstrap": null,
+    "config_file": "configs/e01/cells.json"
+  },
+  "config_sha256": "46117b8a0d00c96d17adaa16c2e82541e70d028e1acb48d3d93fc8be07889a01",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261022,
+    "rule": "cell seed = SeedSequence(master_seed, spawn_key=(idx,)) (= SeedSequence(master_seed).spawn(n)[idx]); replicate r uses SeedSequence(master_seed, spawn_key=(idx, r)); its R005 bootstrap uses spawn_key=(idx, r, 1)",
+    "cells": {
+      "base": 0,
+      "N50": 1,
+      "N5000": 2,
+      "K3": 3,
+      "K5": 4,
+      "K20": 5,
+      "homog": 6,
+      "ln2": 7,
+      "zipf0.5": 8,
+      "zipf1.0": 9,
+      "mix20": 10
+    }
+  },
+  "inputs": [
+    {
+      "path": "/home/user/MissingMass/configs/e01/cells.json",
+      "sha256": "45aaf4984aef7eb40fbd6e9952f4524dca25ff38a011e726a91e1cf39f32c3f5"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-22T15:36:55+00:00",
+  "finished_utc": "2026-10-22T15:41:02+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E01/E01-R001/replicates.csv.gz"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "cpu_seconds_wall": 246.7,
+  "replicates_sha256": "d67136d80c1478ab2e605ae94f9c3a480e4e4548a3c5965e258ca71ac8e3790c"
+}

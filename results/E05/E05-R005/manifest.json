@@ -1,0 +1,127 @@
+{
+  "run_id": "E05-R005",
+  "experiment": "E05",
+  "prereg": {
+    "frozen": false,
+    "note": "declared pilot on separate seeds"
+  },
+  "confirmatory": false,
+  "git_sha": "87d6193",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e05/pilot.py --run E05-R005",
+  "config": {
+    "cells": {
+      "base": {
+        "N": 500,
+        "K": 10,
+        "het": "logitnormal",
+        "sigma": 1.0,
+        "alpha": 1.0,
+        "families": 0,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.2
+      },
+      "ln2": {
+        "N": 500,
+        "K": 10,
+        "het": "logitnormal",
+        "sigma": 2.0,
+        "alpha": 1.0,
+        "families": 0,
+        "tau": 1.5,
+        "dep_or": 0.0,
+        "c": 1.0,
+        "nested_k": 0.0,
+        "ghost": 0.0,
+        "merge": 0.0,
+        "mean_p": 0.2
+      }
+    },
+    "combos": [
+      [
+        0.1,
+        0.0,
+        "uniform"
+      ],
+      [
+        0.1,
+        0.0,
+        "score"
+      ],
+      [
+        0.1,
+        0.05,
+        "uniform"
+      ],
+      [
+        0.1,
+        0.05,
+        "score"
+      ],
+      [
+        0.0,
+        0.05,
+        "uniform"
+      ],
+      [
+        0.0,
+        0.05,
+        "score"
+      ],
+      [
+        0.3,
+        0.0,
+        "uniform"
+      ],
+      [
+        0.3,
+        0.0,
+        "score"
+      ]
+    ],
+    "n_v": [
+      50,
+      200
+    ],
+    "imputations": 20,
+    "n_inj": 20,
+    "pilot": true
+  },
+  "config_sha256": "2cf3681c2217e62cd918a1a2775f518ac01ba8030c7e61cf273876471fb19e5c",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261027,
+    "rule": "spawn_key=(9000 + cell, combo, injection)"
+  },
+  "inputs": [],
+  "model_ids": [],
+  "started_utc": "2026-10-22T16:43:48+00:00",
+  "finished_utc": "2026-10-22T16:44:27+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E05/E05-R005/pilot.csv.gz",
+    "results/E05/E05-R005/summary.md"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "wall_seconds": 38.5
+}
