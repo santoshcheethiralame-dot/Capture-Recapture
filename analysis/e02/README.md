@@ -22,7 +22,15 @@ Tested on 2026-10-22 against a fake mini-zoo in the same file layout
 `<arch>/l0-<L0>/seed-<s>/sae_weights.safetensors`). R001 verifies the real
 layout; if it differs, fix the loader before R002.
 
-**Known gap:** dead-latent removal needs per-latent firing counts on 10^6
-generator samples (SAELens `SyntheticModel.sample` + each SAE's encoder, on
-GPU). That script is still to be written (with E03-R002, which needs the
-same activations).
+**Dead latents:** `analysis/e02/fire_counts.py` counts each latent's firings
+on 10^6 generator samples (SAELens 6.54.12 + torch; GPU), and
+`zoo.py histories --fire-counts fires.json` drops the dead ones. Both were
+tested end to end on 2026-10-22 against a tiny world and two SAEs trained
+with SAELens's own `SyntheticSAERunner` (the real file layout, including
+`synthetic_model_config.json`, `cfg.json` and `sparsity.safetensors`).
+
+```bash
+pip install -q "sae-lens==6.54.12"
+python analysis/e02/fire_counts.py --out /kaggle/working/fires.json      # GPU
+python analysis/e02/zoo.py histories --out /kaggle/working/E02-R00X --fire-counts /kaggle/working/fires.json
+```

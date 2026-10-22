@@ -58,6 +58,8 @@ def main():
     ap.add_argument("--B", type=int, default=1000)
     ap.add_argument("--N-in", type=int, default=4096)
     ap.add_argument("--seed", type=int, default=20261024)  # 20261022 + 2
+    ap.add_argument("--truth", choices=["leave-cell-out", "pooled"], default="leave-cell-out",
+                    help="truth for H2a/H2c (D-011, proposed); both are always written to cells.csv")
     a = ap.parse_args()
     hist, out = Path(a.hist), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -124,13 +126,18 @@ def main():
         w.writerows(rows)
 
     n = len(rows)
-    err_o = np.array([r["oracle_C_hat"] - r["C"] for r in rows])
+    tkey = "C_lco" if a.truth == "leave-cell-out" else "C"
+    if tkey == "C_lco" and any("C_lco" not in r for r in rows):
+        print("WARNING: some architectures have a single cell; using the pooled truth for those")
+    for r in rows:
+        r["C_eval"] = r.get(tkey, r["C"])
+    err_o = np.array([r["oracle_C_hat"] - r["C_eval"] for r in rows])
     ok_a = int((np.abs(err_o) <= 0.05).sum())
     lo_a, hi_a = wilson(ok_a, n)
     h2b_u = int(sum(r["oracle_chao2"] < r["U"] for r in rows))
     h2b_all = all(r["oracle_chao2"] < 0.5 * r["N_all"] for r in rows)
     have_m = [r for r in rows if "matched_C_hat" in r]
-    ratio = (np.median([abs(r["matched_C_hat"] - r["C"]) / max(abs(r["oracle_C_hat"] - r["C"]), 1e-12)
+    ratio = (np.median([abs(r["matched_C_hat"] - r["C_eval"]) / max(abs(r["oracle_C_hat"] - r["C_eval"]), 1e-12)
                         for r in have_m]) if have_m else np.nan)
     loo = float(np.median([r["loo_delta_rel_err_abs_median"] for r in rows]))
     H = [
@@ -144,13 +151,14 @@ def main():
              verdict="supported" if loo <= 0.2 else ("not supported" if loo > 0.4 else "inconclusive")),
     ]
     (out / "hypotheses.json").write_text(json.dumps(H, indent=2) + "\n")
-    L = ["# E02 evaluation", "", f"{n} cells; tau_gt = {a.tau_gt}; matched = M1 at tau = {a.tau}.", "",
+    L = ["# E02 evaluation", "", f"{n} cells; tau_gt = {a.tau_gt}; matched = M1 at tau = {a.tau}; "
+         f"truth = {a.truth} (D-011).", "",
          "| ID | Estimate | Verdict |", "|---|---|---|"] + \
         [f"| {h['id']} | {h['estimate']} | **{h['verdict']}** |" for h in H] + \
-        ["", "| cell | K | |U| | C | Ĉ oracle (95% CI) | Ĉ matched | Chao2 oracle | Chao2 matched |",
+        ["", "| cell | K | |U| | C (used) | Ĉ oracle (95% CI) | Ĉ matched | Chao2 oracle | Chao2 matched |",
          "|---|---|---|---|---|---|---|---|"]
     for r in rows:
-        L.append(f"| {r['cell']} | {r['K']} | {r['U']} | {r['C']:.3f} | {r['oracle_C_hat']:.3f} "
+        L.append(f"| {r['cell']} | {r['K']} | {r['U']} | {r['C_eval']:.3f} | {r['oracle_C_hat']:.3f} "
                  f"({r['oracle_C_lo']:.3f}–{r['oracle_C_hi']:.3f}) | {r.get('matched_C_hat', np.nan):.3f} | "
                  f"{r['oracle_chao2']:.0f} | {r.get('matched_chao2', np.nan):.0f} |")
     (out / "summary.md").write_text("\n".join(L) + "\n")

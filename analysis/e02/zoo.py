@@ -21,8 +21,8 @@ within a cell only). Folding JumpReLU thresholds into the decoder (PROTOCOLS
 §2) only rescales rows, so it does not change |cos| matching.
 Preprocessing (E02 §2): within-SAE duplicates (|cos| >= 0.95, antipodal
 included) are merged; dead latents are dropped when ``--fire-counts`` points
-to a JSON file {"<arch>/l0-<L0>/seed-<s>": [count per latent]} computed on
-10^6 generator samples (a GPU step, not part of this script). Without it no
+to the JSON written by `fire_counts.py` ({"<arch>/l0-<L0>/seed-<s>": [count
+per latent]}, under "counts"), computed on 10^6 generator samples. Without it no
 latent is treated as dead, and the summary says so.
 """
 
@@ -109,6 +109,7 @@ def histories(args):
     T, p, _ = load_world(world_dir)
     idx = zoo_index(zoo_dir)
     fires = json.loads(Path(args.fire_counts).read_text()) if args.fire_counts else {}
+    fires = fires.get("counts", fires)  # fire_counts.py nests them under "counts"
     pre = {}
     out = Path(args.out) / "histories"
     cells = sorted({(a, l) for a, l, _ in idx})
