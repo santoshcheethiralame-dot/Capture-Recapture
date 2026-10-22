@@ -40,3 +40,9 @@ def test_campaign_records():
     for r in rows:
         assert r["success"] == (r["C_at_stop"] >= r["target"])
         assert 0 <= r["saved"] < 1 and r["undershoot"] >= 0
+
+
+def test_seed_sequence_seed_is_accepted_and_reproducible():
+    X, pi = world(4)
+    s = lambda: np.random.SeedSequence(7, spawn_key=(1, 2))
+    assert st.stop_lower(X, 0.9, B=100, seed=s()) == st.stop_lower(X, 0.9, B=100, seed=s())

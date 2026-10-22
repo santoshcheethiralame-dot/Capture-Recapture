@@ -39,7 +39,7 @@ def stop_point(X, target, k_min=3):
 
 
 def stop_lower(X, target, k_min=3, level=0.95, B=1000, seed=None):
-    ss = np.random.SeedSequence(seed)
+    ss = seed if isinstance(seed, np.random.SeedSequence) else np.random.SeedSequence(seed)
     seeds = ss.spawn(X.shape[1] + 1)
     for k in range(k_min, X.shape[1] + 1):
         d = _data(X, k)
