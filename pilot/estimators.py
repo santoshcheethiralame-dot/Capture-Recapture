@@ -59,6 +59,37 @@ def jackknife(X, order=1):
     return S + f[1] * (2 * K - 3) / K - f[2] * (K - 2) ** 2 / (K * (K - 1))
 
 
+def coverage(X):
+    """Chao-Jost incidence sample coverage: estimated share of detection mass
+    that belongs to individuals already seen. Well posed even when N is not."""
+    X, f = _freq_counts(X)
+    K, U = X.shape[1], X.sum()
+    if f[1] == 0:
+        return 1.0
+    return 1 - f[1] / U * ((K - 1) * f[1] / ((K - 1) * f[1] + 2 * f[2]))
+
+
+def extrapolate(X, m):
+    """Expected number of NEW individuals if m more occasions were run
+    (Chao et al. 2014 incidence extrapolation, with bias-corrected Chao2 f0)."""
+    X, f = _freq_counts(X)
+    K = X.shape[1]
+    f0 = (K - 1) / K * f[1] * (f[1] - 1) / (2 * (f[2] + 1))
+    if f[1] == 0 or f0 <= 0:
+        return 0.0
+    return f0 * (1 - (1 - f[1] / (K * f0 + f[1])) ** m)
+
+
+def population_chao2_bound(p, K):
+    """Chao2 computed from expected frequency counts (no sampling noise) for
+    known per-individual capture probabilities p. This is the target Chao2
+    actually estimates; the gap between it and N is not recoverable."""
+    q1 = K * p * (1 - p) ** (K - 1)
+    q2 = K * (K - 1) / 2 * p**2 * (1 - p) ** (K - 2)
+    S = (1 - (1 - p) ** K).sum()
+    return S + (K - 1) / K * q1.sum() ** 2 / (2 * q2.sum())
+
+
 ESTIMATORS = {
     "Chapman (2 occ.)": chapman,
     "Mt (Darroch)": darroch_mt,
