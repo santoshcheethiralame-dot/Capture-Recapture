@@ -54,6 +54,11 @@ frozen experiment that uses it.
      E05-corrected sensitivity bands.
 4. **Oracle catch (testbeds):** \|cos\| ≥ τ_gt = 0.7 to the true direction
    under one-to-one Hungarian assignment.
+5. **Code:** `crsafety.matching` (`preprocess`, `hungarian`, `strict`,
+   `mutual_nn`, `cluster_seeds`, `sweep`, `oracle_catch`, `plateau`,
+   `pair_scores`, `ari`). One Hungarian assignment of 4,096 × 4,096
+   latents takes about 2 s on the sandbox CPU; an oracle catch against
+   16,384 true features about 4 s.
 
 ### Attack strategies and audit findings
 
