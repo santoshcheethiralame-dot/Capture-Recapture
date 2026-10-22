@@ -264,3 +264,36 @@ citing:
   from the E01 seeds) and preparation for E02 (blocked on Hugging Face
   access, Q-D1).
 
+## 2026-10-22 (night, E05): error model, corrections and pilot
+
+Santosh (with Claude).
+
+**Did:**
+- Built `crsafety.linkage`, a record-level identity-error model with match
+  scores. It covers ghosts per recapture (uniform or score-based rates),
+  merges, labelled-pair estimation of f and g, and corrections (b) first-order
+  count correction, (e) multiple imputation, and (f) Di Consiglio-Tuoto.
+  Also `analysis/e05/pilot.py` and 13 tests.
+- Registered E05-R001 to R003 as planned (confirmatory, after the freeze).
+  Ran the declared pilots E05-R004 and R005 on separate seeds.
+- Wrote E05 §2a: every implementation choice §2 leaves open, marking which
+  ones changed after the pilot.
+
+**Saw (pilot only):**
+- Every correction runs without failure. MI costs 0.02 s per injection, so
+  the "too slow" contingency is not needed. R001 needs about 15 min plus
+  1–2.5 h for `breakaway_nof1`.
+- The count correction removes most ghost bias (Chao2 +35% → 0% at
+  f = 0.10 on the base world; +316% → +18% at f = 0.30 with score-based
+  errors on ln2).
+- The free-mixture MI in §2 relinks real singletons when there are no
+  ghosts (−26%). A variant using labelled bin rates does not (−6%, the
+  merge effect). Both will be reported; the labelled one is proposed as
+  primary.
+- `breakaway_nof1` is not usable on K = 10 incidence counts: Poisson
+  fallback in 59% of injections, median −18% to −43%.
+
+**Next:** Kushal reviews E05 §2a with the other Stage 2 pages before the
+freeze. Open for the freeze: whether to add a ratio-regression f1-free
+estimator (needs an E00 run).
+

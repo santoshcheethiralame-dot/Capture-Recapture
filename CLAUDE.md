@@ -64,9 +64,11 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
    (0.76) → `crsafety.coverage_interval` (0.906 on fresh data); per-cell
    PH1 tolerance unattainable at N = 14–20. † threshold proposals in D-010
    part B: **joint decision at the freeze**, not applied.
-4. Next: E05-R001 (identity-error injection on E01 histories: regenerate
-   them from the E01 seeds with `crsafety.sim`); E02 is blocked on Hugging
-   Face access (Q-D1) — download on Kaggle instead.
+4. E05: model + corrections in `crsafety.linkage`; pilot done (R004–R005);
+   §2a written. Confirmatory R001–R003 **wait for the v1 freeze** (Stage 2).
+5. Next candidates: E02 Kaggle notebook prep (HF blocked in sandbox, Q-D1);
+   E13 stopping-rule code on simulated campaigns; ratio-regression f1-free
+   estimator + E00 validation run (freeze question from E05 pilot).
 
 ## Repository map
 

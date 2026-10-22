@@ -92,6 +92,10 @@ def test_ghost_correction_reduces_chao2_bias():
 def test_lp_correction_and_dct_agree_without_false_links():
     X, p, rng = world(4)
     assert lk.dct_petersen(X, 0.9, 0.0) == pytest.approx(lk.lp_corrected(X, 0.1))
+    assert lk.dct_petersen(X, 0.9, 0.0, 0, 1) == pytest.approx(lk.lp_corrected(X, 0.1, 0, 1))
+    K = X.shape[1]
+    pairs = [lk.lp_corrected(X, 0.0, i, j) for i in range(K) for j in range(i + 1, K)]
+    assert lk.lp_corrected(X, 0.0) == pytest.approx(np.mean(pairs))
 
 
 def test_mi_runs_and_moves_toward_truth():

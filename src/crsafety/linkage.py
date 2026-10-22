@@ -216,21 +216,35 @@ def corrected_estimates(d, f_hat):
     return dict(chao2=chao2(e), coverage=coverage(e), S=float(Qt.sum()))
 
 
-def lp_corrected(X, f_hat, a=0, b=1):
-    """Lincoln-Petersen on runs a, b with the ghost correction LP * (1 - f_hat)
-    (Di Consiglio and Tuoto 2015 with no false links)."""
-    n1, n2 = X[:, a].sum(), X[:, b].sum()
-    m = (X[:, a] & X[:, b]).sum()
-    return np.inf if m == 0 else n1 * n2 / m * (1 - f_hat)
+def _over_pairs(fn, X, a, b):
+    if a is not None:
+        return fn(a, b)
+    K = X.shape[1]
+    vals = [fn(i, j) for i in range(K) for j in range(i + 1, K)]
+    return float(np.mean(vals))
 
 
-def dct_petersen(X, lam, beta, a=0, b=1):
-    """Di Consiglio-Tuoto linkage-error-corrected Petersen (pairs only):
-    E[m*] = lam m + beta (n2 - m)  =>  m = (m* - beta n2) / (lam - beta)."""
-    n1, n2 = X[:, a].sum(), X[:, b].sum()
-    ms = (X[:, a] & X[:, b]).sum()
-    m = (ms - beta * n2) / (lam - beta)
-    return np.inf if m <= 0 else n1 * n2 / m
+def lp_corrected(X, f_hat, a=None, b=None):
+    """Lincoln-Petersen with the ghost correction LP * (1 - f_hat)
+    (Di Consiglio and Tuoto 2015 with no false links). On runs a, b, or
+    averaged over all run pairs (default; E05 §2a)."""
+    def one(i, j):
+        n1, n2 = X[:, i].sum(), X[:, j].sum()
+        m = (X[:, i] & X[:, j]).sum()
+        return np.inf if m == 0 else n1 * n2 / m * (1 - f_hat)
+    return _over_pairs(one, X, a, b)
+
+
+def dct_petersen(X, lam, beta, a=None, b=None):
+    """Di Consiglio-Tuoto linkage-error-corrected Petersen:
+    E[m*] = lam m + beta (n2 - m)  =>  m = (m* - beta n2) / (lam - beta).
+    On runs a, b, or averaged over all run pairs (default)."""
+    def one(i, j):
+        n1, n2 = X[:, i].sum(), X[:, j].sum()
+        ms = (X[:, i] & X[:, j]).sum()
+        m = (ms - beta * n2) / (lam - beta)
+        return np.inf if m <= 0 else n1 * n2 / m
+    return _over_pairs(one, X, a, b)
 
 
 def _mixture_posterior(s, iters=200):

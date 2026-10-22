@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | registered |
+| Status | registered; pilot done (R004, R005); design details in §2a for the freeze |
 | Owner | Santosh |
 | Tier | core |
 | Stage | 2 confirmatory |
@@ -95,6 +95,68 @@ The oracle-history estimates (no error) and the true C and \|U\|.
 None.
 <!-- prereg:end -->
 
+## 2a. Implementation choices (drafted 2026-10-22, before any confirmatory run; for the joint freeze)
+
+§2 leaves these open. Code: `src/crsafety/linkage.py`, `analysis/e05/`.
+Items marked **(after pilot)** were changed because of the declared pilot
+E05-R004 (separate seeds); everything else was fixed before it ran.
+
+**Record-level error model.** An item's first detection, in run order,
+anchors it; every later detection is a *recapture*. Each recapture gets a
+match score s ~ N(m_i, 1) and is linked iff s ≥ 0, with
+m_i = Φ⁻¹(1 − f_i), so the ghost rate is exactly f_i. An unlinked recapture
+becomes a singleton row whose best candidate is its true item (score s < 0).
+A true singleton's best candidate is a random other row, scored
+N(−2.5, 1) truncated below 0. Merges then join round(g · S) random pairs of
+observed rows; each is a false link scored N(0.5, 1) truncated above 0.
+- *Uniform pattern:* f_i = f.
+- *Score-based pattern:* f_i ∝ 1/√p_i, rescaled so the share of all
+  recaptures left unlinked is f, capped at 0.95. p_i is π_i (E01) or the
+  generator's firing probability (E02).
+
+**Histories.** R001: injection j uses E01 replicate j (j = 0..199) of the
+base and ln2 cells, regenerated from E01's seeds. Seeds for injections:
+`SeedSequence(20261027, spawn_key=(cell, f, g, pattern, j))` with level
+indices; the pilot used spawn keys from 9000 up.
+
+**Labelled pairs (b).** Candidate pairs are the linked recaptures, the false
+links and each singleton's best candidate. n_v pairs are labelled, split
+equally over the non-empty score bins (−∞, −2, −1, 0, 1, 2, ∞), and each
+bin's true-match rate is weighted back by its size. f̂ = estimated true
+matches below 0 / all true matches; ĝ = estimated false links / rows before
+merging.
+
+**Corrections.**
+- (b) *First-order frequency-count correction* for ghosts:
+  E[Q_obs] = A(f) Q + e₁ · f · (U − S), with A the thinning matrix (the
+  anchor is never lost). Solved for Q ≥ 0 by non-negative least squares,
+  then Chao2 and Ĉ are computed from the corrected counts. Merges are not
+  corrected by (b). LP × (1 − f̂) is averaged over all run pairs.
+- (c) Dropped: the Chiu-Chao formula is unavailable (contingency; Q-D10).
+- (d) `breakaway_nof1` on the incidence frequency counts, through
+  `crsafety.rbridge`. **Pilot finding:** at K = 10 it falls back to its
+  Poisson model in 59% of injections and is biased (median −18% to −43%).
+  It stays as specified; whether to add a ratio-regression f1-free
+  estimator (E05 §2 allows one) is for the freeze. Adding one needs an E00
+  validation run first.
+- (e) Multiple imputation, 20 imputations. Each singleton is relinked to its
+  best candidate with probability π. Chao2 uses Rubin's rules (log-normal
+  s.e. as within-variance); Ĉ reports the MI mean and between-imputation
+  variance.
+  - (e1) π from a free two-component Gaussian mixture on the singletons'
+    best-candidate scores (§2 as written).
+  - (e2) **(after pilot)** π = the labelled true-match rate of the
+    singleton's score bin (n_v = 200). In R004, (e1) relinked real
+    singletons when there were no ghosts (Chao2 −26% at f = 0, g = 0.05,
+    vs −6% naive); (e2) does not (−6%). Both are reported; (e2) is proposed
+    as the primary MI variant.
+- (f) Di Consiglio-Tuoto Petersen with λ = 1 − f̂ and β = ĝ, averaged over
+  all run pairs.
+
+**Cost (pilot).** 0.03 s per injection for (a), (b), (e1), (e2) and (f);
+0.12–0.4 s per dataset for (d) through R. R001 (24,000 injections) takes
+about 15 min plus 1–2.5 h for (d).
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -106,12 +168,33 @@ None.
 ## 4. Runs
 
 <!-- runs:start -->
-_No runs yet._
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E05-R001 | Injection grid on E01 histories | Santosh | planned |  |  | f377619 |  |
+| E05-R002 | Injection grid on E02 oracle histories | Santosh | planned |  |  | f377619+dirty |  |
+| E05-R003 | Corrections (a)-(f) | Santosh | planned |  |  | f377619+dirty |  |
+| E05-R004 | Pilot (declared, separate seeds): feasibility and cost of corrections | Santosh | succeeded | 2026-10-22 | 2026-10-22 | f377619+dirty | Pilot, 320 injections, 40 s: no failures; MI 0.018 s/injection (20 imputations OK); first-order count correction removes ghost bias (base f=0.10: Chao2 +35% -> 0%); free-mixture MI relinks real singletons (-26% at f=0, g=0.05); breakaway_nof1 falls back to Poisson in 59% of injections (median -34%) |
+| E05-R005 | Pilot v2 (declared, same separate seeds): adds labelled-calibrated MI | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 6e99f0c+dirty | Pilot v2, 320 injections: labelled-calibrated MI (n_v=200) Chao2 -0% at f=0.10 and -6% at f=0, g=0.05 (= naive merge effect; free mixture -26%); count correction b +0 to +18%; breakaway_nof1 median -18% to -43% |
 <!-- runs:end -->
 
 ## 5. Results
 
-_Not started._
+**Pilot (declared; separate seeds; not evidence for H5a–H5d).** E05-R004
+and E05-R005: 320 injections each on the E01 base and ln2 worlds, f ∈ {0,
+0.1, 0.3}, g ∈ {0, 0.05}, both patterns. No estimator failed. Mean Chao2
+error relative to the oracle Chao2:
+
+| world | f, g, pattern | naive | (b) n_v = 200 | (e1) mixture MI | (e2) labelled MI | (d) nof1 (median) |
+|---|---|---|---|---|---|---|
+| base | 0.10, 0, uniform | +35% | +0% | +7% | −0% | −18% |
+| base | 0, 0.05, uniform | −6% | −6% | −26% | −6% | −21% |
+| base | 0.30, 0, score | +169% | +10% | +34% | +8% | −20% |
+| ln2 | 0.10, 0, uniform | +59% | −1% | +9% | −1% | −39% |
+| ln2 | 0.30, 0, score | +316% | +18% | +63% | +12% | −43% |
+
+Full tables: `results/E05/E05-R00{4,5}/summary.md`. Design consequences are
+in §2a, marked "after pilot". The confirmatory runs R001–R003 wait for the
+v1 freeze.
 
 ### Confirmatory
 

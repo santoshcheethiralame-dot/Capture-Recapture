@@ -19,7 +19,7 @@ papers.
 | [E02](experiments/E02-synthsaebench-zoo.md) | Coverage of SAEs, released seed zoo | Santosh | core | 2 | registered | E00, E01 | PH1, PH2, PH3a | SynthSAEBench zoo (Kaggle) | 2026-12-05 (preprint) |
 | [E03](experiments/E03-matcher-bakeoff.md) | Matcher bake-off and threshold diagnostics | Santosh | core | 2 | registered | E02 | PH3a | SynthSAEBench zoo (Kaggle) | 2026-12-05 |
 | [E04](experiments/E04-single-truth-test.md) | Single-truth test | Santosh + Kushal | important | 2 | registered | E03, E10 pipeline | PH3 | synthetic + local LLM | 2027-01-20 |
-| [E05](experiments/E05-error-injection-corrections.md) | Identity-error injection and corrections | Santosh | core | 2 | registered | E01, E02 | PH3b | E01 + E02 histories (CPU) | 2026-12-15 |
+| [E05](experiments/E05-error-injection-corrections.md) | Identity-error injection and corrections | Santosh | core | 2 | registered; pilot done (R004–R005) | E01, E02 | PH3b | E01 + E02 histories (CPU) | 2026-12-15 |
 | [E06](experiments/E06-own-seeds-grid.md) | Own SAE seeds across worlds (K = 16) | Santosh | important | 2 | registered | E03 | PH1, PH2, PH4 | scaled synthetic worlds (Kaggle) | 2027-03-15 |
 | [E07](experiments/E07-covariate-models.md) | Covariates of detectability | Santosh | stretch | 3 | proposed | E02, E06 | SH3 | E02/E06 (CPU) | 2027-04-15 |
 | [E08](experiments/E08-auditor-similarity-ladder.md) | Same-model auditors overstate completeness? | Kushal | core | 2 | registered | E00, E01 | PH4 | system-prompt organisms on a Mistral target; Qwen/Llama/Gemma auditors (Kaggle) | 2027-01-25 (workshop: L0 + L3) / 2027-03-15 |
@@ -61,7 +61,7 @@ Rendered by `python tools/notebook.py render`.
 | E02 | 1 | 1 | 0 | 0 | 0 |
 | E03 | 0 | 0 | 0 | 0 | 0 |
 | E04 | 0 | 0 | 0 | 0 | 0 |
-| E05 | 0 | 0 | 0 | 0 | 0 |
+| E05 | 5 | 3 | 0 | 2 | 0 |
 | E06 | 1 | 1 | 0 | 0 | 0 |
 | E07 | 0 | 0 | 0 | 0 | 0 |
 | E08 | 1 | 1 | 0 | 0 | 0 |
