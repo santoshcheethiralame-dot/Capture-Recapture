@@ -39,7 +39,7 @@ def _f(x):
         return np.nan
 
 
-def estimates(Xo, K):
+def estimates(Xo, K, skip=()):
     """The E00 suite on one observed matrix (detected rows only)."""
     d = IncidenceData.from_matrix(Xo) if Xo.shape[0] else None
     out = dict(S_obs=0 if d is None else d.S, U_obs=0 if d is None else d.U)
@@ -64,7 +64,7 @@ def estimates(Xo, K):
             a = K // 2
             cross = [cr.chapman(d, i, j) for i, j in combinations(range(K), 2) if i < a <= j]
             out["chapman_cross"] = _f(np.mean(cross))
-        if 3 <= K <= 12 and (d.y > 1).any():
+        if 3 <= K <= 12 and (d.y > 1).any() and "mh_chao_ll" not in skip:
             try:
                 out["mh_chao_ll"] = _f(cr.loglinear(d, "Mh", "Chao")["N"])
             except Exception:  # failures are data: recorded as NaN
@@ -90,8 +90,30 @@ def bootstrap_cols(Xo, K, seed, B, level):
     return out
 
 
+def realized_cols(Xo, K, seed, B, level):
+    if Xo.shape[0] < 2:
+        return {}
+    from scipy.stats import norm
+    d = IncidenceData.from_matrix(Xo)
+    s_cov, s_delta = seed.spawn(2)
+    z2, z1 = norm.ppf(0.5 + level / 2), norm.ppf(level)
+    out = {}
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        c = cr.coverage_interval(d, B=B, level=level, seed=s_cov)
+        dl = cr.delta_interval(d, B=B, level=level, seed=s_delta)
+    for name, r in (("cov_rz", c), ("delta_rz", dl)):
+        est, se, me = r["estimate"], r["se"], r["mean_error"]
+        out.update({f"{name}_se": se, f"{name}_mean_error": me,
+                    f"{name}_lo": est - z2 * se, f"{name}_hi": est + z2 * se,
+                    f"{name}_bc_lo": est - me - z2 * se, f"{name}_bc_hi": est - me + z2 * se,
+                    f"{name}_lo1": est - z1 * se, f"{name}_bc_lo1": est - me - z1 * se,
+                    f"{name}_dropped": r["dropped"]})
+    return out
+
+
 def work(task):
-    cell_id, idx, params, master, reps, boot = task
+    cell_id, idx, params, master, reps, boot, skip, realized = task
     cell = Cell(**params)
     rows = []
     for r in reps:
@@ -102,10 +124,13 @@ def work(task):
         row = dict(cell=cell_id, cell_idx=idx, rep=r, cell_seed=f"{master}:{idx}",
                    C=sim["C"], Delta=sim["Delta"], N=sim["N"], N_all=sim["N_all"],
                    S_true=int((y > 0).sum()), **{f"Qt{k}": int((y == k).sum()) for k in range(1, 5)})
-        row.update(estimates(sim["X_obs"], cell.K))
+        row.update(estimates(sim["X_obs"], cell.K, skip))
         if boot:
             seed = np.random.SeedSequence(master, spawn_key=(idx, r, 1))
             row.update(bootstrap_cols(sim["X_obs"], cell.K, seed, boot["B"], boot["level"]))
+        if realized:
+            seed = np.random.SeedSequence(master, spawn_key=(idx, r, 2))
+            row.update(realized_cols(sim["X_obs"], cell.K, seed, realized["B"], realized["level"]))
         rows.append(row)
     return rows
 
@@ -120,8 +145,11 @@ def main():
     cfg = json.loads(CONFIG.read_text())
     n_sim = args.n_sim or cfg["n_sim"]
     run_id = f"E01-{args.run}"
-    boot = None
-    if args.run == "R005":
+    boot = realized = None
+    if args.run == "R007":
+        cells = [c for c in cfg["cells"] if c["id"] in cfg["R007"]["cells"]]
+        realized = dict(B=cfg["R007"]["B"], level=cfg["R007"]["level"])
+    elif args.run == "R005":
         cells = [c for c in cfg["cells"] if c["id"] in cfg["R005"]["cells"]]
         boot = dict(B=cfg["R005"]["B"], level=cfg["R005"]["level"])
     else:
@@ -136,7 +164,7 @@ def main():
         block = page.split("<!-- prereg:start -->")[1].split("<!-- prereg:end -->")[0]
         block = "\n".join(l.rstrip() for l in block.strip().splitlines())
         m = manifest.start(
-            run_id, "E01", " ".join(sys.argv), dict(cells=cells, n_sim=n_sim, bootstrap=boot,
+            run_id, "E01", " ".join(sys.argv), dict(cells=cells, n_sim=n_sim, bootstrap=boot, realized=realized,
                                                     config_file=str(CONFIG.relative_to(ROOT))),
             seeds=dict(master=cfg["master_seed"], rule=cfg["seed_rule"],
                        cells={c["id"]: c["idx"] for c in cells}),
@@ -145,7 +173,8 @@ def main():
             inputs=[CONFIG])
     out_dir.mkdir(parents=True, exist_ok=True)
     chunk = 50
-    tasks = [(c["id"], c["idx"], c["params"], cfg["master_seed"], range(s, min(s + chunk, n_sim)), boot)
+    tasks = [(c["id"], c["idx"], c["params"], cfg["master_seed"], range(s, min(s + chunk, n_sim)), boot,
+              tuple(c.get("skip", ())), realized)
              for c in cells for s in range(0, n_sim, chunk)]
     t0 = time.time()
     rows = []

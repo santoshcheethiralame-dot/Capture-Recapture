@@ -220,3 +220,6 @@ Rules:
   by `role`.
 - The analysis code reads only these files. If an analysis needs anything
   else, add a column here first, through a PR approved by both people.
+- Before handing a cell over, run
+  `python -m crsafety.histories check results/EXX/<run_id>/histories/*/`.
+  It lists every violation of the rules above (exit code 1 if any).

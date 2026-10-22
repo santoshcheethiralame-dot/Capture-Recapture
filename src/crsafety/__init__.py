@@ -17,12 +17,12 @@ from .estimators import (
     jackknife,
     report,
 )
-from .bootstrap import bootstrap
+from .bootstrap import bootstrap, coverage_interval, delta_interval
 from .loglin import closedp, loglinear
 
 __all__ = [
     "IncidenceData", "bootstrap", "chao2", "chao2_ci", "chapman", "chapman_pairs",
-    "closedp", "coverage", "darroch_mt", "extrapolate", "generalized_chao",
+    "closedp", "coverage", "coverage_interval", "delta_interval", "darroch_mt", "extrapolate", "generalized_chao",
     "good_turing_coverage", "huggins", "loglinear",
     "ice", "ichao2", "jackknife", "report",
 ]

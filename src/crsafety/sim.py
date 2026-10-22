@@ -40,6 +40,7 @@ class Cell:
     nested_k: float = 0.0      # > 0: threshold (nested) runs with this slope
     ghost: float = 0.0         # false non-match rate per detection
     merge: float = 0.0         # false match rate per observed item
+    mean_p: float = MEAN_P     # mean detectability (homog, logitnormal, mixture, families)
 
     def to_dict(self):
         return asdict(self)
@@ -61,13 +62,13 @@ def nested_cutoffs():
 def _base_pi(cell, rng):
     N = cell.N
     if cell.het == "homog":
-        return np.full(N, MEAN_P)
+        return np.full(N, cell.mean_p)
     if cell.het == "logitnormal":
-        return expit(logit_mean_mu(cell.sigma) + cell.sigma * rng.standard_normal(N))
+        return expit(logit_mean_mu(cell.sigma, cell.mean_p) + cell.sigma * rng.standard_normal(N))
     if cell.het == "zipf":
         return np.maximum(0.9 * np.arange(1, N + 1, dtype=float) ** -cell.alpha, 0.001)
     if cell.het == "mixture":  # 20% uncatchable, the rest logit-normal with mean 0.2
-        p = expit(logit_mean_mu(cell.sigma) + cell.sigma * rng.standard_normal(N))
+        p = expit(logit_mean_mu(cell.sigma, cell.mean_p) + cell.sigma * rng.standard_normal(N))
         p[rng.permutation(N)[: int(round(0.2 * N))]] = 0.0
         return p
     raise ValueError(f"unknown heterogeneity {cell.het!r}")
@@ -85,7 +86,7 @@ def _families(cell, rng):
     """Run j belongs to family j mod F; runs of a family share item effects u_if."""
     N, K, F = cell.N, cell.K, cell.families
     s = np.sqrt(0.5**2 + cell.tau**2)
-    mu = logit_mean_mu(s)
+    mu = logit_mean_mu(s, cell.mean_p)
     z = 0.5 * rng.standard_normal(N)
     u = cell.tau * rng.standard_normal((N, F))
     fam = np.arange(2 * K) % F

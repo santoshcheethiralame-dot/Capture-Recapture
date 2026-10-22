@@ -20,7 +20,8 @@ ROOT = Path(__file__).resolve().parents[2]
 RES = ROOT / "results" / "E01"
 CFG = json.loads((ROOT / "configs" / "e01" / "cells.json").read_text())
 BASE = dict(N=500, K=10, het="logitnormal", sigma=1.0, alpha=1.0, families=0, tau=1.5,
-            dep_or=0.0, c=1.0, nested_k=0.0, ghost=0.0, merge=0.0)
+            dep_or=0.0, c=1.0, nested_k=0.0, ghost=0.0, merge=0.0, mean_p=0.2)
+PREREG_RUNS = ("R001", "R002", "R003", "R004")  # R006 is an exploratory addition (§5)
 RICHNESS = ["chao2", "chao2_bc", "ichao2", "jack1", "jack2", "ice", "mt", "chapman_all",
             "chapman_cross", "mh_chao_ll"]
 LABEL = dict(chao2="Chao2", chao2_bc="Chao2-bc", ichao2="iChao2", jack1="Jack1", jack2="Jack2",
@@ -38,6 +39,16 @@ def load(run):
 
 def num(rows, key):
     return np.array([float(r[key]) if r.get(key) not in (None, "") else np.nan for r in rows])
+
+
+def applicable(est, K):
+    """Estimators undefined by design are 'not applicable', not failures:
+    iChao2 needs K >= 4 (PROTOCOLS §1) and the log-linear fit is run for K <= 12."""
+    if est == "ichao2":
+        return K >= 4
+    if est == "mh_chao_ll":
+        return 3 <= K <= 12
+    return True
 
 
 def params(cell):
@@ -83,7 +94,7 @@ def cell_performance(cell, rows):
     if p["het"] == "mixture":
         targets["N_all"] = num(rows, "N_all")
     for est in RICHNESS:
-        if est not in rows[0]:
+        if est not in rows[0] or not applicable(est, K):
             continue
         e = num(rows, est)
         for t, tv in targets.items():
@@ -115,7 +126,7 @@ def analysis_sets(cells):
     lit, clean = [], []
     for c in cells:
         p = params(c)
-        if c["run"] == "R005":
+        if c["run"] not in PREREG_RUNS:
             continue
         if p["ghost"] == 0 and p["merge"] == 0 and p["c"] == 1.0 and p["K"] >= 5:
             lit.append(c["id"])
@@ -135,11 +146,14 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     by_cell = defaultdict(list)
     boot = defaultdict(list)
-    for run in ("R001", "R002", "R003", "R004"):
+    for run in PREREG_RUNS + ("R006",):
         for r in load(run):
             by_cell[r["cell"]].append(r)
     for r in load("R005"):
         boot[r["cell"]].append(r)
+    rz = defaultdict(list)
+    for r in load("R007"):
+        rz[r["cell"]].append(r)
     cells = [c for c in CFG["cells"] if c["id"] in by_cell]
     summ, perf = {}, []
     for c in cells:
@@ -180,6 +194,20 @@ def main():
     # ------------------------------------------------------------ hypotheses
     lit, clean, h1b = analysis_sets(cells)
     H = []
+    dep_or = {}
+    for c in cells:
+        p = params(c)
+        if p["dep_or"]:
+            from crsafety.sim import Cell, simulate
+            t = np.zeros((2, 2))
+            for r in range(100):
+                rng = np.random.default_rng(np.random.SeedSequence(CFG["master_seed"], spawn_key=(c["idx"], r)))
+                X = simulate(Cell(**c["params"]), rng)["X"]
+                a = X[:, : p["K"] // 2].any(axis=1)
+                for j in range(p["K"] // 2, p["K"]):
+                    t += np.array([[np.sum(a & (X[:, j] == 1)), np.sum(a & (X[:, j] == 0))],
+                                   [np.sum(~a & (X[:, j] == 1)), np.sum(~a & (X[:, j] == 0))]])
+            dep_or[c["id"]] = (p["dep_or"], t[0, 0] * t[1, 1] / (t[0, 1] * t[1, 0]))
 
     def cov_bias(cid):
         return g(cid, "coverage", "C", "absolute"), g(cid, "coverage", "C", "absolute", "mcse")
@@ -240,7 +268,8 @@ def main():
          "## Hypotheses", "", "| ID | Measure | Estimate | Cells | Verdict |", "|---|---|---|---|---|"]
     for h in H:
         L.append(f"| {h['id']} | {h['measure']} | {h['estimate']} | {h['cells']} | **{h['verdict']}** |")
-    L += ["", "Per-cell values: `hypotheses.csv` (detail column).", ""]
+    L += ["", "Per-cell values: `hypotheses.csv` (detail column). '—' in the tables below means "
+          "not applicable by design (iChao2 needs K ≥ 4; the log-linear fit is run for 3 ≤ K ≤ 12).", ""]
 
     def fmt(x, pct=False, d=3):
         if x is None or not np.isfinite(x):
@@ -249,7 +278,8 @@ def main():
 
     blocks = defaultdict(list)
     for c in cells:
-        blocks[c["block"]].append(c["id"])
+        if c["run"] in PREREG_RUNS:
+            blocks[c["block"]].append(c["id"])
     L += ["## Coverage and new-item prediction by cell", "",
           "| Block | Cell | S/N | C (true) | Ĉ bias (MCSE) | Ĉ RMSE | Δ(K) true | Δ̂ rel. bias (MCSE) | Turing 1−Q1/U bias |",
           "|---|---|---|---|---|---|---|---|---|"]
@@ -261,6 +291,22 @@ def main():
                      f"{g(cid, 'coverage', 'C', 'absolute', 'rmse'):.4f} | {s['Delta']:.1f} | "
                      f"{fmt(g(cid, 'delta_K', 'Delta(K)'), True)} ({g(cid, 'delta_K', 'Delta(K)', key='mcse'):.3f}) | "
                      f"{fmt(g(cid, 'gt_coverage', 'C', 'absolute'), d=4)} |")
+    L += ["", "## Calibration of the PH1 tolerance (exploratory; input to the v1 freeze)", "",
+          "Share of replicates with |Ĉ − C| ≤ 0.05, and the 80th percentile of |Ĉ − C|, in the "
+          "clean cells (H1a clean set). PH1 asks for |Ĉ − C| ≤ 0.05† in ≥ 80%† of evaluation cells.", "",
+          "| Cell | K | N | share ≤ 0.05 | P80 \\|Ĉ − C\\| |", "|---|---|---|---|---|"]
+    for cid in clean:
+        e = np.abs(num(by_cell[cid], "coverage") - num(by_cell[cid], "C"))
+        e = e[np.isfinite(e)]
+        L.append(f"| {cid} | {summ[cid]['K']} | {summ[cid]['N']:.0f} | {np.mean(e <= 0.05):.3f} | "
+                 f"{np.quantile(e, 0.8):.4f} |")
+    if dep_or:
+        L += ["", "Dependence cells: the item-level odds ratio between 'found in block A' and a "
+              "block-B detection equals θ by construction. The marginal odds ratio (pooled over "
+              "items, so it includes heterogeneity) from 100 regenerated replicates:", "",
+              "| Cell | θ (design) | marginal OR |", "|---|---|---|"]
+        for cid, (theta, orr) in dep_or.items():
+            L.append(f"| {cid} | {theta:.3f} | {orr:.3f} |")
     L += ["", "## Richness estimators: relative bias against N (catchable items)", "",
           "| Cell | N_LB/N − 1 | " + " | ".join(LABEL[e] for e in RICHNESS) + " | Chao2 CI covers N | covers N_LB |",
           "|---" * (len(RICHNESS) + 4) + "|"]
@@ -269,6 +315,9 @@ def main():
             s = summ[cid]
             cells_txt = []
             for e in RICHNESS:
+                if not applicable(e, summ[cid]["K"]):
+                    cells_txt.append("—")
+                    continue
                 b, fr = g(cid, e, "N"), g(cid, e, "N", key="failure_rate")
                 t = fmt(b, True)
                 if np.isfinite(fr) and fr > 0:
@@ -279,6 +328,21 @@ def main():
     if any("N_all" in k for k in P if k[0] == "mix20"):
         L += ["", f"mix20 against N_all (all items, 20% uncatchable): Chao2 {fmt(g('mix20', 'chao2', 'N_all'), True)}, "
               f"Jack2 {fmt(g('mix20', 'jack2', 'N_all'), True)}."]
+    small = [c["id"] for c in cells if c["run"] == "R006"]
+    if small:
+        L += ["", "## R006 (exploratory, added after R001–R004): PH1 tolerance at E09/E10 sizes", "",
+              "Logit-normal detectability; N items, K runs, mean detectability p̄. Not pre-registered.", "",
+              "| Cell | N | K | σ | p̄ | S/N | Ĉ bias (MCSE) | share \\|Ĉ − C\\| ≤ 0.05 | ≤ 0.10 | P80 \\|Ĉ − C\\| | Δ̂ rel. bias |",
+              "|---|---|---|---|---|---|---|---|---|---|---|"]
+        for cid in small:
+            pp, rows = params(next(c for c in cells if c["id"] == cid)), by_cell[cid]
+            e = np.abs(num(rows, "coverage") - num(rows, "C"))
+            e = e[np.isfinite(e)]
+            L.append(f"| {cid} | {pp['N']} | {pp['K']} | {pp['sigma']:g} | {pp['mean_p']:g} | "
+                     f"{summ[cid]['S_true'] / summ[cid]['N_all']:.2f} | "
+                     f"{fmt(g(cid, 'coverage', 'C', 'absolute'), d=4)} ({g(cid, 'coverage', 'C', 'absolute', 'mcse'):.4f}) | "
+                     f"{np.mean(e <= 0.05):.3f} | {np.mean(e <= 0.10):.3f} | {np.quantile(e, 0.8):.4f} | "
+                     f"{fmt(g(cid, 'delta_K', 'Delta(K)'), True)} |")
     if bsumm:
         L += ["", "## R005: bootstrap intervals (B = 500 per replicate)", "",
               "| Cell | Ĉ normal CI covers C | Ĉ percentile CI covers C | median width | Δ̂ normal CI covers Δ | Δ̂ percentile CI covers Δ | median width |",
@@ -288,6 +352,41 @@ def main():
                      f"{s['coverage_ci_p_cover']:.3f} ({s['coverage_ci_p_cover_mcse']:.3f}) | "
                      f"{s['coverage_ci_n_width_median']:.3f} | {s['delta_K_ci_n_cover']:.3f} ({s['delta_K_ci_n_cover_mcse']:.3f}) | "
                      f"{s['delta_K_ci_p_cover']:.3f} ({s['delta_K_ci_p_cover_mcse']:.3f}) | {s['delta_K_ci_n_width_median']:.1f} |")
+    if rz:
+        L += ["", "## R007 (exploratory, added after R005): realized-coverage bootstrap", "",
+              "`crsafety.coverage_interval` / `delta_interval`, B = 500, on the same datasets as R005. "
+              "Two-sided 95% intervals (uncorrected; bias-corrected by the mean bootstrap error) and the "
+              "one-sided 95% lower bound used by stopping rules. MCSE in parentheses.", "",
+              "| Cell | R005 iNEXT normal: covers C | realized: covers C | bias-corrected: covers C | "
+              "P(C ≥ one-sided lower bound) | median width | Δ realized: covers Δ | Δ bias-corrected |",
+              "|---|---|---|---|---|---|---|---|"]
+        rzs = []
+        for cid, rows in rz.items():
+            C, D = num(rows, "C"), num(rows, "Delta")
+
+            def cover(lo, hi, t):
+                lo, hi = num(rows, lo), num(rows, hi)
+                ok = np.isfinite(lo) & np.isfinite(hi)
+                p_ = float(np.mean((np.maximum(lo, 0) <= t) & (t <= np.minimum(hi, 1 if t is C else np.inf))[ok]))
+                return p_, float(np.sqrt(p_ * (1 - p_) / ok.sum()))
+
+            def txt(v):
+                return f"{v[0]:.3f} ({v[1]:.3f})"
+
+            a, b = cover("cov_rz_lo", "cov_rz_hi", C), cover("cov_rz_bc_lo", "cov_rz_bc_hi", C)
+            lo1 = num(rows, "cov_rz_lo1")
+            one = float(np.mean((C >= lo1)[np.isfinite(lo1)]))
+            da, db = cover("delta_rz_lo", "delta_rz_hi", D), cover("delta_rz_bc_lo", "delta_rz_bc_hi", D)
+            w = float(np.nanmedian(np.minimum(num(rows, "cov_rz_hi"), 1) - np.maximum(num(rows, "cov_rz_lo"), 0)))
+            ref = bsumm.get(cid, {}).get("coverage_ci_n_cover", np.nan)
+            L.append(f"| {cid} | {ref:.3f} | {txt(a)} | {txt(b)} | {one:.3f} | {w:.3f} | {txt(da)} | {txt(db)} |")
+            rzs.append(dict(cell=cid, cover_realized=a[0], cover_realized_mcse=a[1], cover_bc=b[0],
+                            cover_bc_mcse=b[1], one_sided=one, width_median=w, delta_cover=da[0],
+                            delta_cover_bc=db[0], inext_normal_cover=ref))
+        with open(out_dir / "realized_bootstrap.csv", "w", newline="") as f:
+            wr = csv.DictWriter(f, list(rzs[0]))
+            wr.writeheader()
+            wr.writerows(rzs)
     (out_dir / "summary.md").write_text("\n".join(L) + "\n")
     print("\n".join(L[:12 + len(H)]))
 
