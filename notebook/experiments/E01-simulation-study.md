@@ -228,6 +228,7 @@ adaptivity" could include dependent runs):
 | E01-R006 | Exploratory: small-N calibration of the PH1 tolerance (E09/E10 sizes) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | dc94c94+dirty | Exploratory, 24 small-N cells: C_hat unbiased (|bias| <= 0.013) but |C_hat - C| <= 0.05 in only 33-73% of replicates at N=14, K=8 (p 0.2-0.4); 80th pct |C_hat - C| 0.06-0.14 at N=14-20, 0.02-0.08 at N=50 |
 | E01-R007 | Exploratory: realized-coverage bootstrap intervals on the R005 datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | dc94c94+dirty | Exploratory: realized-coverage bootstrap 95% interval covers C in 0.89-0.97 of replicates in clean cells (base 0.922) vs 0.73-0.91 for the iNEXT interval on the same datasets; one-sided 95% lower bound holds in 0.89-0.94; Delta bias-corrected interval 0.89-0.95 |
 | E01-R008 | Exploratory: realized-coverage bootstrap replicated on fresh datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | b136211+dirty | Exploratory replication on fresh datasets: realized-coverage interval covers C in 0.896-0.950 of replicates in clean cells; base 0.906 (MCSE 0.013) meets the pre-set >= 0.90 criterion; Delta bias-corrected 0.898-0.954 |
+| E01-R009 | Exploratory: de-adaptation A3a/A3b on adaptive campaigns (run and attempt level) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | fd4bc25 | Exploratory: de-adaptation over-corrects. Run level (K=10): A3a coverage bias -0.30 (base), -0.44 (c=0.5), -0.08 (c=2; naive +0.07); A3b undefined in 500/500 (every run finds something new). Attempt level (20 blind spots, 200 attempts): median log(rate/truth) naive +0.27 / -0.48 / -0.89 for c=1/3/10; A3a +1.98 / +1.60 / +0.61; A3b about +2.1 |
 <!-- runs:end -->
 
 ## 5. Results
@@ -324,6 +325,18 @@ freeze. Nothing in `docs/PREREGISTRATION.md` has been changed.
   (0.886–0.954 in clean cells vs 0.51–0.98 uncorrected).
 - Under the violations (families, c = 2, ghosts) no interval helps: the
   bias is larger than the interval width.
+- **R009: de-adaptation (for E10's arm A3).** `crsafety.deadapt` implements
+  A3a (Liyanage et al. 2024, Algorithm 1, read from the paper) and A3b (the
+  reset estimator of Böhme et al. 2021, read from their artefact). On E01's
+  run-level cells, A3a pushes coverage far too low: −0.30 in the
+  non-adaptive base cell, and −0.08 at c = 2 where the naive bias is +0.07.
+  A3b is undefined in all 500 replicates of each cell (every run finds
+  something new, so nothing is left after the last reset). In simulated
+  red-team sessions (20 graded blind spots, 200 attempts) the naive Chao
+  rate shows the expected adaptive bias: median log(estimate/truth) +0.27,
+  −0.48 and −0.89 for c = 1, 3 and 10. A3a overestimates the rate in every
+  arm (+1.98, +1.60, +0.61) and A3b by about 8× (+2.1 to +2.2). Neither
+  corrects adaptive bias at this scale; consequences for E10 in D-012.
 
 ## 6. Deviations
 

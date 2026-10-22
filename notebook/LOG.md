@@ -340,3 +340,30 @@ identified at K = 10. **Recommendation for the freeze (FREEZE-V1 item 6):**
 keep (d) as specified and report its failure; do not add another f1-free
 estimator. The function stays in the library, marked "not recommended".
 
+## 2026-10-22 (late): H8 de-adaptation, H5 analysis scripts, E01-R009
+
+Santosh.
+
+**Did:**
+- Resolved Q-D7. The ICSE'24 paper is in the authors' GitHub pages repo,
+  which git can clone although the website is blocked here. The FSE'21
+  reset estimator is in their artefact repo. Implemented both in
+  `crsafety.deadapt` (handoff H8), with tests.
+- Wrote the frozen-analysis scripts for Kushal's experiments (handoff H5):
+  `analysis/e08/analyse.py`, `analysis/e09/analyse.py`,
+  `analysis/e10/analyse.py`, with shared code in `crsafety.testbed` and an
+  end-to-end test on fake PROTOCOLS §10 histories.
+- Ran E01-R009 (exploratory): how de-adaptation behaves.
+
+**Saw:**
+- E10 §2's reconstruction of A3a was a no-op: shuffling a window does not
+  change Ĉ at its end. The real algorithm works on every prefix of every
+  shuffled window.
+- Faithfully implemented, both methods over-correct at our scale (numbers
+  in E01 §5 and the R009 run summary). A3b is undefined at the run level
+  because every run finds something new. Proposed D-012 for the freeze;
+  E10 itself is Kushal's page.
+
+**Next:** E06 simulation side (seeding check, configs, analysis), then
+E04's SAE arm and E07 code.
+

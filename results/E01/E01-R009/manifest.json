@@ -1,0 +1,83 @@
+{
+  "run_id": "E01-R009",
+  "experiment": "E01",
+  "prereg": {
+    "frozen": false,
+    "note": "exploratory addition (de-adaptation, H8)"
+  },
+  "confirmatory": false,
+  "git_sha": "fd4bc25",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e01/deadapt_eval.py",
+  "config": {
+    "run_cells": [
+      "base",
+      "beh0.5",
+      "beh2"
+    ],
+    "arms": {
+      "non-adaptive": 1.0,
+      "adaptive c=3": 3.0,
+      "adaptive c=10": 10.0
+    },
+    "q": [
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.05,
+      0.015,
+      0.015,
+      0.015,
+      0.015,
+      0.015,
+      0.015,
+      0.015,
+      0.015,
+      0.015,
+      0.015,
+      0.004,
+      0.004,
+      0.004,
+      0.004,
+      0.004
+    ],
+    "B": 200,
+    "n": 500,
+    "alpha": 0.11,
+    "beta": 0.5,
+    "exploratory": true
+  },
+  "config_sha256": "395be82d1cf63c390cf9b85def99f62d93d5ec44be09695f5f541933c8ad1da6",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261022,
+    "rule": "run level: E01 cell seeds; attempt level: spawn_key=(9100 + arm, session)"
+  },
+  "inputs": [],
+  "model_ids": [],
+  "started_utc": "2026-10-22T18:54:40+00:00",
+  "finished_utc": "2026-10-22T18:54:45+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E01/E01-R009/replicates.csv.gz",
+    "results/E01/E01-R009/summary.md"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "wall_seconds": 5.3
+}

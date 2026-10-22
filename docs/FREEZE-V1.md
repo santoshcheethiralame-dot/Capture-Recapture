@@ -31,6 +31,7 @@ frozen.
 | 7 | Licences | Code MIT; docs and released data CC BY 4.0 | D-006 (repository owner) |
 | 8 | Disclosure notice window | 30 days (proposed) | `DISCLOSURE.md` |
 | 9 | E01 H1c design flaw | Note in the paper that the dependence factor sat on σ = 1 heterogeneity; no re-run (E01 is not frozen, but its verdicts stand as run) | E01 §5 |
+| 10 | E10 arm A3 (de-adaptation) | Keep as pre-registered with the faithful algorithm and expect H10c to fail; add a design-based secondary analysis | D-012; E01-R009 |
 
 ## 3. Pages to lock at v1.0
 
@@ -42,8 +43,9 @@ frozen one by one later.
 | E02 | Santosh → Kushal | R001 inventory on Kaggle (allowed before the freeze) | code ready (`analysis/e02/`); run R001 first |
 | E03 | Santosh → Kushal | uses E02-R001 | code ready (`analysis/e03/bakeoff.py`) |
 | E05 | Santosh → Kushal | R004, R005 done | §2a drafted; decisions 5–6 |
-| E08 | Kushal → Santosh | R001 (floor/ceiling, scaffold) | Kushal |
-| E10 | Kushal → Santosh | R001 (monitor), R002 (difficulty) | Kushal |
+| E08 | Kushal → Santosh | R001 (floor/ceiling, scaffold) | Kushal; frozen analysis script ready: `analysis/e08/analyse.py` (H5) |
+| E09 | Kushal → Santosh | R004 (pilot organisms) | later (gate G3); frozen analysis script ready: `analysis/e09/analyse.py` |
+| E10 | Kushal → Santosh | R001 (monitor), R002 (difficulty) | Kushal; frozen analysis script ready: `analysis/e10/analyse.py`; decision 10 |
 | E13 | Santosh → Kushal | R003 (simulated) done | needs E02/E06/E09/E10 data; can freeze now or with E09 |
 
 ## 4. Freeze chain (after sections 1–3)
