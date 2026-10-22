@@ -27,7 +27,7 @@ papers.
 | [E10](experiments/E10-planted-redteam.md) | Red teams vs planted blind spots, adaptive vs not | Kushal | core | 2 | registered | E00, E01 | PH1, PH5 | own monitor (CPU) + open attackers (Kaggle) | 2027-01-25 (workshop) / 2027-03-15 |
 | [E11](experiments/E11-real-saes.md) | Coverage of real-model SAEs | Santosh | stretch | 3 | proposed | E03, E05, E06 | SH4 | Pythia-70M, Gemma Scope, board games (Kaggle) | 2027-04-30 |
 | [E12](experiments/E12-multi-quirk-organisms.md) | Organisms with many planted quirks | Kushal | stretch | 3 | proposed | E09 pipeline | PH1, PH2 (ext.) | QLoRA organisms (Kaggle) | after NeurIPS |
-| [E13](experiments/E13-stopping-rule.md) | Coverage stopping rule | Santosh | core | 2 | registered | E02, E06, E09, E10 | PH6 | resampled campaigns (CPU) | 2027-04-15 |
+| [E13](experiments/E13-stopping-rule.md) | Coverage stopping rule | Santosh | core | 2 | registered; pilot done (R003) | E02, E06, E09, E10 | PH6 | resampled campaigns (CPU) | 2027-04-15 |
 | [E14](experiments/E14-forecasting-comparison.md) | Coverage vs tail forecasting | Kushal | stretch | 3 | proposed | E10 | exploratory | E10 monitor | after NeurIPS |
 | [E15](experiments/E15-planted-mark-calibration.md) | Planted-mark calibration in real systems | Santosh + Kushal | important | 3 | proposed (novelty check Q-N1) | E02/E06, E09/E11 | SH2 | Pythia + organism (Kaggle) | 2027-04-30 |
 | [E16](experiments/E16-two-sided-bounds.md) | Two-sided bounds on missed SAE mass | Santosh | stretch | 3 | proposed (Q-N2) | E06, E11 | exploratory | synthetic + Pythia | after NeurIPS |
@@ -69,7 +69,7 @@ Rendered by `python tools/notebook.py render`.
 | E10 | 1 | 1 | 0 | 0 | 0 |
 | E11 | 0 | 0 | 0 | 0 | 0 |
 | E12 | 0 | 0 | 0 | 0 | 0 |
-| E13 | 0 | 0 | 0 | 0 | 0 |
+| E13 | 3 | 1 | 0 | 1 | 1 |
 | E14 | 0 | 0 | 0 | 0 | 0 |
 | E15 | 0 | 0 | 0 | 0 | 0 |
 | E16 | 0 | 0 | 0 | 0 | 0 |

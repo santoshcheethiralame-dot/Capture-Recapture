@@ -297,3 +297,25 @@ Santosh (with Claude).
 freeze. Open for the freeze: whether to add a ratio-regression f1-free
 estimator (needs an E00 run).
 
+## 2026-10-22 (night): matching library; E13 stopping rules and pilot
+
+Santosh (with Claude).
+
+**Did:**
+- Wrote `crsafety.matching`: the SAE identity rules for E02, E03, E06 and
+  E11, with 10 tests. Timed at E02 scale: about 25 min of CPU for all 35
+  cells.
+- Wrote `crsafety.stopping` (R-point; R-lower with the D-010 bound;
+  R-fixed) and a declared pilot on simulated campaigns.
+- E13-R002 crashed at once: `stop_lower` rejected a SeedSequence seed. My
+  command chain also hid the failing smoke test, which is why the run got
+  registered. Marked failed (bug), fixed with a test, re-run as E13-R003.
+
+**Saw (pilot):**
+- R-lower reaches the target in 0.93–0.985 of campaigns where the target
+  is reachable, saving 19–69% of runs; R-point only 0.50–0.79.
+- One shared family defeats every rule (0% success).
+
+**Next:** the same as the previous entry. Before the freeze: review of
+E02/E03/E05/E13 pages with Kushal.
+

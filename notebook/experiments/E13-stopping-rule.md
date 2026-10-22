@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | registered |
+| Status | registered; pilot done (R003); confirmatory R001 needs E02, E06, E09, E10 |
 | Owner | Santosh |
 | Tier | core |
 | Stage | 2 confirmatory (uses data from E02, E06, E09, E10) |
@@ -83,12 +83,37 @@ the pooled H13a figure.
 ## 4. Runs
 
 <!-- runs:start -->
-_No runs yet._
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E13-R001 | All rules x testbeds | Santosh | planned |  |  | beef322 |  |
+| E13-R002 | Pilot (declared): rules on simulated campaigns | Santosh | failed | 2026-10-22 | 2026-10-22 | beef322+dirty | Bug: crashed before any campaign finished (stop_lower rejected a SeedSequence seed). Fixed with a test; re-run as E13-R003 |
+| E13-R003 | Pilot (declared): rules on simulated campaigns (retry of E13-R002 after bug fix) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | c8ef140+dirty | Pilot, 200 simulated campaigns x 6 worlds: R-lower (D-010 bound) success 0.93-0.985 where the target is reachable, median runs saved 19-69%; R-point 0.50-0.79; both fail with one shared family (0%); Zipf 0.5 never reaches 0.8 within K=16 (rules correctly do not stop) |
 <!-- runs:end -->
 
 ## 5. Results
 
-_Not started._
+**R-lower's bound (D-010).** The "lower 95% bootstrap bound of Ĉ(k)" is the
+one-sided lower bound of `crsafety.coverage_interval` (realized-coverage
+bootstrap, B = 1,000), because E01 showed that the iNEXT interval
+under-covers the realized coverage. Code: `crsafety.stopping`.
+
+**Pilot (declared; simulated campaigns, not the E13 testbeds; not evidence
+for H13a–H13d).** E13-R003 (E13-R002 crashed on a seeding bug before any
+campaign finished, and was fixed and re-run). 200 fresh simulated campaigns
+per world, K_max = 16 (12 for N = 20), B = 500.
+
+| world | target | R-point success | R-lower success | R-lower median runs saved |
+|---|---|---|---|---|
+| homogeneous | 0.9 | 0.79 | 0.985 | 25% |
+| logit-normal σ = 1 | 0.9 | 0.60 | 0.945 | 19% |
+| logit-normal σ = 2 | 0.9 | 0.56 | 0.930 | 31% |
+| N = 20, K = 12, p̄ = 0.4 | 0.9 | 0.50 | 0.965 | 33% |
+| Zipf α = 0.5 | 0.8 / 0.9 | 0 | 0 (never stops; target unreachable by K = 16) | 0% |
+| one shared family | 0.9 | 0 | 0 | 25% |
+
+Full table: `results/E13/E13-R003/summary.md`. The pilot suggests R-lower
+can meet H13a where runs are independent, and that shared-family
+dependence breaks every rule, as H13d anticipates for adaptivity.
 
 ### Confirmatory
 
