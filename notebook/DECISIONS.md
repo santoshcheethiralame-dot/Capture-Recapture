@@ -274,3 +274,34 @@ unattainable at the item counts of E09 (14) and E10 (20).
 **Affects pre-registered analysis:** yes. A defines the interval used by
 PH1, PH6 and every coverage report (before any freeze). B changes nothing
 until both people agree at the freeze.
+
+## D-011 (proposed): Truth for E02/E06 coverage uses detectability estimated without the evaluated runs (2026-10-22)
+
+**Status:** proposed for the joint v1 freeze; not applied.
+**Context:** E02 §2 estimates each feature's catch rate π̃ from the
+architecture's reference pool of 35 SAEs. That pool *includes* the 5 seeds
+being evaluated, and a leave-cell-out variant is "also reported". The
+items a cell found get an inflated π̃, so the pooled truth C is biased
+upwards. Simulated with 4,000 features, 35 runs and Beta-distributed
+detectability (200 replicates; analysis/e02 development, not a registered
+run):
+
+| detectability | pooled C − true C | leave-cell-out C − true C |
+|---|---|---|
+| Beta(2, 2) | +0.007 | −0.000 |
+| Beta(0.5, 3) | +0.035 | −0.000 |
+| Beta(0.3, 6) | +0.066 | +0.000 |
+
+The bias is the size of H2a's 0.05 tolerance under heavy tails, which is
+the regime the project cares about.
+**Proposal:**
+- E02: the confirmatory truth for H2a and H2c is the leave-cell-out C
+  (π̃ from the other 6 L0 cells of the same architecture, 30 SAEs); the
+  pooled C becomes the secondary variant. Both remain approximations,
+  since catch rates differ between L0 values.
+- E06: compute π̃ from the 8 reference seeds only (not the 16 evaluation
+  seeds), with U still the union over all 24. With 8 reference seeds, rare
+  features have π̃ = 0 although caught; report how much mass this drops.
+**Affects pre-registered analysis:** yes (E02 H2a/H2c, E06 H6a), if adopted
+at the freeze. `analysis/e02/evaluate.py` already computes both variants.
+
