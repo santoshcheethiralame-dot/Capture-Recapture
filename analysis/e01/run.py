@@ -114,9 +114,10 @@ def realized_cols(Xo, K, seed, B, level):
 
 def work(task):
     cell_id, idx, params, master, reps, boot, skip, realized = task
+    offset = realized.get("rep_offset", 0) if realized else 0
     cell = Cell(**params)
     rows = []
-    for r in reps:
+    for r in (r + offset for r in reps):
         rng = np.random.default_rng(np.random.SeedSequence(master, spawn_key=(idx, r)))
         sim = simulate(cell, rng)
         X = sim["X"]
@@ -146,9 +147,10 @@ def main():
     n_sim = args.n_sim or cfg["n_sim"]
     run_id = f"E01-{args.run}"
     boot = realized = None
-    if args.run == "R007":
-        cells = [c for c in cfg["cells"] if c["id"] in cfg["R007"]["cells"]]
-        realized = dict(B=cfg["R007"]["B"], level=cfg["R007"]["level"])
+    if args.run in ("R007", "R008"):
+        rc = cfg[args.run]
+        cells = [c for c in cfg["cells"] if c["id"] in rc["cells"]]
+        realized = dict(B=rc["B"], level=rc["level"], rep_offset=rc.get("rep_offset", 0))
     elif args.run == "R005":
         cells = [c for c in cfg["cells"] if c["id"] in cfg["R005"]["cells"]]
         boot = dict(B=cfg["R005"]["B"], level=cfg["R005"]["level"])

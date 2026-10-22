@@ -154,6 +154,9 @@ def main():
     rz = defaultdict(list)
     for r in load("R007"):
         rz[r["cell"]].append(r)
+    rz8 = defaultdict(list)
+    for r in load("R008"):
+        rz8[r["cell"]].append(r)
     cells = [c for c in CFG["cells"] if c["id"] in by_cell]
     summ, perf = {}, []
     for c in cells:
@@ -352,9 +355,13 @@ def main():
                      f"{s['coverage_ci_p_cover']:.3f} ({s['coverage_ci_p_cover_mcse']:.3f}) | "
                      f"{s['coverage_ci_n_width_median']:.3f} | {s['delta_K_ci_n_cover']:.3f} ({s['delta_K_ci_n_cover_mcse']:.3f}) | "
                      f"{s['delta_K_ci_p_cover']:.3f} ({s['delta_K_ci_p_cover_mcse']:.3f}) | {s['delta_K_ci_n_width_median']:.1f} |")
-    if rz:
-        L += ["", "## R007 (exploratory, added after R005): realized-coverage bootstrap", "",
-              "`crsafety.coverage_interval` / `delta_interval`, B = 500, on the same datasets as R005. "
+    for tag, rzd in (("R007", rz), ("R008", rz8)):
+      if rzd:
+        rz = rzd
+        L += ["", f"## {tag} (exploratory, added after R005{'; fresh datasets, replicates 10000+' if tag == 'R008' else ''}): realized-coverage bootstrap", "",
+              "`crsafety.coverage_interval` / `delta_interval`, B = 500, on "
+              + ("fresh datasets (the R005 column is from the other datasets, for reference). "
+                 if tag == "R008" else "the same datasets as R005. ") +
               "Two-sided 95% intervals (uncorrected; bias-corrected by the mean bootstrap error) and the "
               "one-sided 95% lower bound used by stopping rules. MCSE in parentheses.", "",
               "| Cell | R005 iNEXT normal: covers C | realized: covers C | bias-corrected: covers C | "
@@ -383,7 +390,7 @@ def main():
             rzs.append(dict(cell=cid, cover_realized=a[0], cover_realized_mcse=a[1], cover_bc=b[0],
                             cover_bc_mcse=b[1], one_sided=one, width_median=w, delta_cover=da[0],
                             delta_cover_bc=db[0], inext_normal_cover=ref))
-        with open(out_dir / "realized_bootstrap.csv", "w", newline="") as f:
+        with open(out_dir / f"realized_bootstrap_{tag}.csv", "w", newline="") as f:
             wr = csv.DictWriter(f, list(rzs[0]))
             wr.writeheader()
             wr.writerows(rzs)
