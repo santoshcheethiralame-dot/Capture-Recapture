@@ -9,6 +9,7 @@ from .estimators import (
     coverage,
     darroch_mt,
     extrapolate,
+    generalized_chao,
     good_turing_coverage,
     huggins,
     ice,
@@ -17,10 +18,12 @@ from .estimators import (
     report,
 )
 from .bootstrap import bootstrap
+from .loglin import closedp, loglinear
 
 __all__ = [
     "IncidenceData", "bootstrap", "chao2", "chao2_ci", "chapman", "chapman_pairs",
-    "coverage", "darroch_mt", "extrapolate", "good_turing_coverage", "huggins",
+    "closedp", "coverage", "darroch_mt", "extrapolate", "generalized_chao",
+    "good_turing_coverage", "huggins", "loglinear",
     "ice", "ichao2", "jackknife", "report",
 ]
 __version__ = "0.1.0"

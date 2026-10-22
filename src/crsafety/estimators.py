@@ -308,6 +308,50 @@ def huggins(X, Z):
     return N_hat, res.x, converged
 
 
+def generalized_chao(X, Z=None):
+    """Böhning et al. (2013) generalised Chao estimator, incidence (binomial) form.
+
+    Uses only items found once or twice. Under a binomial model over K runs
+    with odds theta_i = p_i / (1 - p_i), P(found twice | found once or twice)
+    has logit log((K - 1) / 2) + log theta_i, so log theta_i = [1, Z_i] beta
+    is fitted by logistic regression with that offset. Then
+    f0 = sum over those items of 1 / (K theta_i + K (K - 1) / 2 theta_i^2).
+    Without covariates this equals classic Chao2 exactly.
+
+    ``Z`` has one row per detected item (as in :func:`huggins`), or None.
+    Returns (N_hat, beta, converged); NaN when Q1 = 0 or Q2 = 0 (no finite MLE).
+    """
+    d = _data(X)
+    K, y = d.K, d.y
+    if K < 2:
+        return np.nan, np.array([]), False
+    D = np.ones((d.S, 1))
+    if Z is not None:
+        Z = np.asarray(Z, dtype=float)
+        Z = Z[:, None] if Z.ndim == 1 else Z
+        if Z.shape[0] != d.S:
+            raise ValueError("Z needs one row per detected item")
+        D = np.column_stack([D, Z])
+    low = (y == 1) | (y == 2)
+    D, r = D[low], (y[low] == 2).astype(float)
+    if r.sum() == 0 or r.sum() == r.size:
+        return np.nan, np.full(D.shape[1], np.nan), False
+    offset = np.log((K - 1) / 2)
+    beta = np.zeros(D.shape[1])
+    beta[0] = np.log(r.mean() / (1 - r.mean())) - offset
+    converged = False
+    for _ in range(100):  # Newton-Raphson for the logistic likelihood
+        pr = 1 / (1 + np.exp(-(D @ beta + offset)))
+        step = np.linalg.solve(D.T @ (D * (pr * (1 - pr))[:, None]), D.T @ (r - pr))
+        beta += step
+        if np.max(np.abs(step)) < 1e-12 * (1 + np.max(np.abs(beta))):
+            converged = True
+            break
+    theta = np.exp(D @ beta)
+    f0 = np.sum(1 / (K * theta + K * (K - 1) / 2 * theta**2))
+    return float(d.S + f0), beta, converged
+
+
 # ---------------------------------------------------------------- report
 
 def report(X):
