@@ -319,3 +319,24 @@ Santosh (with Claude).
 **Next:** the same as the previous entry. Before the freeze: review of
 E02/E03/E05/E13 pages with Kushal.
 
+## 2026-10-22 (night, late): M3 matcher; an f1-free alternative tried and rejected
+
+Santosh (with Claude).
+
+**Did:**
+- Wrote `analysis/e03/act_corr.py` (M3, activation correlation), plus the
+  `bakeoff.py --m3` and `--fire-counts` options. Tested M1–M4 end to end on
+  SAEs trained by SAELens's own runner.
+- Built `crsafety.betabinomial_nof1`, a beta-binomial fitted to items found
+  at least twice, as a candidate replacement for `breakaway_nof1` in E05
+  (d). It recovers N to 3e-5 from expected beta-binomial counts (test).
+- Exploratory, on the stored frequency tables of pilot E05-R005 (no new
+  run): compared it with `breakaway_nof1` against the oracle Chao2.
+
+**Saw:** the beta-binomial alternative is worse, not better. Medians were
++8% to +220%. Means exploded (up to +10^6%) on the σ = 2 world, where the
+fit runs to a → 0. Extrapolating from counts ≥ 2 down to f1 and f0 is barely
+identified at K = 10. **Recommendation for the freeze (FREEZE-V1 item 6):**
+keep (d) as specified and report its failure; do not add another f1-free
+estimator. The function stays in the library, marked "not recommended".
+

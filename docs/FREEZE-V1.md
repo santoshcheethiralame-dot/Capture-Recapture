@@ -27,7 +27,7 @@ frozen.
 | 3 | PH3a ratio, PH4, PH5 | Keep 2, 0.05 and 0.05 | D-010 B |
 | 4 | Truth for E02 and E06 | Leave-cell-out truth as primary (the pooled truth is biased by up to +0.07) | D-011 |
 | 5 | E05 MI variant | Labelled-calibrated MI (e2) primary; free mixture (e1) reported | E05 §2a; pilots R004/R005 |
-| 6 | E05 f1-free estimator | `breakaway_nof1` is unusable at K = 10 (pilot). Add ratio regression (needs an E00 run), or keep it and report the failure | E05 §2a |
+| 6 | E05 f1-free estimator | Keep `breakaway_nof1` as specified and report its failure; do not add another. Both it and a truncated beta-binomial alternative (`crsafety.betabinomial_nof1`, tried on the pilot's stored frequency tables) are unusable at K = 10: medians −18% to −43% and +8% to +220% respectively, with blow-ups on heavy-tailed worlds | E05 §2a; LOG 2026-10-22 |
 | 7 | Licences | Code MIT; docs and released data CC BY 4.0 | D-006 (repository owner) |
 | 8 | Disclosure notice window | 30 days (proposed) | `DISCLOSURE.md` |
 | 9 | E01 H1c design flaw | Note in the paper that the dependence factor sat on σ = 1 heterogeneity; no re-run (E01 is not frozen, but its verdicts stand as run) | E01 §5 |

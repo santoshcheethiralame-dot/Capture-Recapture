@@ -352,6 +352,61 @@ def generalized_chao(X, Z=None):
     return float(d.S + f0), beta, converged
 
 
+def betabinomial_nof1(X, return_details=False):
+    """f1-free richness estimate: a beta-binomial fitted to items found >= 2 times.
+
+    Detection counts of items found at least twice are modelled as
+    Beta-Binomial(K, a, b) truncated to y >= 2 (maximum likelihood over the
+    logit of the mean and the log of a + b, bounded). With P0, P1 the model probabilities of 0 and 1 detections,
+    N_hat = S_{>=2} / (1 - P0 - P1); the predicted singletons are N_hat * P1.
+    The observed singleton count is never used, so ghosts (spurious
+    singletons) do not affect it. Exact in expectation when detectability is
+    Beta-distributed. Needs K >= 4 and at least two distinct counts >= 2;
+    otherwise NaN. Built as a candidate for E05 correction (d) and **not
+    recommended**: on the E05 pilot worlds (K = 10) it overshoots (median
+    +8% to +220% vs the oracle Chao2) and diverges toward a -> 0 on
+    heavy-tailed worlds (LOG 2026-10-22). Not validated in an E00 run; do not
+    use in an experiment.
+    """
+    from scipy.special import betaln, gammaln
+
+    d = _data(X)
+    K = d.K
+    y = d.y[d.y >= 2]
+    nan = (np.nan, dict()) if return_details else np.nan
+    if K < 4 or y.size < 3 or np.unique(y).size < 2:
+        return nan
+    k = np.arange(K + 1)
+    lc = gammaln(K + 1) - gammaln(k + 1) - gammaln(K - k + 1)
+
+    def logpmf(t):  # t = (logit of the mean a / (a + b), log of a + b)
+        m, c = 1 / (1 + np.exp(-t[0])), np.exp(t[1])
+        a, b = m * c, (1 - m) * c
+        return lc + betaln(k + a, K - k + b) - betaln(a, b)
+
+    cnt = np.bincount(y, minlength=K + 1).astype(float)
+
+    def nll(t):
+        lp = logpmf(t)
+        trunc = np.logaddexp.reduce(lp[2:])  # log P(y >= 2), computed stably
+        return -(cnt[2:] * (lp[2:] - trunc)).sum()
+
+    best = None
+    for start in ((-1.5, 0.0), (-1.5, 2.0), (-0.5, 1.0), (-3.0, -1.0)):
+        r = minimize(nll, np.array(start), method="L-BFGS-B", bounds=[(-12, 12), (-8, 10)])
+        if best is None or r.fun < best.fun:
+            best = r
+    lp = logpmf(best.x)
+    p0, p1 = np.exp(lp[0]), np.exp(lp[1])
+    m, c = 1 / (1 + np.exp(-best.x[0])), np.exp(best.x[1])
+    N = y.size / max(1 - p0 - p1, 1e-12)
+    if not return_details:
+        return float(d.S - d.Q(1) + N * p1 + N * p0)
+    return float(d.S - d.Q(1) + N * p1 + N * p0), dict(a=float(m * c), b=float((1 - m) * c),
+                                                      f1_hat=float(N * p1), f0_hat=float(N * p0),
+                                                      converged=bool(best.success))
+
+
 # ---------------------------------------------------------------- report
 
 def report(X):

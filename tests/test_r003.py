@@ -165,3 +165,26 @@ def test_breakaway_nof1_ignores_singletons():
     assert a["estimate"] is not None and np.isfinite(a["estimate"])
     # f1 is not an input and is itself predicted, so extra singletons change nothing
     assert b["estimate"] == pytest.approx(a["estimate"], rel=1e-12)
+
+
+# ------------------------------------------------------------ f1-free beta-binomial (candidate)
+
+def test_betabinomial_nof1_exact_on_expected_counts():
+    # Expected frequency counts of N = 10^6 items with Beta(0.8, 4) detectability over K = 10
+    # runs, rounded: the estimate recovers N within rounding.
+    from scipy.stats import betabinom
+    K, N = 10, 10**6
+    q = np.round(N * betabinom.pmf(np.arange(K + 1), K, 0.8, 4.0)).astype(int)
+    y = np.repeat(np.arange(1, K + 1), q[1:])
+    est = cr.betabinomial_nof1(IncidenceData.from_counts(y, K))
+    assert est == pytest.approx(q.sum(), rel=2e-3)
+
+
+def test_betabinomial_nof1_ignores_singletons():
+    X = sim(9, n=800, K=10, a=0.5, b=2)
+    d = IncidenceData.from_matrix(X)
+    more = np.vstack([X, np.eye(10, dtype=int)])
+    a, b = cr.betabinomial_nof1(d), cr.betabinomial_nof1(more)
+    # observed singletons are replaced by the model's prediction
+    assert a == pytest.approx(b, rel=1e-6)
+    assert np.isnan(cr.betabinomial_nof1(IncidenceData.from_counts([1, 2, 2], 6)))
