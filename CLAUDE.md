@@ -74,9 +74,10 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 7. E02 pipeline complete incl. `fire_counts.py` (dead latents), tested on
    real SAELens 6.54.12 output (installable here: `pip install torch
    "sae-lens==6.54.12"`; the PyTorch CPU index is blocked, PyPI works).
-8. Next candidates: run E02-R001 inventory on Kaggle (needs Santosh's
-   account); M3 activation-correlation matcher (E03-R002, GPU);
-   ratio-regression f1-free estimator + E00 run if chosen at the freeze.
+8. M3 matcher done (`analysis/e03/act_corr.py`; bakeoff `--m3`, `--fire-counts`).
+9. Next candidates: run E02-R001 inventory on Kaggle (needs Santosh's
+   account); ratio-regression f1-free estimator + E00 run if chosen at the
+   freeze.
 
 ## Repository map
 
@@ -98,7 +99,7 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 
 ```bash
 python -m pip install -e ".[dev]"     # use python -m: the bare `pytest` on PATH is a uv tool without numpy
-python -m pytest -q                   # 595 tests (1 skipped without R + breakaway)
+python -m pytest -q                   # 662 tests (1 skipped without R + breakaway)
 python tools/notebook.py check        # CI runs this + py_compile + pytest
 python tools/notebook.py new E01 --owner Santosh --title "..." [--config ...]
 python tools/notebook.py set E01-R001 status=running

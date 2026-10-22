@@ -34,3 +34,12 @@ pip install -q "sae-lens==6.54.12"
 python analysis/e02/fire_counts.py --out /kaggle/working/fires.json      # GPU
 python analysis/e02/zoo.py histories --out /kaggle/working/E02-R00X --fire-counts /kaggle/working/fires.json
 ```
+
+## E03 on the same Kaggle session
+
+```bash
+python analysis/e03/act_corr.py --out /kaggle/working/m3        # GPU; M3 assignments
+python analysis/e03/bakeoff.py --out /kaggle/working/E03-R00X \
+    --fire-counts /kaggle/working/fires.json --m3 /kaggle/working/m3
+```
+

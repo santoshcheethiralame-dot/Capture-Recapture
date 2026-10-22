@@ -1,4 +1,4 @@
-"""E03 matcher bake-off and plateau diagnostic (R001 + R004; M3 needs activations, R002).
+"""E03 matcher bake-off and plateau diagnostic (R001 + R004; with --m3, R002's matcher too).
 
     python analysis/e03/bakeoff.py --out results/E03/E03-R00X [--world DIR|REPO] [--zoo DIR|REPO]
         [--truth leave-cell-out|pooled] [--B 0]
@@ -35,7 +35,7 @@ import zoo  # noqa: E402
 TAUS = tuple(np.round(np.arange(0.30, 0.951, 0.05), 2))
 
 
-def load_cells(world, zoo_src, tau_gt):
+def load_cells(world, zoo_src, tau_gt, fires=None):
     T, p, _ = zoo.load_world(zoo.local_dir(world))
     zdir = zoo.local_dir(zoo_src)
     idx = zoo.zoo_index(zdir)
@@ -49,12 +49,28 @@ def load_cells(world, zoo_src, tau_gt):
         if ek is not None:
             We = t[ek].astype(np.float32)
             We = We.T if We.shape[0] == T.shape[1] else We
-        kept, _ = mt.preprocess(Wd)
+        kept, _ = mt.preprocess(Wd, fire_counts=(fires or {}).get(f"{a}/l0-{l}/seed-{s}"))
         Wd = Wd[kept]
         We = We[kept] if We is not None and We.shape[0] >= kept.max() + 1 else None
         caught, feat = mt.oracle_catch(Wd, T, tau_gt)
-        cells.setdefault((a, l), []).append(dict(seed=s, dec=Wd, enc=We, feat=feat, caught=caught))
+        cells.setdefault((a, l), []).append(dict(seed=s, dec=Wd, enc=We, feat=feat, caught=caught, kept=kept))
     return T, p, cells
+
+
+def m3_matches(m3dir, key, seeds):
+    """M3 assignments saved by act_corr.py, mapped from raw to kept latent indices."""
+    d = Path(m3dir) / f"{key[0]}_l0-{key[1]}"
+    pos = {s["seed"]: k for k, s in enumerate(seeds)}
+    out = {}
+    for f in sorted(d.glob("*.npz")):
+        sa, sb = map(int, f.stem.split("_"))
+        z = np.load(f)
+        ka, kb = seeds[pos[sa]]["kept"], seeds[pos[sb]]["kept"]
+        ma, mb = {int(r): i for i, r in enumerate(ka)}, {int(r): i for i, r in enumerate(kb)}
+        ok = [(ma[x], mb[y], sc) for x, y, sc in zip(z["a"], z["b"], z["score"]) if x in ma and y in mb]
+        pairs = np.array([(x, y) for x, y, _ in ok], int).reshape(-1, 2)
+        out[(pos[sa], pos[sb])] = (pairs, np.array([sc for _, _, sc in ok]))
+    return out
 
 
 def truth_C(cells, key, mode):
@@ -77,10 +93,16 @@ def main():
     ap.add_argument("--zoo", default=zoo.ZOO_REPO)
     ap.add_argument("--tau-gt", type=float, default=0.7)
     ap.add_argument("--truth", choices=["leave-cell-out", "pooled"], default="leave-cell-out")
+    ap.add_argument("--fire-counts", default=None, help="fire_counts.py output (dead latents)")
+    ap.add_argument("--m3", default=None, help="act_corr.py output directory (adds matcher M3)")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    T, p, cells = load_cells(a.world, a.zoo, a.tau_gt)
+    fires = None
+    if a.fire_counts:
+        fires = json.loads(Path(a.fire_counts).read_text())
+        fires = fires.get("counts", fires)
+    T, p, cells = load_cells(a.world, a.zoo, a.tau_gt, fires)
     rows = []
     for key, seeds in sorted(cells.items()):
         C = truth_C(cells, key, a.truth)
@@ -93,8 +115,11 @@ def main():
             encs = [s["enc"] for s in seeds]
             pos = {id(d): k for k, d in enumerate(dirs)}
             matchers["M2"] = lambda A, B, tau: mt.strict(A, B, encs[pos[id(A)]], encs[pos[id(B)]], tau)
-        for mname, fn in matchers.items():
-            sw = mt.sweep(dirs, TAUS, matcher=fn)
+        sweeps = {m: mt.sweep(dirs, TAUS, matcher=fn) for m, fn in matchers.items()}
+        if a.m3:
+            mm = m3_matches(a.m3, key, seeds)
+            sweeps["M3"] = {float(t): mt.cluster_from_matches([d.shape[0] for d in dirs], mm, t) for t in TAUS}
+        for mname, sw in sweeps.items():
             for tau, (X, lab) in sw.items():
                 sc = mt.pair_scores(lab, true_lab)
                 quart = {}

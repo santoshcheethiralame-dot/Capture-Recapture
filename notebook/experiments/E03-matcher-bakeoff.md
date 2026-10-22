@@ -108,8 +108,12 @@ None.
   caught features (all seeds of the cell).
 - Downstream truth C follows D-011 (default: leave-cell-out; `--truth
   pooled` for the §2 variant).
-- M3 (activation correlation) needs the generator's activations (R002, GPU);
-  M5 depends on public code existing (R003).
+- M3 (R002): `analysis/e03/act_corr.py` accumulates every seed pair's
+  latent-activation correlation on 10^6 shared generator samples (GPU) and
+  saves only the Hungarian assignment on |corr|; `bakeoff.py --m3 <dir>`
+  thresholds it like M1. Tested end to end with M1–M4 on SAEs trained by
+  SAELens's own runner. M5 depends on public code existing (R003).
+- `bakeoff.py --fire-counts` applies the same dead-latent removal as E02.
 
 ## 3. Contingencies
 
