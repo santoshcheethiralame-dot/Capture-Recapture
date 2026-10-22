@@ -55,9 +55,11 @@ def one(task):
         row.update(naive_chao2=cr.chao2(d), naive_coverage=cr.coverage(d),
                    naive_lp=lk.lp_corrected(L.X, 0.0), true_ghosts=int(L.is_ghost.sum()),
                    n_merges=L.n_merges)
+        labels = {}
         for nv in N_V:
             t0 = time.perf_counter()
-            f_hat, g_hat = lk.estimate_rates(L, nv, rng)
+            labels[nv] = lk.label_bins(L, nv, rng)
+            f_hat, g_hat = lk.rates_from_bins(*labels[nv], n_rows=L.X.shape[0])
             c = lk.corrected_estimates(d, f_hat)
             row.update({f"b{nv}_f_hat": f_hat, f"b{nv}_g_hat": g_hat, f"b{nv}_chao2": c["chao2"],
                         f"b{nv}_coverage": c["coverage"], f"b{nv}_lp": lk.lp_corrected(L.X, f_hat),
@@ -66,6 +68,10 @@ def one(task):
         t0 = time.perf_counter()
         mi = lk.mi_estimates(L, M_IMP, rng)
         t["mi"] = time.perf_counter() - t0
+        t0 = time.perf_counter()
+        mil = lk.mi_estimates(L, M_IMP, rng, labelled=labels[200])
+        t["mi_labelled"] = time.perf_counter() - t0
+        row.update(mil200_chao2=mil["chao2"], mil200_coverage=mil["coverage"])
     row.update(mi_chao2=mi["chao2"], mi_coverage=mi["coverage"], mi_chao2_var=mi["chao2_var"],
                mi_mean_posterior=mi["mean_posterior"], **{f"sec_{k}": v for k, v in t.items()})
     k_, q_ = rbridge.frequency_table(d)
@@ -78,12 +84,13 @@ def main():
     ap.add_argument("--n-inj", type=int, default=20)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--run", default="E05-R004")
     a = ap.parse_args()
-    out = Path(a.out) if a.out else ROOT / "results" / "E05" / "E05-R004"
+    out = Path(a.out) if a.out else ROOT / "results" / "E05" / a.run
     out.mkdir(parents=True, exist_ok=True)
     m = None
     if a.out is None:
-        m = manifest.start("E05-R004", "E05", " ".join(sys.argv),
+        m = manifest.start(a.run, "E05", " ".join(sys.argv),
                            dict(cells={k: v.to_dict() for k, v in CELLS.items()}, combos=COMBOS,
                                 n_v=N_V, imputations=M_IMP, n_inj=a.n_inj, pilot=True),
                            seeds=dict(master=MASTER, rule="spawn_key=(9000 + cell, combo, injection)"),
@@ -116,7 +123,7 @@ def write_summary(rows, out, wall):
     def col(rs, k):
         return np.array([float(r[k]) if r.get(k) not in (None, "") else np.nan for r in rs])
 
-    L = ["# E05-R004 pilot (declared; separate seeds)", "",
+    L = [f"# {out.name} pilot (declared; separate seeds)", "",
          f"{len(rows)} injections ({len(rows) // (len(CELLS) * len(COMBOS))} per cell x combination); "
          f"wall time {wall:.0f} s on 4 workers. Pilot output: informs feasibility and cost only.", "",
          "## Cost per injection (seconds, mean)", "",
@@ -129,8 +136,8 @@ def write_summary(rows, out, wall):
         v = col(rows, k)
         L.append(f"| {k} | {int((~np.isfinite(v)).sum())} / {v.size} |")
     L += ["", "## Pilot bias of Chao2 relative to the oracle Chao2 (mean of est/oracle − 1)", "",
-          "| cell | f | g | pattern | naive | b (n_v=50) | b (n_v=200) | MI | nof1 | f̂ (n_v=200) |",
-          "|---|---|---|---|---|---|---|---|---|---|"]
+          "| cell | f | g | pattern | naive | b (n_v=50) | b (n_v=200) | MI (mixture) | MI (labelled, n_v=200) | nof1 (median) | f̂ (n_v=200) |",
+          "|---|---|---|---|---|---|---|---|---|---|---|"]
     for cname in CELLS:
         for f, g, pat in COMBOS:
             rs = [r for r in rows if r["cell"] == cname and r["f"] == f and r["g"] == g and r["pattern"] == pat]
@@ -139,8 +146,10 @@ def write_summary(rows, out, wall):
             def rb(k):
                 v = col(rs, k) / o - 1
                 return f"{np.nanmean(v):+.0%}"
+            med = np.nanmedian(col(rs, "nof1") / o - 1) if "nof1" in rs[0] else np.nan
             L.append(f"| {cname} | {f} | {g} | {pat} | {rb('naive_chao2')} | {rb('b50_chao2')} | "
-                     f"{rb('b200_chao2')} | {rb('mi_chao2')} | {rb('nof1')} | {np.nanmean(col(rs, 'b200_f_hat')):.3f} |")
+                     f"{rb('b200_chao2')} | {rb('mi_chao2')} | {rb('mil200_chao2')} | {med:+.0%} | "
+                     f"{np.nanmean(col(rs, 'b200_f_hat')):.3f} |")
     (out / "summary.md").write_text("\n".join(L) + "\n")
     print("\n".join(L))
 

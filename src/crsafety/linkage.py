@@ -120,12 +120,13 @@ def inject(X, f, g, rng, pattern="uniform", p=None):
 
 # ---------------------------------------------------------------- error-rate estimation
 
-def estimate_rates(L, n_v, rng, bins=(-np.inf, -2, -1, 0, 1, 2, np.inf)):
-    """Estimate (f, g) from n_v labelled candidate pairs, sampled in equal numbers
-    per score bin (stratified), weighted back by bin size.
+BINS = (-np.inf, -2, -1, 0, 1, 2, np.inf)
 
-    f_hat = estimated true matches among unlinked pairs / all true matches;
-    g_hat = estimated false links / observed rows.
+
+def label_bins(L, n_v, rng, bins=BINS):
+    """Label n_v candidate pairs, in equal numbers per score bin (stratified).
+
+    Returns (bin edges, pairs per bin, estimated true-match rate per bin).
     """
     s, t = L.pairs_score, L.pairs_true
     b = np.digitize(s, bins[1:-1])
@@ -136,13 +137,26 @@ def estimate_rates(L, n_v, rng, bins=(-np.inf, -2, -1, 0, 1, 2, np.inf)):
         members = np.nonzero(b == k)[0]
         lab = rng.choice(members, size=min(per, members.size), replace=False)
         rate[k] = t[lab].mean()
+    return np.asarray(bins), nb, rate
+
+
+def estimate_rates(L, n_v, rng, bins=BINS):
+    """Estimate (f, g) from n_v labelled candidate pairs (:func:`label_bins`),
+    weighted back by bin size.
+
+    f_hat = estimated true matches among unlinked pairs / all true matches;
+    g_hat = estimated false links / rows before merging.
+    """
+    return rates_from_bins(*label_bins(L, n_v, rng, bins), n_rows=L.X.shape[0])
+
+
+def rates_from_bins(bins, nb, rate, n_rows):
     true_est = nb * rate
     false_est = nb * (1 - rate)
     linked = np.array([lo >= 0 for lo in bins[:-1]])
     f_hat = true_est[~linked].sum() / max(true_est.sum(), 1e-12)
     merges = false_est[linked].sum()
-    g_hat = merges / max(L.X.shape[0] + merges, 1)  # per row before merging
-    return float(f_hat), float(g_hat)
+    return float(f_hat), float(merges / max(n_rows + merges, 1))
 
 
 # ---------------------------------------------------------------- corrections
@@ -243,18 +257,24 @@ def _mixture_posterior(s, iters=200):
     return dens[:, hi] / np.maximum(dens.sum(axis=1), 1e-300)
 
 
-def mi_estimates(L, M, rng):
+def mi_estimates(L, M, rng, labelled=None):
     """Multiple imputation over matchings (correction e).
 
     Each observed singleton is relinked to its best candidate with its
-    posterior probability of being a true match, from a two-component mixture
-    on the singletons' best-candidate scores. Returns Rubin's-rules mean and
+    probability of being a true match: by default from a two-component
+    mixture on the singletons' best-candidate scores (E05 §2 (e)); with
+    ``labelled`` (the output of :func:`label_bins`), from the labelled
+    true-match rate of the singleton's score bin (E05 §2a, after the pilot). Returns Rubin's-rules mean and
     total variance for Chao2 (log-normal se as within-variance) and the mean
     and between-imputation variance for coverage.
     """
     X = L.X
     single = np.nonzero((X.sum(axis=1) == 1) & (L.cand >= 0))[0]
-    post = _mixture_posterior(L.cand_score[single])
+    if labelled is None:
+        post = _mixture_posterior(L.cand_score[single])
+    else:  # (bins, nb, rate) from label_bins: calibrated match probability per score bin
+        bins, _, rate = labelled
+        post = rate[np.digitize(L.cand_score[single], bins[1:-1])]
     ests, wvar, covs = [], [], []
     for _ in range(M):
         Xi = X.copy()
