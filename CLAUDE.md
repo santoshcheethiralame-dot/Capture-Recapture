@@ -1,0 +1,167 @@
+# CLAUDE.md: project memory
+
+Read this first in every session. It summarises the repo's documentation;
+the docs themselves are the source of truth when they disagree.
+
+## The project
+
+**"How complete was the audit?"** Capture-recapture statistics applied to
+AI-safety discovery tools (alignment audits, red teams, SAEs). From the
+overlap between K repeated runs of a tool, estimate:
+- **audit coverage C** (share of detectable failure mass already found):
+  the headline estimand;
+- **Δ(m)**, new failure modes m more runs would find.
+
+Counts (Chao2, iChao2) are **lower bounds only**: N is not identifiable under
+uneven detectability (D-002). Validated first on testbeds with planted /
+known truth. Safety framing, ecology only as methods citation (D-001); use
+the vocabulary in `docs/GLOSSARY.md` ("failure mode", "catcher", "run",
+"coverage", never "species").
+
+- **Budget $0** (D-007): open 7–9B models, this sandbox's CPU, free Kaggle
+  GPUs (one account per person). Frontier replication only in E18, if funded.
+- **Venues:** arXiv + Alignment Forum Dec 2026 (M4, ~Dec 15–20); ICLR 2027
+  workshop ~Feb 1; **NeurIPS 2027 main** ~May 15 (primary); fallbacks SaTML
+  2028 / ICLR 2028 / TMLR (D-003).
+- **Status (2026-10-22):** pre-registration v0.1 drafting, nothing frozen.
+  E00-R001/R002 succeeded. Freeze of prereg v1.0 targeted Nov 6–8.
+
+## Team and who I work for
+
+Two people (`docs/TEAM.md`):
+- **Santosh** (statistics + interpretability): owns E00, E01, E02, E03, E05,
+  E06, E07, E11, E13, E16; SAE arms of E04/E15; Gemma Scope tool (H7),
+  de-adaptation A3 (H8); confirmatory analysis of Kushal's E08/E09/E10
+  histories; repo maintenance (CI, `tools/`); stats sections of the prereg.
+- **Kushal** (safety testbeds + agents): Kaggle LLM stack (vLLM, call cache,
+  model pinning Q-D14), E08, E09, E10, E12, E14, E17, E18; judges; disclosure.
+
+**In this repo I am doing Santosh's work** unless told otherwise. Kushal's
+experiment pages are owner-only edits: comment via PR, don't edit them.
+
+### Santosh's timeline (from TEAM.md)
+| Dates | Work |
+|---|---|
+| Oct 23 – Nov 1 | **E00** finish: E00-R003 (Chiu-Chao singleton correction, log-linear via Rcapture, breakaway_nof1, Böhning generalised Chao). Agree H2 history format (PROTOCOLS §10) by Oct 29. Deliver H1 (validated library) by Nov 1 |
+| Nov 2 – 8 | **E01** simulation (R001–R005), propose † thresholds; gate **G1** (\|bias Ĉ\| ≤ 0.03 in clean cells) |
+| Nov 6 – 8 ★ | Prereg v1.0 freeze (four-eyes review; tag `prereg-v1.0` → GitHub release → Zenodo → OSF) |
+| Nov 9 – 22 | E02 (Kaggle; zoo download, oracle + matched histories) |
+| Nov 23 – Dec 6 | E03 matcher bake-off; E05 error injection; gate G2 (pair F1 ≥ 0.9) |
+| Dec 7 – 20 | Phase 1 analysis, lead the preprint draft, H7 Gemma Scope tool |
+| Jan 4 – 17 | Confirmatory analysis of E08/E10 (H6), H8 de-adaptation, E04 SAE arm |
+| Feb 2 – Apr 30 | E06 grid, E09 analysis, E13 stopping rule, E11, E15 SAE arm |
+
+## Next concrete tasks for Santosh
+
+1. **E00-R003** (registered, planned): implement and validate against R the
+   remaining estimators. Chiu-Chao formula is open question Q-D10 (PeerJ
+   4:e1634); if unconfirmable, drop it and use `breakaway_nof1` (E00
+   contingency). Until R003 succeeds, no experiment may use these.
+2. Kushal to review `results/E00/E00-R001/summary.md` and D-008 (four-eyes).
+3. **E01** simulation on `crsafety` (design in
+   `notebook/experiments/E01-simulation-study.md`): base cell N=500, K=10,
+   logit-normal mean 0.2 σ=1; one-factor-at-a-time blocks; n_sim=500; master
+   seed 20261022 + 1 via `SeedSequence`; report MCSE everywhere. H1a–H1f.
+   Then set † thresholds in `docs/PREREGISTRATION.md` (may not loosen beyond
+   2× the E01 achievable value).
+
+## Repository map
+
+| Path | What |
+|---|---|
+| `src/crsafety/` | Estimator library: `estimators.py` (IncidenceData, chapman, chapman_pairs, darroch_mt, chao2, chao2_ci, ichao2, jackknife, ice, coverage, good_turing_coverage, extrapolate, huggins, report), `bootstrap.py` (iNEXT-style pseudo-population, B=2000), `histories.py` (read_cell / write_cell, PROTOCOLS §10) |
+| `tests/test_estimators.py` | 377 property tests (E00-R002) |
+| `validation/e00/` | R reference comparison (`run.sh`, `reference.R`, `compare.py`, `make_synthetic.py`) |
+| `results/EXX/<run_id>/` | Run outputs (small files only; large ones external with sha256) |
+| `notebook/` | Lab notebook: REGISTRY, experiments/E00–E18, runs.csv, LOG, DECISIONS, DEVIATIONS, RESULTS, prereg-locks.csv, templates |
+| `docs/` | PREREGISTRATION (PH1–PH6, SH1–SH4), TEAM, ROADMAP (milestones, gates G1–G4), PROTOCOLS, PAPER-PLAN, RISKS, COMPUTE, DATA, DISCLOSURE, OPEN-QUESTIONS, NEURIPS-CHECKLIST, GLOSSARY |
+| `research/` | Literature dossier (`README.md`), reading list, 13 agent reports in `notes/` |
+| `pilot/` | Early simulation (`simulate.py`, `estimators.py`, `results.md`) |
+| `tools/notebook.py` | `new`, `set`, `render`, `freeze`, `check` |
+
+## Commands
+
+```bash
+python -m pip install -e ".[dev]"     # use python -m: the bare `pytest` on PATH is a uv tool without numpy
+python -m pytest -q                   # 377 tests
+python tools/notebook.py check        # CI runs this + py_compile + pytest
+python tools/notebook.py new E01 --owner Santosh --title "..." [--config ...]
+python tools/notebook.py set E01-R001 status=running
+python tools/notebook.py set E01-R001 status=succeeded summary="<the number that matters>"
+python tools/notebook.py render && python tools/notebook.py check
+python tools/notebook.py freeze E01 --note "prereg v1; reviewed by Kushal"
+```
+
+R (for validation) is not preinstalled; install via micromamba/conda-forge
+(`r-rcapture r-inext r-breakaway r-vgam`; CRAN-only pkgs from
+`github.com/cran/<pkg>`). See `validation/e00/README.md`. Hugging Face, arXiv
+and Zenodo were blocked from the sandbox (Q-D1); GitHub, PyPI, conda-forge OK.
+
+## Rules I must follow
+
+**Notebook discipline** (`notebook/README.md`):
+- Register every run **before** launching it via `tools/notebook.py`
+  (`--owner Santosh`). `runs.csv` is only edited through the tool. No silent
+  re-runs: every execution gets a run ID, failures included. Never delete a
+  failed run.
+- Close runs with a summary giving the number that matters.
+- `LOG.md`, `DECISIONS.md`, `DEVIATIONS.md` are **append-only**, newest at
+  the bottom; LOG entries start with the author's name. Corrections are new
+  entries.
+- Never edit a frozen `<!-- prereg:start -->…<!-- prereg:end -->` block (hash
+  locked in `prereg-locks.csv`; CI fails). Post-freeze changes → DEVIATIONS +
+  new prereg version.
+- No peeking at confirmatory outcomes before freeze; pilots on separate
+  seeds, declared as pilots. No silent exclusions; estimator NaN/inf are data
+  (count failure rates).
+- Failure classes: infra / bug / data-access / design / scientific "failure"
+  (a result, never rescued by re-tuning).
+- After analysis: fill page §5 (confirmatory first, then labelled
+  exploratory), update `RESULTS.md`, render + check, commit.
+
+**Protocols** (`docs/PROTOCOLS.md`):
+- Estimator conventions are D-008 (match iNEXT / SpadeR / vegan / Rcapture /
+  VGAM exactly). Changing them after freeze is a deviation.
+- Seeds: master `20261022 + experiment number`;
+  `numpy.random.SeedSequence(master).spawn(n)` per cell then per replicate;
+  cell seed in every result row.
+- Each run writes `results/EXX/<run_id>/manifest.json` (fields in §5).
+  Confirmatory runs refuse a dirty tree.
+- Reporting recipe (§8): K, S_obs, f1–f4, identity rule; Ĉ with 95% CI
+  (headline); Δ̂(K), Δ̂(2K); Chao2 labelled "lower bound"; jackknife-2/ICE;
+  dependence diagnostics; sensitivity.
+- Simulations: MCSE for every bias/coverage/RMSE; paired comparisons on the
+  same datasets.
+- Detection-history interface (§10): `detections.csv`, `runs.csv`,
+  `items.csv` per cell; analysis code reads only these.
+- Every paper number traces to a run ID; figures generated from `results/`.
+
+**Two-person rigour:** four-eyes freeze (other person approves in PR, name in
+freeze note); separation of data and analysis (Kushal doesn't compute
+coverage on confirmatory E08–E10 data; Santosh runs the frozen script);
+owner-only edits of experiment pages.
+
+**Git:** `main` protected, PRs reviewed by the other person; branch names
+`santosh/<exp>-<topic>` (in Claude sessions, use the assigned branch); small
+PRs, one experiment step each. Always pull before `notebook.py new`. Never
+commit keys, `.env`, Kaggle tokens, weights or large activations. Don't open
+PRs unless asked.
+
+## Key decisions (DECISIONS.md)
+D-001 safety framing · D-002 coverage + Δ headline, counts as lower bounds ·
+D-003 venues · D-004 plain-git notebook · D-005 tiered prereg with prior
+knowledge disclosed · D-006 (proposed, needs owner) code MIT, docs/data
+CC BY 4.0 · D-007 $0 plan · D-008 estimator formula conventions.
+
+## Study hypotheses (PREREGISTRATION.md)
+PH1 coverage estimable (\|Ĉ−C\| ≤ 0.05† in ≥ 80%† cells) · PH2 counts are
+lower bounds · PH3 identity errors dominate, corrections recover ≥ 50% ·
+PH4 same-model catchers overstate coverage (E08) · PH5 adaptive red teams
+overstate, de-adaptation corrects (E10) · PH6 lower-bound stopping rule
+reliable (E13). Secondary SH1–SH4. † thresholds set after E01.
+
+## Open questions relevant to Santosh
+Q-D1 (HF/arXiv access), Q-D2 (zoo contents), Q-D10 (Chiu-Chao formula),
+Q-D13 (SAELens seed unused), Q-D15 (Gemma Scope on Kaggle), Q-N2 (E16
+novelty), Q-N1 (E15 novelty), Q-B3 (Kaggle quota). Weekly scoop check
+alternates between the two (RISKS.md).
