@@ -160,3 +160,35 @@ often let providers train on our prompts, and some forbid red-team use.
   freezing.
 **Affects pre-registered analysis:** yes; it defines the testbeds of E06,
 E08–E11 before the v1 freeze.
+
+## D-008: Estimator formula conventions follow the Chao-lab reference code (2026-10-22)
+
+**Status:** accepted (Santosh); Kushal to review with the E00 results
+**Context:** Several estimators have more than one published or
+implemented form, and the forms disagree at the edges (Q2 = 0, Q1 ≤ 1,
+Q4 = 0). Results must not depend on which variant we happened to code.
+
+**Decision:** `crsafety` matches these references exactly:
+
+| Quantity | Convention | Reference |
+|---|---|---|
+| Chao2 | classic (K−1)/K · Q1²/(2Q2) when Q2 > 0; bias-corrected (K−1)/K · Q1(Q1−1)/2 when Q2 = 0. The always-bias-corrected form is available as `form="bc"`. | iNEXT `ChaoRichness` |
+| Chao2 interval | log-normal (Chao 1987); when Q1 ≤ 1, the estimate is S with a Poisson-type interval | iNEXT |
+| Coverage (primary estimand) | 1 − Q1/U · K f0 / (K f0 + Q1), with f0 as in Chao2 | iNEXT `Chat.Sam` at t = K |
+| Extrapolation | f0 [1 − (1 − Q1/(K f0 + Q1))^m] | Chao et al. 2014; iNEXT |
+| iChao2 | Chiu et al. 2014, with Q4 = 0 replaced by 1 | SpadeR |
+| ICE | Lee and Chao 1994, with the A-corrected coverage of infrequent items; cut-off 10 | SpadeR (`fossil::ICE` not used: it does not implement the published formula) |
+| Jackknife | first and second order | vegan `specpool` |
+| Bootstrap | iNEXT pseudo-population, B = 2,000; normal interval est ± z·s.e. as in iNEXT; percentile interval stored too | iNEXT `EstiBootComm.Sam` |
+| Huggins | logistic detection constant across runs; Horvitz-Thompson N | VGAM `posbernoulli.t` |
+
+**Why:**
+- These are the implementations most applied papers use.
+- They are maintained by the estimators' authors.
+- E00-R001 shows we match them to near machine precision, so reviewers can
+  reproduce any number with standard R tools.
+
+**Affects pre-registered analysis:** yes. These definitions are what
+"Chao2", "coverage" and the other estimators mean in every
+pre-registration. A change after the v1 freeze is a deviation.
+

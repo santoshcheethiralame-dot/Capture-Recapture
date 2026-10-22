@@ -1,6 +1,6 @@
 run_id,experiment,title,owner,status,started,finished,commit,config,command,outputs,summary,notes
-E00-R001,E00,Reference comparison against R packages and worked examples,Santosh,planned,,,fa922b4+dirty,,,,,
-E00-R002,E00,Property tests (pytest),Santosh,planned,,,fa922b4+dirty,,,,,
+E00-R001,E00,Reference comparison against R packages and worked examples,Santosh,succeeded,2026-10-22,2026-10-22,f792c71,,validation/e00/run.sh <SpadeR>/R <Rscript>,results/E00/E00-R001/,437/437 comparisons pass on 34 datasets: deterministic max rel. diff 2.8e-10 (H0a); bootstrap s.e. within 3 MCSE (H0b),commit was auto-marked dirty only because results/ was untracked
+E00-R002,E00,Property tests (pytest),Santosh,succeeded,2026-10-22,2026-10-22,f792c71,,pytest -q,,377/377 property tests pass (H0c),
 E01-R001,E01,"Base cell + N, K, heterogeneity blocks",Santosh,planned,,,fa922b4+dirty,,,,,
 E01-R002,E01,"Family, dependence, adaptivity, nested blocks",Santosh,planned,,,fa922b4+dirty,,,,,
 E01-R003,E01,Identity-error blocks,Santosh,planned,,,fa922b4+dirty,,,,,
@@ -11,3 +11,4 @@ E09-R001,E09,Synthetic data generation for 16 behaviours (14 + 2 pilot),Kushal,p
 E10-R001,E10,"Build monitor, unit-test blind spots, verify no success without one",Kushal,planned,,,fa922b4+dirty,,,,,
 E08-R001,E08,"Pilot: 2 spare quirks, L0 and L3, 4 runs each; floor/ceiling and scaffold check",Kushal,planned,,,ab360fb+dirty,,,,,
 E06-R001,E06,Seeding check: hash W_dec at step 0 and first batch,Santosh,planned,,,ab360fb+dirty,,,,,
+E00-R003,E00,"Remaining estimators: Chiu-Chao singleton correction, log-linear (Rcapture), breakaway_nof1, Böhning generalised Chao",Santosh,planned,,,f792c71+dirty,,,,,needed before E05 (Chiu-Chao) and before any experiment uses log-linear models

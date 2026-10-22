@@ -97,3 +97,40 @@ disclosure notice window. Then E00.
 
 **Next:** Santosh: E00. Kushal: Kaggle LLM stack and model pinning (Q-D14),
 E10 monitor (E10-R001). Freeze target: 8 November.
+
+## 2026-10-22 (night): E00 estimator library validated against R
+
+**Did:**
+- Built `src/crsafety` (commit f792c71). It contains the estimators,
+  the Chao bootstrap and detection-history I/O (PROTOCOLS §10).
+- Wrote 377 property tests.
+- Wrote `validation/e00/`, which compares the library against iNEXT,
+  vegan, SpadeR, Rcapture and VGAM on 34 datasets.
+- Ran E00-R001 and E00-R002 from the clean commit.
+
+**Saw:**
+- All 437 reference comparisons pass. Deterministic quantities agree to
+  2.8e-10 or better. Bootstrap s.e. agree within Monte Carlo error.
+- All 377 property tests pass.
+- Three formula findings came from reading the reference source; each was
+  matched to the reference:
+  - coverage when Q2 = 0 uses iNEXT's bias-corrected f0;
+  - the Chao2 interval falls back to a Poisson-type interval when Q1 ≤ 1;
+  - ICE follows SpadeR, because `fossil::ICE` does not implement the
+    published formula.
+- Two code fixes came from the tests:
+  - Darroch Mt returned infinity when one run found every item; the MLE
+    there is S;
+  - Huggins now uses an analytic gradient and tighter tolerance. It matches
+    VGAM to 3e-10 (was 3e-8).
+- Sandbox R is now 4.5.3 with iNEXT 3.0.2. The E00 contingency table names
+  older versions.
+
+**Decided:** D-008, formula conventions.
+
+**Next:**
+- Kushal reviews `results/E00/E00-R001/summary.md` and the D-008
+  conventions (four-eyes rule).
+- E00-R003, the remaining estimators: Chiu-Chao is needed before E05.
+- E01 simulation study on top of `crsafety`, frozen by 5 November.
+

@@ -14,6 +14,7 @@ Steps:
 2. `reference.R` exports the datasets bundled with iNEXT (`ant`, `ciliates`),
    Rcapture (`hare`, `mvole`, `bunting`, `duck`, `HIV`, `lesbian`, `rbvole`)
    and vegan (`dune`, `mite`, `BCI`), then computes reference values.
+   These exports are not committed (GPL-licensed packages); rerun to get them.
    Printed output of iNEXT and SpadeR is rounded, so their functions are run
    with `round` disabled.
 3. `compare.py` writes `comparison.csv` and `summary.md` to

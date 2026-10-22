@@ -23,7 +23,7 @@ Every estimate links to run IDs.
 
 | ID | Verdict | Estimate | Runs |
 |---|---|---|---|
-| H0a–H0c | pending | | |
+| H0a–H0c | supported | Deterministic estimators match R to ≤ 2.8e-10 (437 comparisons, 34 datasets); bootstrap s.e. within 3 MCSE; 377 / 377 property tests pass | E00-R001, E00-R002 |
 | H1a–H1f | pending | | |
 | H2a–H2d | pending | | |
 | H3a–H3c | pending | | |
