@@ -5,7 +5,7 @@
 Each campaign is a fresh simulated world with K_max independent runs taken in
 order (E13 proper permutes the runs of real testbeds). Seeds:
 SeedSequence(20261035, spawn_key=(9000 + world, campaign)). Writes
-results/E13/E13-R002/ (manifest.json, campaigns.csv.gz, summary.md).
+results/E13/<run>/ (manifest.json, campaigns.csv.gz, summary.md).
 """
 
 import argparse
@@ -51,12 +51,13 @@ def main():
     ap.add_argument("--n", type=int, default=200)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--run", default="E13-R003")
     a = ap.parse_args()
-    out = Path(a.out) if a.out else ROOT / "results" / "E13" / "E13-R002"
+    out = Path(a.out) if a.out else ROOT / "results" / "E13" / a.run
     out.mkdir(parents=True, exist_ok=True)
     m = None
     if a.out is None:
-        m = manifest.start("E13-R002", "E13", " ".join(sys.argv),
+        m = manifest.start(a.run, "E13", " ".join(sys.argv),
                            dict(worlds={k: v.to_dict() for k, v in WORLDS.items()}, n=a.n, B=B, pilot=True),
                            seeds=dict(master=MASTER, rule="spawn_key=(9000 + world, campaign[, 1])"),
                            prereg=dict(frozen=False, note="declared pilot on simulated campaigns"))
@@ -68,7 +69,7 @@ def main():
         w = csv.DictWriter(fh, list(rows[0]))
         w.writeheader()
         w.writerows(rows)
-    L = ["# E13-R002 pilot (declared; simulated campaigns)", "",
+    L = [f"# {a.run} pilot (declared; simulated campaigns)", "",
          f"{a.n} campaigns per world; B = {B}; wall {time.time() - t0:.0f} s. Success = true C ≥ target at "
          "stopping; saved = share of K_max not run. Pilot output only.", "",
          "| world | target | rule | success | median runs saved | mean undershoot when failing |",
