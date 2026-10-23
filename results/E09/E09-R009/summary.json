@@ -1,0 +1,180 @@
+{
+  "config": {
+    "release": "gemma-scope-2b-pt-res-canonical",
+    "sae_id": "layer_12/width_16k/canonical",
+    "it": "google/gemma-2-2b-it",
+    "pt": "google/gemma-2-2b",
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "n_prompts": 20,
+    "max_new": 20,
+    "tokens": "user"
+  },
+  "gpu": "Tesla T4",
+  "load_seconds_from_hf": 52.7,
+  "C3_identity": {
+    "n_nonempty_diff": 0,
+    "pass": true
+  },
+  "C1_load": {
+    "hook_layer": 12,
+    "d_sae": 16384,
+    "n_labels": 16384,
+    "missing_labels": 0,
+    "pass": true
+  },
+  "C2_alignment": {
+    "pt": {
+      "mean_l0": 79.2505631868132,
+      "fvu": 0.07773353251971667,
+      "n_tokens": 201
+    },
+    "it_chat": {
+      "mean_l0": 122.89907250752965,
+      "fvu": 0.10138104201008695,
+      "n_tokens": 361
+    },
+    "nominal_l0": 82,
+    "pass_": true,
+    "fvu_pt_neighbours": {
+      "11": 0.1236,
+      "12": 0.0778,
+      "13": 0.2101
+    },
+    "it_tool_tokens": {
+      "mean_l0": 132.04048534798534,
+      "fvu": 0.309552240185882,
+      "n_tokens": 201
+    }
+  },
+  "C4_diff": {
+    "n_empty_diff": 0,
+    "pass": true
+  },
+  "C6_timing": {
+    "uncached_s_median": 0.342935467000018,
+    "uncached_s_max": 0.3624720770000067,
+    "first_call_s": 0.33,
+    "cached_s_median": 0.000308278000034079,
+    "contingency_triggered": false
+  },
+  "C5_bank": {
+    "reload_identical": true,
+    "budget_raised_on_new_prompt": 21,
+    "recompute_max_abs_diff": 0.0,
+    "pass_": true
+  },
+  "C7_specificity": {
+    "top_features": {
+      "mean_jaccard_top10": 0.152,
+      "max_prompts_sharing_a_top5_feature": 20,
+      "most_shared": [
+        [
+          1041,
+          20
+        ],
+        [
+          2291,
+          11
+        ],
+        [
+          5511,
+          4
+        ],
+        [
+          384,
+          2
+        ],
+        [
+          7723,
+          2
+        ]
+      ]
+    },
+    "most_changed_vs_base": {
+      "mean_jaccard_top10": 0.33,
+      "max_prompts_sharing_a_top5_feature": 17,
+      "most_shared": [
+        [
+          1041,
+          17
+        ],
+        [
+          2009,
+          14
+        ],
+        [
+          5590,
+          13
+        ],
+        [
+          6810,
+          12
+        ],
+        [
+          2291,
+          9
+        ]
+      ]
+    },
+    "pass": false,
+    "other_rule": {
+      "tokens": "all",
+      "top_features": {
+        "mean_jaccard_top10": 0.497,
+        "max_prompts_sharing_a_top5_feature": 20,
+        "most_shared": [
+          [
+            4667,
+            20
+          ],
+          [
+            11087,
+            20
+          ],
+          [
+            1041,
+            20
+          ],
+          [
+            1178,
+            20
+          ],
+          [
+            6889,
+            19
+          ]
+        ]
+      },
+      "most_changed_vs_base": {
+        "mean_jaccard_top10": 0.834,
+        "max_prompts_sharing_a_top5_feature": 20,
+        "most_shared": [
+          [
+            4667,
+            20
+          ],
+          [
+            11087,
+            20
+          ],
+          [
+            1178,
+            20
+          ],
+          [
+            6889,
+            20
+          ],
+          [
+            1041,
+            16
+          ]
+        ]
+      },
+      "pass": false
+    }
+  },
+  "gpu_hours": 0.045,
+  "all_pass": false
+}

@@ -750,3 +750,43 @@ needs a Kaggle run anyway.
 
 **Caveat:** C7 tests that the tool's output varies with the prompt, not
 that it surfaces an implant. That is still R004's job.
+
+## 2026-10-23: Kushal: E09-R009 result (T3 user-token rule)
+
+Ran on Kaggle (Kushal's account, T4, 0.045 GPU-h; git sha 7fe3f1e, clean;
+outputs in `results/E09/E09-R009/`). C1–C5 pass again. **C7 fails by its
+pre-set criterion**, so the manifest and run status are "failed". This is
+a result, not a bug.
+
+| | top features: Jaccard / max prompts sharing a top-5 feature | most changed: Jaccard / max sharing |
+|---|---|---|
+| all tokens (R003 rule) | 0.50 / 20 | 0.83 / 20 |
+| user tokens (R009) | **0.15** / 20 | **0.33** / 17 |
+| criterion | ≤ 0.25 / ≤ 15 | ≤ 0.25 / ≤ 15 |
+
+What changed: the lists now follow the prompt. For example, "Should
+factory farming be banned?" returns features for factory, bans and
+restrictions, agriculture, governance and questions. Under R003 it
+returned template constants.
+
+What still fails:
+- One feature, #1041 ("technical terms and concepts related to programming
+  or data structures", activation ~77), is top-1 on 19 of 20 prompts.
+  That pattern looks like a position feature, e.g. one that fires on the
+  first user token, rather than content. This is a guess: the argmax token
+  is not saved.
+- The most-changed list (Jaccard 0.33) still repeats #2009, #5590 and #6810
+  (legal, licensing). Here "base" is the pt model, so the list measures
+  -it vs pt, which is generic instruction-tuning drift. In E09 itself the
+  base will be -it and the audited model an organism, so this part of C7
+  doesn't transfer.
+- The SAE fits user-token residuals of -it less well (FVU 0.31, against
+  0.10 over all chat tokens and 0.08 on pt).
+
+**Not done:** any tweak designed after seeing these numbers, such as
+dropping #1041, dropping the first user token, or a "background feature"
+filter. Any of these would be a new, labelled run with a criterion fixed
+first. Proposal: take the current rule into the E09-R004 pilot. There the
+diff is organism vs -it, which is the real question. Add a pre-specified
+background filter only if the pilot shows constant features crowding out
+the implant.
