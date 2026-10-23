@@ -411,3 +411,27 @@ Suggestions, not blocking:
 - listing near-threshold features in E09-R010.
 
 Full review: `notebook/reviews/2026-10-23-santosh-d014.md`.
+
+## D-015: Staged pre-registration freeze, v1.0 / v1.1 / v1.2 (2026-10-23)
+
+**Status:** accepted. Proposed by Kushal, agreed by Santosh.
+**Context:**
+- FREEZE-V1 §3 locks only pages whose pilots are done.
+- E08 and E10 need their R001/R002 pilots and the judge check (H4, Nov 12).
+- E09's T3 tool is still changing (D-014), and its R004 pilot lands on
+  Dec 18.
+**Decision:**
+- **v1.0** (Nov 6–8): `PREREGISTRATION.md`, every threshold, the
+  FREEZE-V1 §2 decisions, and E02, E03, E05, E13.
+- **v1.1** (about Nov 22): E08 and E10.
+- **v1.2** (about Jan 5): E09.
+- The same four-eyes review and tag → release → Zenodo → OSF chain applies
+  at each stage. No confirmatory run starts before its page is frozen.
+**Conditions:**
+- Thresholds lock at v1.0. Later stages lock testbed details only.
+- Each frozen analysis script locks with its page, with its `--truth` named.
+- Pilot results that shape a later page are cited as prior knowledge
+  (D-005).
+- E02/E03 move to v1.1 if E02-R001 has not run by the freeze.
+**Affects pre-registered analysis:** the freeze schedule only; see
+`docs/FREEZE-V1.md` §3.

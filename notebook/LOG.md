@@ -824,3 +824,16 @@ Santosh.
 - Three suggestions, none blocking; see
   `notebook/reviews/2026-10-23-santosh-d014.md`.
 - Tests: 707 passed on main at a54182f.
+
+## 2026-10-23 (later): freeze positions folded in; staged freeze agreed (D-015)
+
+Santosh.
+
+**Did:**
+- Folded Kushal's positions on items 1, 2, 3, 8 and 10 (PR #17) into
+  FREEZE-V1 §2, all agreed.
+- PH3a's ratio stays 2 and is not revisited after the E03 pilot.
+- Agreed his staged freeze, recorded as D-015: v1.0 Nov 6–8, v1.1 (E08,
+  E10) about Nov 22, v1.2 (E09) about Jan 5, with conditions. FREEZE-V1 §3
+  is restructured by stage.
+- PR #17's CI is green: tests, notebook check and GitGuardian all pass.
