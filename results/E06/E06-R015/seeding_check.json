@@ -1,0 +1,40 @@
+{
+  "rows": [
+    {
+      "init": 1,
+      "data": 1,
+      "W_dec_step0": "26630d42b988f73a",
+      "first_batch": "9e3caa8b9d753fe3"
+    },
+    {
+      "init": 1,
+      "data": 2,
+      "W_dec_step0": "26630d42b988f73a",
+      "first_batch": "e7c30f23e918a24c"
+    },
+    {
+      "init": 2,
+      "data": 1,
+      "W_dec_step0": "a3e446c22301db49",
+      "first_batch": "9e3caa8b9d753fe3"
+    },
+    {
+      "init": 2,
+      "data": 2,
+      "W_dec_step0": "a3e446c22301db49",
+      "first_batch": "e7c30f23e918a24c"
+    },
+    {
+      "init": 1,
+      "data": 1,
+      "W_dec_step0": "26630d42b988f73a",
+      "first_batch": "9e3caa8b9d753fe3"
+    }
+  ],
+  "init_controls_W_dec": true,
+  "data_controls_batch": true,
+  "passed": true,
+  "sae_lens": "6.54.12",
+  "torch": "2.14.1+cu130",
+  "runner_config_has_seed_field": false
+}

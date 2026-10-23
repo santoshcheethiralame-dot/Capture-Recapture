@@ -18,7 +18,7 @@ gate an experiment.
 | Q-D9 | Model snapshots and prices for the E08 ladder (4 families) | E08 budget | Provider pages | open |
 | Q-D10 | Chiu-Chao (2016) singleton-correction formula (exact) | E05 (c), E04 (H4c) | Read PeerJ 4:e1634 (open access) from a machine that can reach peerj.com or PMC; no Chao-lab package on GitHub implements it (checked 2026-10-22: SpadeR, iNEXT, iNEXT.3D, iNEXT.4steps, iNEXT.beta3D) | open; blocked in the sandbox (peerj.com, PMC, arXiv denied). E00 contingency applied: `breakaway_nof1` is the f1-free option until then (D-009) |
 | Q-D12 | LinuxArena source code location (only Docker Hub images `linuxarena/env-*` found) | E10 human-attack comparator (optional) | arXiv page of 2604.15384; ask the authors | open |
-| Q-D13 | Is `LanguageModelSAERunnerConfig.seed` really unused in the SAELens version we pin? | E06, E11 | R001 seeding check | open |
+| Q-D13 | Is `LanguageModelSAERunnerConfig.seed` really unused in the SAELens version we pin? | E06, E11 | R001 seeding check | **resolved for E06 (2026-10-22, E06-R015)**: `SyntheticSAERunnerConfig` (SAELens 6.54.12) has no seed field; manual `torch.manual_seed` before construction (init) and before training (data) controls both, exactly. E11's `LanguageModelSAERunnerConfig` still to check in E11-R001 |
 | Q-D14 | Which open models to pin: auditor and attacker (Qwen, 7–8B), L3 families (Llama, Gemma), target (Mistral), judge (Phi or OLMo), organism base (Gemma-2-2B-it). Do they all run on T4 (fp16 or AWQ)? | E08, E09, E10 | E08-R001 and E09 pilots | open |
 | Q-D15 | Is the Gemma Scope SAE set for Gemma-2-2B (residual, a mid layer) loadable on Kaggle, with feature labels usable offline? | E09 T3 | E09-R003 | open |
 

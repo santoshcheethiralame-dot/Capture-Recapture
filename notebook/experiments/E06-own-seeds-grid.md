@@ -116,6 +116,20 @@ with the same seed. If they fail again they are excluded, and the count is
 reported.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-22, before any E06 training)
+
+- Cells as SAELens configurations: `analysis/e06/worlds.py`. World settings
+  that §2 does not name are copied from SynthSAEBench-16k (magnitudes
+  5.0 → 4.0, folded-normal std, bias 0.5, orthogonalization, correlation
+  rank 25 / scale 0.1). The hierarchy is scaled with the feature count
+  (32 roots for 4,096 features). World seed 20261028.
+- Seeds: seed k of a cell has (init, data) from
+  `SeedSequence(20261028, spawn_key=(cell, k))`; "init-only" shares one data
+  seed and "data-only" one init seed (`spawn_key=(cell, 999)`).
+- R001 seeding check: passed as E06-R015 (R001 crashed while writing its
+  manifest after the check had passed; recorded as a bug). Q-D13 resolved
+  for the synthetic runner.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -131,7 +145,21 @@ reported.
 <!-- runs:start -->
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
-| E06-R001 | Seeding check: hash W_dec at step 0 and first batch | Santosh | planned |  |  | ab360fb+dirty |  |
+| E06-R001 | Seeding check: hash W_dec at step 0 and first batch | Santosh | failed | 2026-10-22 | 2026-10-22 | b9e073c | Bug: crashed while closing the manifest (relative output path); the check itself completed and passed. Fixed; re-run as E06-R015 |
+| E06-R002 | Timing pilot: 2 SAEs in the base world (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R003 | Base cell, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R004 | alpha0.5, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R005 | alpha1.5, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R006 | pmin5e-4, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R007 | hier, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R008 | corr, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R009 | hier+corr, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R010 | width1.0, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R011 | init-only, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R012 | data-only, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R013 | budget20M, 24 seeds (Kaggle) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R014 | Histories and estimators (CPU) | Santosh | planned |  |  | b9e073c+dirty |  |
+| E06-R015 | Seeding check (retry of E06-R001 after bug fix) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | 764bcb5+dirty | Passed: torch.manual_seed(init) before constructing SyntheticSAERunner fixes W_dec at step 0; torch.manual_seed(data) afterwards fixes the first batch; a repeat reproduces both (4 combos + repeat, SAELens 6.54.12). SyntheticSAERunnerConfig has no seed field (Q-D13) |
 <!-- runs:end -->
 
 ## 5. Results
