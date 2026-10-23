@@ -1,0 +1,48 @@
+{
+  "run_id": "E11-R001",
+  "experiment": "E11",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "ca75db0",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e11/seeding_check.py --out results/E11/E11-R001 --record",
+  "config": {
+    "out": "results/E11/E11-R001",
+    "hf": null,
+    "dataset": null,
+    "layer": 3,
+    "device": "cpu",
+    "record": true
+  },
+  "config_sha256": "0b02cf4ff952ab7355d91ad5403de615aae804e18fec378bd475261dc95833bd",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "torch": "2.14.1",
+    "sae-lens": "6.54.12",
+    "transformer-lens": "3.9.0",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "combos": "[(1, 1), (1, 2), (2, 1), (2, 2), (1, 1)]"
+  },
+  "inputs": [],
+  "model_ids": [],
+  "started_utc": "2026-10-23T05:30:48+00:00",
+  "finished_utc": "2026-10-23T05:30:49+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E11/E11-R001/seeding_check.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  }
+}

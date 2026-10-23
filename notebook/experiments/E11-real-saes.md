@@ -93,6 +93,19 @@ As listed.
 As in E06.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-23)
+
+- Seeding (E11 §2), as implemented in `analysis/e11/seeding_check.py`:
+  `torch.manual_seed(init)` before constructing
+  `LanguageModelSAETrainingRunner`; then
+  `activations_store.shuffle_input_dataset(data)` and
+  `torch.manual_seed(data)` before training.
+- R001 passed on a tiny randomly initialised HookedTransformer (HF is
+  blocked here). The check concerns the runner's RNG use, not the model's
+  weights. The script's `--hf pythia-70m-deduped --dataset ...` mode
+  repeats it on the real model at the start of R002 on Kaggle; that repeat
+  is logged under R002.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -104,7 +117,9 @@ As in E06.
 ## 4. Runs
 
 <!-- runs:start -->
-_No runs yet._
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E11-R001 | Seeding check (Q-D13 for the LM runner): W_dec and first-batch hashes, 4 combos + repeat, tiny local model | Santosh | succeeded | 2026-10-23 | 2026-10-23 | ca75db0+dirty | Passed: init seed controls W_dec, data seed (shuffle_input_dataset + torch.manual_seed) controls the first batch, repeat reproduces both (SAELens 6.54.12, tiny local model). Repeat on Pythia-70M at the start of R002 |
 <!-- runs:end -->
 
 ## 5. Results
