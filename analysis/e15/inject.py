@@ -11,6 +11,9 @@ is a JSON list of real latent contribution magnitudes (activation x
 ||w_dec||), e.g. from E11-R003 SAEs. Each mark takes a value drawn from it;
 without the file, magnitudes are drawn log-uniformly between 1 and 10.
 
+`magnitudes` writes that list from trained E11 SAEs on clean activations
+(199 quantiles of activation x ||w_dec|| over firings).
+
 `stats` measures each trained SAE's per-latent firing counts and activation
 sums on fresh injected activations (the observed covariates for R004).
 
@@ -128,6 +131,43 @@ def cmd_train(a):
         print(dict(seed=k, init=init, data=dseed, seconds=round(time.time() - t0, 1), tokens=inj.tokens), flush=True)
 
 
+def lm_tokens(a, n_seq_tiny=256):
+    import train as e11
+    if a.tiny:
+        import seeding_check
+        model, data = seeding_check.tiny_model_and_data(n_seq=n_seq_tiny)
+        return model, torch.tensor(data["input_ids"])
+    from datasets import load_dataset
+    from transformer_lens import HookedTransformer
+    model = HookedTransformer.from_pretrained_no_processing(e11.MODEL, device=a.device)
+    ds = load_dataset(a.dataset, split="train", streaming=True)
+    return model, torch.tensor([r["input_ids"][:128] for _, r in zip(range(a.tokens // 128 + 1), ds)])
+
+
+def cmd_magnitudes(a):
+    """Quantiles of real latent contribution magnitudes (activation x ||w_dec|| when
+    firing) of trained SAEs on clean activations: the --magnitudes input of `marks`."""
+    import train as e11
+    from sae_lens import SAE
+    model, tokens = lm_tokens(a)
+    hook = f"blocks.{e11.LAYER}.hook_resid_post"
+    saes = [SAE.load_from_disk(str(f.parent), device=a.device)
+            for f in sorted(Path(a.zoo).glob("**/seed-*/sae_weights.safetensors"))][: a.max_saes]
+    vals = []
+    with torch.no_grad():
+        for i in range(0, tokens.shape[0], a.batch):
+            _, cache = model.run_with_cache(tokens[i:i + a.batch].to(a.device), names_filter=hook)
+            x = cache[hook].reshape(-1, cache[hook].shape[-1])
+            for sae in saes:
+                f = sae.encode(x.to(sae.W_dec.dtype))
+                c = f * sae.W_dec.norm(dim=1)
+                vals.append(c[f > 0].float().cpu().numpy())
+    v = np.concatenate(vals)
+    q = np.quantile(v, np.linspace(0.005, 0.995, 199)).tolist()
+    Path(a.out).write_text(json.dumps(q) + "\n")
+    print(f"{len(saes)} SAEs, {v.size} firings; median contribution {np.median(v):.3f}")
+
+
 def cmd_stats(a):
     """Per-latent firing counts and activation sums of every trained SAE on fresh
     injected activations (the observed covariates of E15 R004)."""
@@ -136,17 +176,7 @@ def cmd_stats(a):
     out = Path(a.out)
     z = np.load(out / "marks.npz")
     marks = {k: z[k] for k in z.files}
-    if a.tiny:
-        import seeding_check
-        model, data = seeding_check.tiny_model_and_data(n_seq=512)
-        tokens = torch.tensor(data["input_ids"])
-    else:
-        from datasets import load_dataset
-        from transformer_lens import HookedTransformer
-        model = HookedTransformer.from_pretrained_no_processing(e11.MODEL, device=a.device)
-        ds = load_dataset(a.dataset, split="train", streaming=True)
-        need = a.tokens // 128 + 1
-        tokens = torch.tensor([r["input_ids"][:128] for _, r in zip(range(need), ds)])
+    model, tokens = lm_tokens(a, 512)
     inj = Injector(marks, a.device)
     inj.reset(np.random.SeedSequence(MASTER, spawn_key=(2,)).generate_state(1)[0])
     hook = f"blocks.{e11.LAYER}.hook_resid_post"
@@ -191,8 +221,17 @@ def main():
     st.add_argument("--dataset", default="apollo-research/monology-pile-uncopyrighted-tokenizer-EleutherAI-gpt-neox-20b")
     st.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     st.add_argument("--tiny", action="store_true")
+    mg = sub.add_parser("magnitudes")
+    mg.add_argument("--zoo", required=True, help="E11 training output (seeds/<model>/l0-32)")
+    mg.add_argument("--out", required=True, help="mags.json")
+    mg.add_argument("--tokens", type=int, default=200_000)
+    mg.add_argument("--batch", type=int, default=32)
+    mg.add_argument("--max-saes", type=int, default=4)
+    mg.add_argument("--dataset", default="apollo-research/monology-pile-uncopyrighted-tokenizer-EleutherAI-gpt-neox-20b")
+    mg.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    mg.add_argument("--tiny", action="store_true")
     a = ap.parse_args()
-    dict(marks=cmd_marks, train=cmd_train, stats=cmd_stats)[a.cmd](a)
+    dict(marks=cmd_marks, train=cmd_train, stats=cmd_stats, magnitudes=cmd_magnitudes)[a.cmd](a)
 
 
 if __name__ == "__main__":

@@ -55,10 +55,8 @@ The CPU analyses afterwards run in the sandbox, on copied histories:
 - **E04** needs `true_match_cosines.json` (written by `zoo.py histories`,
   #5) and the E03 winner (#6).
 - **E15 marks** need real latent contribution magnitudes (activation ×
-  ‖w_dec‖) from an E11 SAE (#8). Measure them with `inject.py stats` on
-  an E11 zoo, or take a quantile list of `act_sums / counts × ‖w_dec‖`.
-  Save it as `mags.json` (a JSON list). Not yet scripted; write it on the
-  day.
+  ‖w_dec‖) from E11 SAEs (#8):
+  `python analysis/e15/inject.py magnitudes --zoo /kaggle/working/e11/seeds --out mags.json`.
 - **E07** reads the E02 and E06 histories written with `--fire-counts`
   (observed covariates per run in `items.csv`).
 - **E16** reads the E06 training output directly (`world/` and `zoo/`).
