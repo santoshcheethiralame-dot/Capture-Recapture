@@ -305,3 +305,33 @@ the regime the project cares about.
 **Affects pre-registered analysis:** yes (E02 H2a/H2c, E06 H6a), if adopted
 at the freeze. `analysis/e02/evaluate.py` already computes both variants.
 
+## D-012 (proposed): E10 arm A3 (de-adaptation) as written cannot correct adaptive bias (2026-10-22)
+
+**Status:** proposed for the joint v1 freeze (E10 is Kushal's page; this
+records the evidence, it changes nothing).
+**Context:**
+- Q-D7 is resolved. The A3a algorithm was read from the paper (Liyanage
+  et al., ICSE 2024, Algorithm 1; `paper/ICSE24.pdf` in the authors' GitHub
+  pages repository) and A3b from the FSE'21 artefact
+  (`Adaptive-Bias/fse21_paper270`). Both are implemented in
+  `crsafety.deadapt` (H8).
+- E10 §2's reconstruction of A3a computed Ĉ only at the end of each shuffled
+  window. Shuffling does not change Ĉ there, so that version was a no-op.
+  The real algorithm estimates the rate at every prefix of every shuffled
+  window and regresses log rate on log time.
+- E01-R009 (exploratory) shows both methods over-correct at our scale, at
+  the run level (K = 10–12; A3b is undefined there) and at the attempt level
+  (20 blind spots, 200 attempts).
+**Options for the freeze:**
+- A: keep A3 as pre-registered (A3a, with A3b alongside), now with the
+  faithful algorithm; expect H10c "not supported" and report it.
+- B: apply A3 at the attempt level inside each A2 session, where adaptation
+  actually happens. This needs per-attempt logs from the monitor (an extra
+  history file beyond PROTOCOLS §10). R009 suggests it would still
+  over-correct.
+- C: replace H10c's correction with a design-based one (e.g. A1 runs as the
+  non-adaptive reference) and keep A3 as exploratory.
+**Recommendation:** A, plus C as a secondary analysis. The paper's claim
+(PH5 second half) should be allowed to fail honestly rather than be
+redesigned after this evidence.
+**Affects pre-registered analysis:** yes, if B or C is adopted at the freeze.

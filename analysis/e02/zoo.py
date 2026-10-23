@@ -104,19 +104,57 @@ def inventory(args):
     print(json.dumps(inv, indent=2))
 
 
+def latent_covariates(W, kept, fire_counts=None, act_sums=None, n_samples=None):
+    """E07 observed covariates of each kept latent: max |cos| to another kept
+    latent of the same SAE (x4), and with firing counts the log firing
+    frequency (x3) and mean activation when firing (x4). Dead latents are
+    already dropped, so counts are > 0."""
+    C = mt.abs_cos(W, W)
+    np.fill_diagonal(C, 0)
+    out = dict(max_cos=C.max(axis=1) if W.shape[0] > 1 else np.zeros(W.shape[0]))
+    if fire_counts is not None and n_samples:
+        fc = np.asarray(fire_counts, float)[kept]
+        out["log_freq"] = np.log(fc / n_samples)
+        if act_sums is not None:
+            out["mean_act"] = np.asarray(act_sums, float)[kept] / fc
+    return out
+
+
+def true_match_cosines(Ws, assign, tau_gt=0.7):
+    """|cos| between the latents of every pair of seeds that the oracle assigns
+    to the same true feature (both at |cos| >= tau_gt): E04's noise model."""
+    lat = []
+    for r, c, s in assign:
+        m = {}
+        for lt, ft in zip(r[s >= tau_gt], c[s >= tau_gt]):
+            m[int(ft)] = int(lt)
+        lat.append(m)
+    U = [mt.unit_rows(W) for W in Ws]
+    out = []
+    for a in range(len(Ws)):
+        for b in range(a + 1, len(Ws)):
+            common = sorted(set(lat[a]) & set(lat[b]))
+            if common:
+                A = U[a][[lat[a][f] for f in common]]
+                B = U[b][[lat[b][f] for f in common]]
+                out.append(np.abs(np.sum(A * B, axis=1)))
+    return np.concatenate(out) if out else np.empty(0)
+
+
 def histories(args):
     world_dir, zoo_dir = local_dir(args.world), local_dir(args.zoo)
     T, p, _ = load_world(world_dir)
     idx = zoo_index(zoo_dir)
-    fires = json.loads(Path(args.fire_counts).read_text()) if args.fire_counts else {}
-    fires = fires.get("counts", fires)  # fire_counts.py nests them under "counts"
-    pre = {}
+    raw = json.loads(Path(args.fire_counts).read_text()) if args.fire_counts else {}
+    fires = raw.get("counts", raw)  # fire_counts.py nests them under "counts"
+    act_sums, n_samples = raw.get("act_sums", {}), raw.get("samples")
+    pre, noise = {}, {}
     out = Path(args.out) / "histories"
     cells = sorted({(a, l) for a, l, _ in idx})
     problems = 0
     for a, l in cells:
         seeds = sorted(s for aa, ll, s in idx if (aa, ll) == (a, l))
-        Ws = []
+        Ws, obs = [], []
         for s in seeds:
             W = decoder(idx[(a, l, s)], T.shape[1])
             fc = fires.get(f"{a}/l0-{l}/seed-{s}")
@@ -124,8 +162,10 @@ def histories(args):
             pre[f"{a}/l0-{l}/seed-{s}"] = dict(width=int(W.shape[0]), kept=int(kept.size),
                                                dead_checked=fc is not None)
             Ws.append(W[kept])
+            obs.append(latent_covariates(W[kept], kept, fc, act_sums.get(f"{a}/l0-{l}/seed-{s}"), n_samples))
         cell = f"{a}_l0-{l}"
-        runs = [dict(catcher=f"{a} L0={l} (zoo seed {s})", seed=s, role="estimation", status="ok")
+        runs = [dict(catcher=f"{a} L0={l} (zoo seed {s})", seed=s, status="ok",
+                     role="reference" if args.reference_from is not None and s >= args.reference_from else "estimation")
                 for s in seeds]
         # oracle: one Hungarian per SAE, thresholded at each tau_gt
         S = [mt.abs_cos(W, T) for W in Ws]
@@ -134,11 +174,16 @@ def histories(args):
             from scipy.optimize import linear_sum_assignment
             r, c = linear_sum_assignment(-Si)
             assign.append((r, c, Si[r, c]))
+        noise[cell] = true_match_cosines(Ws, assign)
         for tg in TAU_GT:
             X = np.zeros((T.shape[0], len(Ws)), np.int8)
             for k, (r, c, s) in enumerate(assign):
                 X[c[s >= tg], k] = 1
             items = {str(i): dict(planted=True, covariates=dict(p=float(p[i]))) for i in range(T.shape[0])}
+            for k, (r, c, s) in enumerate(assign):  # E07 x3/x4 of the latent that caught item c, per run
+                for lat, it in zip(r[s >= tg], c[s >= tg]):
+                    for name, v in obs[k].items():
+                        items[str(it)]["covariates"].setdefault(name, {})[str(seeds[k])] = float(v[lat])
             d = out / f"oracle_tgt{tg}" / cell
             write_cell(d, cell, X, [str(i) for i in range(T.shape[0])], "oracle", runs=runs, items=items)
             problems += bool(check_cell(d))
@@ -150,6 +195,13 @@ def histories(args):
             problems += bool(check_cell(d))
         print(cell, "done", flush=True)
     (Path(args.out) / "preprocessing.json").write_text(json.dumps(pre, indent=1) + "\n")
+    pooled = np.concatenate([v for v in noise.values()]) if noise else np.empty(0)
+    q = np.linspace(0, 1, 1001)
+    (Path(args.out) / "true_match_cosines.json").write_text(json.dumps(dict(
+        note="|cos| between latents of two seeds assigned to the same true feature at |cos| >= 0.7 (E04 noise model)",
+        quantiles=q.tolist(), pooled=np.quantile(pooled, q).tolist() if pooled.size else [], n_pooled=int(pooled.size),
+        cells={c: dict(n=int(v.size), quantiles=np.quantile(v, q[::10]).tolist() if v.size else []) for c, v in noise.items()},
+    )) + "\n")
     if not fires:
         print("WARNING: no --fire-counts given: dead latents were not removed (E02 §2 asks for it)")
     print(f"{len(cells)} cells written to {out}; cells failing check_cell: {problems}")
@@ -163,6 +215,8 @@ def main():
     ap.add_argument("--zoo", default=ZOO_REPO)
     ap.add_argument("--out", required=True)
     ap.add_argument("--fire-counts", default=None, help="JSON of per-latent firing counts (dead-latent removal)")
+    ap.add_argument("--reference-from", type=int, default=None,
+                    help="seeds >= this are reference runs (E06: 16); default: all estimation (E02)")
     a = ap.parse_args()
     sys.exit(inventory(a) if a.step == "inventory" else histories(a))
 

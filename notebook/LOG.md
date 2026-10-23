@@ -340,3 +340,119 @@ identified at K = 10. **Recommendation for the freeze (FREEZE-V1 item 6):**
 keep (d) as specified and report its failure; do not add another f1-free
 estimator. The function stays in the library, marked "not recommended".
 
+## 2026-10-22 (late): H8 de-adaptation, H5 analysis scripts, E01-R009
+
+Santosh.
+
+**Did:**
+- Resolved Q-D7. The ICSE'24 paper is in the authors' GitHub pages repo,
+  which git can clone although the website is blocked here. The FSE'21
+  reset estimator is in their artefact repo. Implemented both in
+  `crsafety.deadapt` (handoff H8), with tests.
+- Wrote the frozen-analysis scripts for Kushal's experiments (handoff H5):
+  `analysis/e08/analyse.py`, `analysis/e09/analyse.py`,
+  `analysis/e10/analyse.py`, with shared code in `crsafety.testbed` and an
+  end-to-end test on fake PROTOCOLS §10 histories.
+- Ran E01-R009 (exploratory): how de-adaptation behaves.
+
+**Saw:**
+- E10 §2's reconstruction of A3a was a no-op: shuffling a window does not
+  change Ĉ at its end. The real algorithm works on every prefix of every
+  shuffled window.
+- Faithfully implemented, both methods over-correct at our scale (numbers
+  in E01 §5 and the R009 run summary). A3b is undefined at the run level
+  because every run finds something new. Proposed D-012 for the freeze;
+  E10 itself is Kushal's page.
+
+**Next:** E06 simulation side (seeding check, configs, analysis), then
+E04's SAE arm and E07 code.
+
+
+## 2026-10-23: E06 training and analysis scripts; E07 covariate models
+
+Santosh.
+
+**Did:**
+- E06: training script (`analysis/e06/train.py`, resumable, Kaggle GPU)
+  and the R014 analysis (`analysis/e06/analyse.py`). `zoo.py histories
+  --reference-from` marks reference seeds. Tiny CPU run end to end
+  (2 cells × 24 seeds); smoke output only, no numbers kept.
+- E07: `crsafety.huggins_ci` (SE equals VGAM's to 1e-7 on the E00
+  datasets) and `analysis/e07/analyse.py`. `zoo.py` now writes the observed
+  latent covariates per run into items.csv. `fire_counts.py` also sums
+  activations; it had a bug in the first version, caught in the smoke test.
+
+**Saw:**
+- E06 H6e names Δ̂(16), but only 8 reference seeds exist.
+- E07's |U| target and the Huggins estimand differ.
+- Both are added to the freeze packet (items 11, 12).
+
+**Next:** E04 SAE arm, E01 figures, E16 novelty check.
+
+## 2026-10-23 (later): E04 SAE arm and pilot R003
+
+Santosh.
+
+**Did:**
+- Wrote the E04 SAE arm (`analysis/e04/sae_arm.py`) and its tests.
+  `zoo.py` now saves the cross-seed cosine distribution of true matches,
+  which is E04's noise model.
+- Registered R001 (confirmatory, planned) and R002 (Kushal's attack arm,
+  planned). Ran the declared pilot R003: random directions and fixed noise,
+  spawn keys 9000+.
+
+**Saw:**
+- As written, split variants make H4a fail for any one-to-one identity rule
+  (clusters / N_true 3.5).
+- The ghost correction over-corrects to 0.73 because splits add detections.
+- Freeze item 13 proposes scoring H4a without splits and reporting them
+  separately.
+
+**Next:** E01 figures, E16 novelty check, CLAUDE.md refresh.
+
+## 2026-10-23 (later): E01 figures
+
+Santosh.
+
+**Did:**
+- `analysis/e01/figures.py` draws two figures from the committed E01
+  analysis tables (no new runs). Output: `results/E01/analysis/figures/`.
+  - Fig. 1: Ĉ bias next to Chao2's relative bias, per cell.
+  - Fig. 2: interval coverage, iNEXT normal (R005) vs the realized-coverage
+    bootstrap (R008).
+- Colours are two validated categorical slots; the second series also uses
+  a different marker.
+
+## 2026-10-23 (later): E16 novelty check and bracket script
+
+Santosh.
+
+**Did:**
+- E16-R001 novelty check. Q-N2 is answered: no prior work found, and this
+  doubles as the weekly scoop check.
+- Wrote `analysis/e16/bracket.py` (R002 registered, planned).
+
+**Saw (smoke test, toy world, 96 features; numbers seen, not results):**
+- Oracle-missed energy 0.18 against total residual energy 0.07.
+- Partly reconstructed features count as "missed" under the |cos| rule, so
+  the residual cannot bound them.
+- Noted in E16 §2a as a decision to take before R002.
+
+## 2026-10-23 (later): H7 white-box tool
+
+Santosh.
+
+**Did:**
+- Built handoff H7 early (due 2026-12-15): `src/crsafety/tools/gemma_scope.py`.
+  - For a prompt, it returns the top SAE features (max over tokens, BOS
+    excluded) with labels, and the features most changed against the base
+    model, with their sign.
+  - `PromptBank` caches activations and caps new prompts per run (E09 §3
+    contingency). `from_hf` loads a model pair plus a Gemma Scope SAE.
+  - Tests: `tests/test_gemma_scope.py`, with fake models and a tiny random
+    GPT-2.
+- Not checked here: the real Gemma-2-2B and Gemma Scope weights (HF is
+  blocked).
+- E09-R003 ("tool built and unit-tested") is on Kushal's page, so I have
+  not registered it. Kushal, please register and run it on Kaggle with
+  real weights and the Neuronpedia label export.

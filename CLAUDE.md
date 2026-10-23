@@ -77,15 +77,26 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 8. M3 matcher done (`analysis/e03/act_corr.py`; bakeoff `--m3`, `--fire-counts`).
 9. f1-free alternative (`betabinomial_nof1`) tried on E05 pilot tables and
    rejected; FREEZE-V1 item 6 recommends reporting breakaway_nof1's failure.
-10. Everything left needs people: run E02-R001 (+ fire_counts, act_corr) on
-    Santosh's Kaggle account; Kushal's reviews; the joint freeze decisions in
-    `docs/FREEZE-V1.md`.
+10. Done 2026-10-22/23 (no Kaggle needed): Q-D7 resolved, `crsafety.deadapt`
+    (A3a/A3b) + E01-R009 (both over-correct; D-012); H5 frozen-analysis
+    scripts `analysis/e08–e10/analyse.py` on `crsafety.testbed`; E06
+    `worlds.py`/`train.py`/`analyse.py` + seeding check R015; E07
+    `huggins_ci` (= VGAM SE) + `analysis/e07/analyse.py`; E04 SAE arm
+    `analysis/e04/sae_arm.py` + pilot R003 (splits break H4a for any
+    one-to-one rule); E01 figures `analysis/e01/figures.py`; E16-R001
+    novelty (Q-N2 answered) + `analysis/e16/bracket.py` (estimand concern
+    in E16 §2a). Freeze packet now has 13 items.
+11. Everything left needs people or Kaggle: E02-R001 (+ fire_counts,
+    act_corr) and E06 training (`train.py`, 264 SAEs) on Santosh's Kaggle
+    account; Kushal's reviews; the joint freeze decisions in
+    `docs/FREEZE-V1.md`. Still doable here: H7 Gemma Scope tool scaffold,
+    paper methods drafts, E13/E11 prep.
 
 ## Repository map
 
 | Path | What |
 |---|---|
-| `src/crsafety/` | `sim.py` (E01 data-generating mechanisms, `Cell`, `simulate`), `manifest.py` (PROTOCOLS §5 manifests: `start`/`finish`), `histories.py` also has `check_cell` (`python -m crsafety.histories check <dir>`), `bootstrap.py` also has `coverage_interval`/`delta_interval` (primary intervals, D-010). Estimator library: `estimators.py` (IncidenceData, chapman, chapman_pairs, darroch_mt, chao2, chao2_ci, ichao2, jackknife, ice, coverage, good_turing_coverage, extrapolate, huggins, generalized_chao, report), `loglin.py` (loglinear, closedp: Rcapture models + run interactions), `rbridge.py` (breakaway_nof1 via Rscript; env `CRSAFETY_RSCRIPT`), `bootstrap.py` (iNEXT-style pseudo-population, B=2000), `histories.py` (read_cell / write_cell, PROTOCOLS §10) |
+| `src/crsafety/` | `sim.py` (E01 data-generating mechanisms, `Cell`, `simulate`), `manifest.py` (PROTOCOLS §5 manifests: `start`/`finish`), `histories.py` also has `check_cell` (`python -m crsafety.histories check <dir>`), `bootstrap.py` also has `coverage_interval`/`delta_interval` (primary intervals, D-010). Estimator library: `estimators.py` (IncidenceData, chapman, chapman_pairs, darroch_mt, chao2, chao2_ci, ichao2, jackknife, ice, coverage, good_turing_coverage, extrapolate, huggins, huggins_ci, generalized_chao, report), `loglin.py` (loglinear, closedp: Rcapture models + run interactions), `rbridge.py` (breakaway_nof1 via Rscript; env `CRSAFETY_RSCRIPT`), `bootstrap.py` (iNEXT-style pseudo-population, B=2000), `histories.py` (read_cell / write_cell, PROTOCOLS §10), `linkage.py` (E05 errors + corrections), `matching.py` (SAE identity rules, plateau), `stopping.py` (E13), `deadapt.py` (A3a Liyanage ICSE'24, A3b FSE'21 reset), `testbed.py` (planted-truth loaders + prereg §7 verdicts for E08–E10) |
 | `tests/test_estimators.py` | 377 property tests (E00-R002) |
 | `validation/e00/` | R reference comparison (`run.sh`, `reference.R`, `compare.py`, `make_synthetic.py`) |
 | `results/EXX/<run_id>/` | Run outputs (small files only; large ones external with sha256) |
@@ -95,13 +106,14 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 | `pilot/` | Early simulation (`simulate.py`, `estimators.py`, `results.md`) |
 | `tools/notebook.py` | `new`, `set`, `render`, `freeze`, `check` |
 | `configs/e01/cells.json`, `analysis/e01/` | E01 cells and seeds; `run.py R00X` runner, `analyse.py` → `results/E01/analysis/` |
+| `analysis/eXX/` | Per-experiment scripts: e02 (zoo, evaluate, fire_counts), e03 (bakeoff, act_corr), e04 (sae_arm), e05/e13 (pilots), e06 (worlds, train, analyse, seeding_check), e07, e08–e10 (frozen H5 analyses, Kushal's data), e16 (bracket) |
 | `requirements.lock` | uv-compiled lock (numpy 2.5.4, scipy 1.18.1); hashed into manifests |
 
 ## Commands
 
 ```bash
 python -m pip install -e ".[dev]"     # use python -m: the bare `pytest` on PATH is a uv tool without numpy
-python -m pytest -q                   # 664 tests (1 skipped without R + breakaway)
+python -m pytest -q                   # 684 tests (1 skipped without R + breakaway)
 python tools/notebook.py check        # CI runs this + py_compile + pytest
 python tools/notebook.py new E01 --owner Santosh --title "..." [--config ...]
 python tools/notebook.py set E01-R001 status=running
@@ -160,6 +172,12 @@ rpy2 does not load against the conda R; use `crsafety.rbridge` (Rscript).
 freeze note); separation of data and analysis (Kushal doesn't compute
 coverage on confirmatory E08–E10 data; Santosh runs the frozen script);
 owner-only edits of experiment pages.
+
+**Commit identity (user's instruction):** commit as Santosh with no AI
+trailers: `git -c user.name="Santosh Cheethirala" -c
+user.email="santoshcheethirala.me@gmail.com" commit ...`, no
+Co-Authored-By / session lines, no "(with Claude)" in LOG, no AI footer in
+PR bodies.
 
 **Git:** `main` protected, PRs reviewed by the other person; branch names
 `santosh/<exp>-<topic>` (in Claude sessions, use the assigned branch); small

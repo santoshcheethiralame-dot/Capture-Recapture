@@ -73,6 +73,34 @@ E15).
 Non-converging fits are counted and reported.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-23, before any E07 run)
+
+- Script: `analysis/e07/analyse.py` (R001), tested on simulated §10 cells
+  (`tests/test_e07.py`). Inputs: E02 oracle histories at τ_gt = 0.7 and the
+  E06 cells, written by `analysis/e02/zoo.py histories --fire-counts`.
+- Observed covariates are recorded per run in items.csv (`log_freq`,
+  `mean_act`, `max_cos`, keyed by run seed). `fire_counts.py` now also sums
+  activations. An item's covariate is the mean over the estimation runs that
+  caught it, so reference runs never inform the fit. Covariates are
+  standardised (N̂ unchanged). x2 noise is seeded per cell and s from master
+  20261029.
+- Huggins interval: `crsafety.huggins_ci` (Huggins 1989 variance; matches
+  VGAM `SE.N.hat` on the E00 datasets, `tests/test_huggins_ci.py`), with a
+  log-normal interval on N̂ − S. Generalised Chao has no interval here.
+- **For the freeze** (`docs/FREEZE-V1.md`):
+  1. The firing threshold for "population above a firing threshold" is not
+     set in §2. Proposed: the smallest p among U (`--p-threshold auto`).
+  2. Huggins estimates every item with detection probability > 0, which is
+     N_true in a planted world, not the finite union |U|. Relative bias
+     against |U| therefore penalises a correct extrapolation past U.
+     Proposed: keep |U| as primary (as pre-registered) and report N_thr
+     alongside.
+  3. H7b names "x3/x4". The script tests them separately (H7b-x3, H7b-x4).
+     Proposed: supported if either is supported, reporting both.
+  4. Failed fits count as not meeting the criterion (conservative).
+- §3 contingency is computed in advance: every Huggins fit records its
+  largest Horvitz-Thompson weight and N̂ with weights truncated at 100.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |

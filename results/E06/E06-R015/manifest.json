@@ -1,0 +1,57 @@
+{
+  "run_id": "E06-R015",
+  "experiment": "E06",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "764bcb5",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e06/seeding_check.py --record --out results/E06/E06-R015",
+  "config": {
+    "cell": {
+      "id": "base",
+      "alpha": 1.0,
+      "p_min": 1e-07,
+      "p_max": 0.4,
+      "hierarchy": false,
+      "correlation": false,
+      "n_true": 4096,
+      "d": 256,
+      "width": 1024,
+      "l0": 25,
+      "samples": 50000000,
+      "seed_type": "both"
+    }
+  },
+  "config_sha256": "938b1da05146c41d67386f8074ed79bdf1f7f0dde391a274155f9dc8685e767e",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "torch": "2.14.1",
+    "sae-lens": "6.54.12",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "world": 20261028,
+    "combos": "(1,1),(1,2),(2,1),(2,2),(1,1)"
+  },
+  "inputs": [],
+  "model_ids": [],
+  "started_utc": "2026-10-22T19:01:55+00:00",
+  "finished_utc": "2026-10-22T19:02:45+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E06/E06-R015/seeding_check.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  }
+}

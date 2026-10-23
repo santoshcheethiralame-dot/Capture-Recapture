@@ -1,0 +1,90 @@
+{
+  "levels": {
+    "1": {
+      "reps": 200,
+      "failed": 0,
+      "ratio_mean": 3.405,
+      "chao2_ratio_mean": 6.19625,
+      "chao2_corr_ratio_mean": 0.75,
+      "chao2_corr_oracle_ratio_mean": 0.75,
+      "C_hat_mean": 0.8123698398280035,
+      "f_hat_mean": 0.31555717767081404,
+      "f_oracle_mean": 0.31558866133866137,
+      "impure_clusters_mean": 0.0,
+      "ratio_mcse": 0.12280177678645185,
+      "chao2_ratio_mcse": 0.41057445163964595,
+      "chao2_corr_ratio_mcse": 0.030695456590127176,
+      "chao2_inf": 0
+    },
+    "3": {
+      "reps": 200,
+      "failed": 0,
+      "ratio_mean": 3.59,
+      "chao2_ratio_mean": 12.780416666666667,
+      "chao2_corr_ratio_mean": 0.7183333333333334,
+      "chao2_corr_oracle_ratio_mean": 0.72,
+      "C_hat_mean": 0.7478230219218941,
+      "f_hat_mean": 0.35147791266595696,
+      "f_oracle_mean": 0.35167419609309725,
+      "impure_clusters_mean": 0.0,
+      "ratio_mcse": 0.07626506130369304,
+      "chao2_ratio_mcse": 0.6841568064697717,
+      "chao2_corr_ratio_mcse": 0.01831809935061756,
+      "chao2_inf": 0
+    },
+    "10": {
+      "reps": 200,
+      "failed": 0,
+      "ratio_mean": 3.5285,
+      "chao2_ratio_mean": 31.97825,
+      "chao2_corr_ratio_mean": 0.738,
+      "chao2_corr_oracle_ratio_mean": 0.7405000000000002,
+      "C_hat_mean": 0.7409856035943583,
+      "f_hat_mean": 0.3483720684382752,
+      "f_oracle_mean": 0.3480481331902932,
+      "impure_clusters_mean": 0.0,
+      "ratio_mcse": 0.042670747750277814,
+      "chao2_ratio_mcse": 0.9623945369030333,
+      "chao2_corr_ratio_mcse": 0.009445958429575388,
+      "chao2_inf": 0
+    }
+  },
+  "hypotheses": [
+    {
+      "id": "H4a (N_true = 1)",
+      "estimate": "mean clusters / N_true = 3.405 (MCSE 0.123)",
+      "verdict": "not supported"
+    },
+    {
+      "id": "H4a (N_true = 3)",
+      "estimate": "mean clusters / N_true = 3.590 (MCSE 0.076)",
+      "verdict": "not supported"
+    },
+    {
+      "id": "H4a (N_true = 10)",
+      "estimate": "mean clusters / N_true = 3.529 (MCSE 0.043)",
+      "verdict": "not supported"
+    },
+    {
+      "id": "H4a (pooled)",
+      "estimate": "mean clusters / N_true = 3.508",
+      "verdict": "not supported"
+    },
+    {
+      "id": "H4c (N_true = 1)",
+      "estimate": "Chao2 / N_true 6.20 uncorrected, 0.75 corrected",
+      "verdict": "supported"
+    },
+    {
+      "id": "H4c (N_true = 3)",
+      "estimate": "Chao2 / N_true 12.78 uncorrected, 0.72 corrected",
+      "verdict": "supported"
+    },
+    {
+      "id": "H4c (N_true = 10)",
+      "estimate": "Chao2 / N_true 31.98 uncorrected, 0.74 corrected",
+      "verdict": "supported"
+    }
+  ],
+  "pilot": true
+}

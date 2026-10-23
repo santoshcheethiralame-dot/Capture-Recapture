@@ -1,0 +1,40 @@
+{
+  "rows": [
+    {
+      "init": 1,
+      "data": 1,
+      "W_dec_step0": "dc53643c2e88da78",
+      "first_batch": "06f1bd113858817b"
+    },
+    {
+      "init": 1,
+      "data": 2,
+      "W_dec_step0": "dc53643c2e88da78",
+      "first_batch": "7c4cc07c5284e050"
+    },
+    {
+      "init": 2,
+      "data": 1,
+      "W_dec_step0": "2ac30202adb07d5c",
+      "first_batch": "06f1bd113858817b"
+    },
+    {
+      "init": 2,
+      "data": 2,
+      "W_dec_step0": "2ac30202adb07d5c",
+      "first_batch": "7c4cc07c5284e050"
+    },
+    {
+      "init": 1,
+      "data": 1,
+      "W_dec_step0": "dc53643c2e88da78",
+      "first_batch": "06f1bd113858817b"
+    }
+  ],
+  "model": "tiny local HookedTransformer (4 layers, d=64, random weights)",
+  "init_controls_W_dec": true,
+  "data_controls_batch": true,
+  "passed": true,
+  "sae_lens": "6.54.12",
+  "torch": "2.14.1+cu130"
+}

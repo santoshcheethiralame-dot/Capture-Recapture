@@ -13,12 +13,12 @@ gate an experiment.
 | Q-D4 | AuditBench: measured cost per run, and whether the LoRAs download and serve | E09 | Run E09-R001/R002 on rented GPUs | open (repo, outputs and settings known; see Resolved) |
 | Q-D5 | Is there a Qwen3-32B (or smaller) AuditBench replication that is public? | E09 fallback | Paper + repo | open |
 | Q-D6 | ControlArena / BashArena: can a planted-weakness monitor be plugged in? | E10 stretch | Read the code | open |
-| Q-D7 | Exact de-adaptation algorithm (Liyanage et al., ICSE 2024, "Algorithm 1", defaults α = 0.3, β = 0.5) | E10 A3a | Read `mboehme.github.io/paper/ICSE24.pdf` and the Zenodo artefact (two records: 10.5281/zenodo.10460578 and 10416794) | open (E10 has a flagged reconstruction) |
+| Q-D7 | Exact de-adaptation algorithm (Liyanage et al., ICSE 2024, "Algorithm 1") | E10 A3a | — | **resolved 2026-10-22**: read from `paper/ICSE24.pdf` in the GitHub repo `mboehme/mboehme.github.io` (git clone works where the web does not). Defaults α = 0.11, β = 0.5 (RQ1; α = 0.3 in the figure), "add 1" to f1, f2. The paper's artefact is Zenodo 10.5281/zenodo.10575734. Implemented in `crsafety.deadapt`; behaviour in E01-R009; consequences in D-012 |
 | Q-D8 | Licences: SynthSAEBench, AuditBench, BAITBENCH, SLEIGHT-Bench (gated), Tensor Trust, board-game SAEs | release | Check each repo or card | open |
 | Q-D9 | Model snapshots and prices for the E08 ladder (4 families) | E08 budget | Provider pages | open |
 | Q-D10 | Chiu-Chao (2016) singleton-correction formula (exact) | E05 (c), E04 (H4c) | Read PeerJ 4:e1634 (open access) from a machine that can reach peerj.com or PMC; no Chao-lab package on GitHub implements it (checked 2026-10-22: SpadeR, iNEXT, iNEXT.3D, iNEXT.4steps, iNEXT.beta3D) | open; blocked in the sandbox (peerj.com, PMC, arXiv denied). E00 contingency applied: `breakaway_nof1` is the f1-free option until then (D-009) |
 | Q-D12 | LinuxArena source code location (only Docker Hub images `linuxarena/env-*` found) | E10 human-attack comparator (optional) | arXiv page of 2604.15384; ask the authors | open |
-| Q-D13 | Is `LanguageModelSAERunnerConfig.seed` really unused in the SAELens version we pin? | E06, E11 | R001 seeding check | open |
+| Q-D13 | Is `LanguageModelSAERunnerConfig.seed` really unused in the SAELens version we pin? | E06, E11 | R001 seeding check | **resolved for E06 (2026-10-22, E06-R015)**: `SyntheticSAERunnerConfig` (SAELens 6.54.12) has no seed field; manual `torch.manual_seed` before construction (init) and before training (data) controls both, exactly. E11's `LanguageModelSAERunnerConfig` still to check in E11-R001 |
 | Q-D14 | Which open models to pin: auditor and attacker (Qwen, 7–8B), L3 families (Llama, Gemma), target (Mistral), judge (Phi or OLMo), organism base (Gemma-2-2B-it). Do they all run on T4 (fp16 or AWQ)? | E08, E09, E10 | E08-R001 and E09 pilots | open |
 | Q-D15 | Is the Gemma Scope SAE set for Gemma-2-2B (residual, a mid layer) loadable on Kaggle, with feature labels usable offline? | E09 T3 | E09-R003 | open |
 
@@ -34,7 +34,7 @@ gate an experiment.
 | ID | Question | Blocks | Status |
 |---|---|---|---|
 | Q-N1 | Has anyone calibrated detectability by planting known items into a real ML system for unseen-failure estimation? Check mark-resight analogues and software seeded-defect work | E15 | open |
-| Q-N2 | Has anyone bounded missed SAE features from above using the reconstruction residual? | E16 | open |
+| Q-N2 | Has anyone bounded missed SAE features from above using the reconstruction residual? | E16 | answered 2026-10-23 (E16-R001): nothing found; closest is Engels et al. 2025, whose decomposition the upper bound builds on. `research/notes/J-e16-novelty.md` |
 | Q-N3 | Has anyone used open-population capture-recapture (Cormack-Jolly-Seber) to separate removal from concealment after safety training? | E17 | open |
 | Q-N4 | Weekly scoop check (see `RISKS.md`) | all | recurring |
 
