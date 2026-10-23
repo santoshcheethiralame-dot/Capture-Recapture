@@ -71,3 +71,51 @@ These paths were smoke-tested in the sandbox only on local stand-ins:
   random-weights null (#9).
 
 If one fails, fix the loader in a small PR before the full run.
+
+# Kushal's account
+
+Same rules as above (register first, `git pull` before registering, copy
+outputs into `results/<EXP>/<run_id>/`, record GPU-hours). Kushal's own LLM
+stack (vLLM, call cache, model pinning, Q-D14) is documented with E08–E10;
+this section lists only the jobs that use the shared `crsafety` code.
+
+## Setup (once per account)
+
+Gemma-2 weights are gated. Either
+- accept the Gemma licence on Hugging Face, create a read token, and add it
+  in the notebook as a Kaggle secret named `HF_TOKEN` (Add-ons → Secrets);
+  or
+- accept the licence on Kaggle Models (`google/gemma-2`), attach the
+  `transformers` variants `gemma-2-2b-it` and `gemma-2-2b` as inputs, and
+  pass their `/kaggle/input/...` paths to `--it` / `--pt`.
+
+The Gemma Scope SAE weights (`google/gemma-scope-2b-pt-res`) are not gated.
+
+```python
+# cell 1 (only for the HF route)
+import os
+from kaggle_secrets import UserSecretsClient
+os.environ["HF_TOKEN"] = UserSecretsClient().get_secret("HF_TOKEN")
+```
+```bash
+# cell 2: until the E09-R003 branch is merged, clone it with -b claude/project-thread-3m4hw6
+git clone https://github.com/santoshcheethiralame-dot/MissingMass && cd MissingMass
+pip install -q -e . "sae-lens==6.54.12" safetensors huggingface_hub
+```
+
+## Order
+
+| # | Run | When | Command | GPU-h *(est)* |
+|---|---|---|---|---|
+| K1 | E09-R003 Gemma Scope T3 tool check (Q-D15) | pre-freeze OK (checks only) | `python analysis/e09/gemma_scope_check.py --out results/E09/E09-R003 --labels results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json --record` (add `--it <path> --pt <path>` for the Kaggle Models route) | < 0.3 |
+
+K1 needs a GPU (T4 or P100; it loads two 2B models in bf16, about 11 GB).
+The label file was built in the sandbox from Neuronpedia's public S3 export
+(`analysis/e09/neuronpedia_labels.py`; source and sha256 in
+`results/E09/E09-R003/labels/SOURCE.json`), so no Neuronpedia access is
+needed on Kaggle. Afterwards, download `results/E09/E09-R003/`
+(`manifest.json`, `summary.json`, `examples.txt`, `responses.json`) and copy
+it into the repo. The pass criteria C1–C5 are in the script's docstring;
+`summary.json` has `all_pass`. Then
+`python tools/notebook.py set E09-R003 status=succeeded summary="..."` (or
+`failed`, with the failing check).

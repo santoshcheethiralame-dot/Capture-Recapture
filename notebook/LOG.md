@@ -568,3 +568,32 @@ Kushal.
 
 **Next:** Santosh's replies in the PR; E08/E10 truth proposal; positions
 on freeze items 2 and 8.
+
+## 2026-10-23: Kushal: E09-R003 (Gemma Scope T3 tool) prepared for Kaggle
+
+**Did:**
+- Registered E09-R002 (implants, planned) and E09-R003 (tool check), owner
+  Kushal, so the IDs match E09 §2's planned-runs table.
+- E09-R003 labels step (sandbox): Neuronpedia's public S3 export for
+  `gemma-2-2b/12-gemmascope-res-16k` (the Neuronpedia id SAELens gives for
+  `layer_12/width_16k/canonical`) labels all 16,384 features, one method
+  (gpt-4o-mini, token-activation pairs). Written to
+  `results/E09/E09-R003/labels/` with sha256s. This answers the label half
+  of Q-D15; the loading half needs the Kaggle step.
+- `analysis/e09/gemma_scope_check.py`: checks C1–C5 with pass criteria
+  fixed before the run (load, hook alignment by L0/FVU, identity, non-empty
+  diff, prompt bank), timing for the E09 §3 contingency, and the share of
+  top features that sit on chat-template tokens. Smoke-tested end to end on
+  a tiny random Gemma-2 and a fake SAE (no numbers from it mean anything).
+  Runbook: new "Kushal's account" section, row K1.
+- Fixed in `crsafety.tools.gemma_scope.hf_resid`: in chat mode the Gemma
+  template already starts with `<bos>` and the tokenizer added a second one,
+  which `skip_first` would not drop (Gemma's BOS residual has outlier norm,
+  so it would dominate the top features). Test added. `from_hf` now loads
+  with eager attention (SDPA skips Gemma-2's logit soft-capping).
+
+**Open:** the "audited" model in R003 is Gemma-2-2B-it itself, since no
+organism exists before R002; the diff check only shows the tool returns
+something, not that it surfaces an implant. That is R004's job (pilot
+organisms). The SAE is trained on the pt model and applied to -it
+residuals; R003 reports FVU on both.

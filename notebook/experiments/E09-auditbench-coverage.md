@@ -148,6 +148,8 @@ organisms are excluded.
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
 | E09-R001 | Synthetic data generation for 16 behaviours (14 + 2 pilot) | Kushal | planned |  |  | fa922b4+dirty |  |
+| E09-R002 | QLoRA implants + verification (16 organisms) | Kushal | planned |  |  | 365b884+dirty |  |
+| E09-R003 | Gemma Scope T3 tool on real Gemma-2-2B + Neuronpedia labels (tool check; Q-D15) | Kushal | running | 2026-10-23 |  | 365b884+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
