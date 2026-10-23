@@ -397,3 +397,17 @@ code (H7).
 At a 50% cutoff this is unlikely, and E09-R004 will show it. The
 most-changed list stays unfiltered as the backstop.
 **Affects pre-registered analysis:** E09 §2 T3 wording (page not frozen yet).
+
+## D-014 review (2026-10-23): approved by Santosh
+
+D-014 (T3 background blocklist: top 10 on more than 50% of 100 neutral
+prompts, hidden from top-features only) is **approved as written** by the
+tool's owner. The cutoff and k are unchanged.
+
+Suggestions, not blocking:
+- a pre-specified diagnostic for E09-R004 of whether the blocklist hides
+  part of an implant;
+- one line in the tool's output saying background features are hidden;
+- listing near-threshold features in E09-R010.
+
+Full review: `notebook/reviews/2026-10-23-santosh-d014.md`.

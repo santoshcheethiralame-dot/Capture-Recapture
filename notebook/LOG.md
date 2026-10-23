@@ -811,3 +811,16 @@ thresholds and proposes E10 M = 40 and E08's second target (quota
 permitting) for power; item 8 is 30 days, extendable to 90; item 10 is A
 plus C against the catcher-agnostic truth. E08/E10 to freeze after their
 pilots.
+
+## 2026-10-23 (later): review of Kushal's PRs #12–#16 and D-014
+
+Santosh.
+
+**Did:**
+- Reviewed E09-R003, the user-token rule, E09-R009 and D-014.
+- Approved D-014 as written. A binomial check shows the 50% cutoff is
+  sharp at 100 prompts: a feature with a true top-10 share of 0.6 is
+  blocklisted with probability 0.97, at 0.4 with probability 0.02.
+- Three suggestions, none blocking; see
+  `notebook/reviews/2026-10-23-santosh-d014.md`.
+- Tests: 707 passed on main at a54182f.
