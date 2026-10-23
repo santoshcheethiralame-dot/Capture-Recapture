@@ -43,11 +43,16 @@
   "inputs": [],
   "model_ids": [],
   "started_utc": "2026-10-23T06:56:27+00:00",
-  "finished_utc": null,
-  "status": "running",
-  "outputs": [],
+  "finished_utc": "2026-10-23T07:04:00+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E16/E16-R003/summary.md",
+    "results/E16/E16-R003/zipf1.0/bracket.json",
+    "results/E16/E16-R003/zipf0.5/bracket.json"
+  ],
   "cost": {
     "gpu_hours": 0.0,
     "api_usd": 0.0
-  }
+  },
+  "wall_seconds": 453.0
 }
