@@ -37,6 +37,8 @@ frozen.
 | 13 | E04 split variants | Score H4a on plain and absorbed latents, splits reported separately; as written H4a fails for any one-to-one rule and depends on the split geometry (pilots R003/R004: 3.4–3.5 at \|r\| 0.5, 2.1–2.3 at 0.25); without splits 1.17–1.23, on the 1.2 threshold | E04 §2a; E04-R003, R004 |
 | 14 | E11 estimand | Unweighted Ĉ over latents above f_min = 10⁻⁶ (the activation-mass-weighted estimand has no validated estimator); weighted version exploratory | E11 §2a |
 | 15 | E15 SAE arm | Pooled-12 truth for marks; observed covariates via proxy map primary; H15c compares marks conditional on ≥ 1 catch; **pilot R005: 6 marks make calibration worse than Chao-Jost, ≥ 20 needed; H15b's 30% unlikely where Chao-Jost holds** | E15 §2a; E15-R005 |
+| 16 | E08/E10 primary truth (Kushal's review) | D-013 code supports both. Kushal proposes the catcher-agnostic truth (`cells:L3` for E08, `cells:A1,A5` or all arms for E10) as co-primary for H8a/H10b; own-reference truth secondary. Santosh agrees | D-013; review §5 |
+| 17 | PH1 † for E09/E10 (Kushal's counter-proposal) | Pool Ĉ − C over cells and items with a bootstrap CI: supported if the CI lies within ±0.10; not supported if it excludes 0 by > 0.05; state that E09/E10 are underpowered for PH1 and E02/E06 carry it. Santosh agrees; replaces D-010 B's E09/E10 part | review, positions |
 
 ## 3. Pages to lock at v1.0
 

@@ -5,7 +5,10 @@
 <dir> holds one PROTOCOLS §10 cell per ladder level (cell ids L0, L1, L2, L3),
 each with 8 estimation and 8 reference runs over the 16 planted quirks
 (items.csv), judge identity. Per E08 §2:
-- true pi_i per level = catch rate over all 16 runs; C(8) = coverage of the
+- true pi_i per level from ``--truth`` (D-013): the level's 8 reference runs
+  (default), all 16 runs (``pooled``, the original §2 reading, always reported
+  as C_pooled), or named levels' reference runs (e.g. ``cells:L3``, the
+  catcher-agnostic truth proposed in Kushal's review); C(8) = coverage of the
   estimation runs under it;
 - C_hat with the realized-coverage interval (D-010); Chao2 vs 16; n_eff/K;
   observed/expected overlap; union recall at K = 8;
@@ -55,14 +58,14 @@ def family_loglinear(X, fams):
                 lambda_se=float(np.sqrt(cov[lam_i, lam_i])), converged=bool(conv))
 
 
-def level_stats(c, B, seed, families):
-    pi = tb.true_pi(c.X_all)
+def level_stats(c, pi, B, seed, families):
     det = c.X_est[c.X_est.any(axis=1)]
     d = IncidenceData.from_matrix(det)
     ci = cr.coverage_interval(d, B=B, seed=seed)
     K = c.X_est.shape[1]
     out = dict(level=c.cell_id, K=K, N_planted=len(c.items), S=d.S, Q1=d.Q(1), Q2=d.Q(2),
-               C=tb.true_coverage(c.X_est, pi), C_hat=ci["estimate"], C_lo=ci["interval"][0],
+               C=tb.true_coverage(c.X_est, pi), C_pooled=tb.true_coverage(c.X_est, tb.true_pi(c.X_all)),
+               C_hat=ci["estimate"], C_lo=ci["interval"][0],
                C_hi=ci["interval"][1], chao2=cr.chao2(d), neff_over_K=tb.neff(c.X_est) / K,
                overlap=tb.overlap_ratio(c.X_est), union_recall=float(c.X_est.any(axis=1).mean()))
     if c.cell_id == "L3":
@@ -79,26 +82,28 @@ def main():
     ap.add_argument("--B", type=int, default=2000)
     ap.add_argument("--families", default="qwen,llama,gemma,mistral,phi,olmo")
     ap.add_argument("--seed", type=int, default=20261030)  # 20261022 + 8
+    ap.add_argument("--truth", default="reference", help="reference | pooled | cells:L3,... (D-013)")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     fam = a.families.split(",")
     cells = {L: tb.load(Path(a.hist) / L, a.identity) for L in LEVELS if (Path(a.hist) / L).exists()}
     ss = np.random.SeedSequence(a.seed).spawn(len(cells) + 3)
-    stats = {L: level_stats(c, a.B, ss[k], fam) for k, (L, c) in enumerate(cells.items())}
+    PI = {L: tb.truth_pi(cells, L, a.truth) for L in cells}
+    stats = {L: dict(level_stats(c, PI[L], a.B, ss[k], fam), truth=a.truth) for k, (L, c) in enumerate(cells.items())}
 
-    def err(c, idx):
-        Xe, Xa = c.X_est[idx], c.X_all[idx]
+    def err(L, idx):
+        Xe = cells[L].X_est[idx]
         det = Xe[Xe.any(axis=1)]
         if det.shape[0] < 2:
             return np.nan
-        return cr.coverage(det) - tb.true_coverage(Xe, tb.true_pi(Xa))
+        return cr.coverage(det) - tb.true_coverage(Xe, PI[L][idx])
 
     H = []
     if "L0" in cells and "L3" in cells:
         n = len(cells["L0"].items)
         diff = stats["L0"]["C_hat"] - stats["L0"]["C"] - (stats["L3"]["C_hat"] - stats["L3"]["C"])
-        ci = tb.boot_items(lambda i: err(cells["L0"], i) - err(cells["L3"], i), n, a.B, ss[-1])
+        ci = tb.boot_items(lambda i: err("L0", i) - err("L3", i), n, a.B, ss[-1])
         H.append(dict(id="H8a", estimate=diff, ci=ci, verdict=tb.verdict(diff, ci, 0.05, 0.02),
                       measure="(C_hat - C) at L0 minus at L3"))
         rec = stats["L3"]["union_recall"] - stats["L0"]["union_recall"]
@@ -113,7 +118,7 @@ def main():
                       verdict="supported" if rho > 0 else ("not supported" if rho < 0 else "inconclusive")))
     (out / "levels.json").write_text(json.dumps(stats, indent=2, default=float) + "\n")
     (out / "hypotheses.json").write_text(json.dumps(H, indent=2, default=float) + "\n")
-    L = ["# E08 analysis", "", "| level | K | S | C | Ĉ (95% CI) | Chao2 (lower bound) | n_eff/K | overlap o/e | union recall |",
+    L = ["# E08 analysis", "", f"Truth: {a.truth} (D-013).", "", "| level | K | S | C | Ĉ (95% CI) | Chao2 (lower bound) | n_eff/K | overlap o/e | union recall |",
          "|---|---|---|---|---|---|---|---|---|"]
     for s in stats.values():
         L.append(f"| {s['level']} | {s['K']} | {s['S']} | {s['C']:.3f} | {s['C_hat']:.3f} ({s['C_lo']:.3f}–{s['C_hi']:.3f}) | "

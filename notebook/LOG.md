@@ -611,3 +611,25 @@ Santosh.
   and 0.094).
 - The smoke-test concern came from under-training.
 - E16 §2a now proposes U_res as the upper bound for R002.
+
+## 2026-10-23 (later): building on Kushal's four-eyes review
+
+Santosh.
+
+**Did** (in answer to `notebook/reviews/2026-10-23-kushal-four-eyes.md`):
+- D-013, the review's blocking item:
+  - `crsafety.testbed.truth_pi` with `reference` (default), `pooled` and
+    `cells:<ids>`;
+  - `--truth` in `analysis/e08`, `e09` and `e10/analyse.py`, with
+    `C_pooled` always reported;
+  - a test reproduces his bias (pooled truth inflates C, reference truth
+    does not).
+- Freeze items 16 (primary truth for H8a/H10b) and 17 (his PH1 counter-
+  proposal for E09/E10), both agreed from my side.
+- `tools/notebook.py` no longer marks a run `+dirty` for edits under
+  `notebook/` or `results/`, matching `crsafety.manifest`.
+- Chapman and Good-Turing are marked "unvalidated (hand-checked)" in their
+  docstrings (review §1.1).
+
+**Next:** his D-010A condition (a small-N interval check), E04 option 3
+and two-sided H4c, the stale Chiu-Chao text on E04, the PH5 wording.

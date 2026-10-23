@@ -71,3 +71,51 @@ def test_e08_e09_e10_end_to_end(tmp_path):
     run("analysis/e10/analyse.py", "--hist", str(h10), "--out", str(tmp_path / "o10"), "--B", "100")
     H = {h["id"] for h in json.loads((tmp_path / "o10" / "hypotheses.json").read_text())}
     assert H == {"H10a", "H10b", "H10c", "H10d"}
+
+
+def test_truth_modes(tmp_path):
+    rng = np.random.default_rng(5)
+    p = rng.uniform(0.05, 0.5, 20)
+    for A in ("A1", "A2"):
+        fake_cell(tmp_path, A, 20, 12, 12, p, rng, "instrumented")
+    cells = {A: tb.load(tmp_path / A) for A in ("A1", "A2")}
+    assert np.allclose(tb.truth_pi(cells, "A1", "reference"), cells["A1"].X_ref.mean(axis=1))
+    assert np.allclose(tb.truth_pi(cells, "A1", "pooled"), cells["A1"].X_all.mean(axis=1))
+    both = np.hstack([cells["A1"].X_ref, cells["A2"].X_ref]).mean(axis=1)
+    assert np.allclose(tb.truth_pi(cells, "A2", "cells:A1,A2"), both)
+    with pytest.raises(ValueError):
+        tb.truth_pi(cells, "A1", "cells:A9")
+    with pytest.raises(ValueError):
+        tb.truth_pi(cells, "A1", "nonsense")
+
+
+def test_pooled_truth_inflates_coverage_reference_does_not():
+    """Kushal's review (2026-10-23): pooling the evaluated runs into the truth biases C upwards."""
+    rng = np.random.default_rng(6)
+    d_pool, d_ref = [], []
+    for _ in range(1500):
+        pi = rng.beta(1, 3, 20)
+        X = (rng.random((20, 24)) < pi[:, None]).astype(int)
+        Xe, Xr = X[:, :12], X[:, 12:]
+        C = tb.true_coverage(Xe, pi)
+        d_pool.append(tb.true_coverage(Xe, tb.true_pi(X)) - C)
+        d_ref.append(tb.true_coverage(Xe, tb.true_pi(Xr)) - C)
+    assert np.mean(d_pool) > 0.015
+    assert abs(np.mean(d_ref)) < 0.005
+
+
+def test_scripts_accept_catcher_agnostic_truth(tmp_path):
+    rng = np.random.default_rng(7)
+    p16 = rng.uniform(0.05, 0.6, 16)
+    for L in ("L0", "L3"):
+        fake_cell(tmp_path / "e08", L, 16, 8, 8, p16, rng, "judge:v1")
+    run("analysis/e08/analyse.py", "--hist", str(tmp_path / "e08"), "--out", str(tmp_path / "o8"), "--B", "50",
+        "--truth", "cells:L3")
+    lv = json.loads((tmp_path / "o8" / "levels.json").read_text())
+    assert lv["L0"]["truth"] == "cells:L3" and "C_pooled" in lv["L0"]
+    for A in ("A1", "A2", "A5"):
+        fake_cell(tmp_path / "e10", A, 20, 12, 12, rng.uniform(0.02, 0.5, 20), rng, "instrumented")
+    run("analysis/e10/analyse.py", "--hist", str(tmp_path / "e10"), "--out", str(tmp_path / "o10"), "--B", "50",
+        "--truth", "cells:A1,A5")
+    arms = json.loads((tmp_path / "o10" / "arms.json").read_text())
+    assert arms["A2"]["truth"] == "cells:A1,A5"
