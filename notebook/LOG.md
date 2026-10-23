@@ -422,3 +422,18 @@ Santosh.
     bootstrap (R008).
 - Colours are two validated categorical slots; the second series also uses
   a different marker.
+
+## 2026-10-23 (later): E16 novelty check and bracket script
+
+Santosh.
+
+**Did:**
+- E16-R001 novelty check. Q-N2 is answered: no prior work found, and this
+  doubles as the weekly scoop check.
+- Wrote `analysis/e16/bracket.py` (R002 registered, planned).
+
+**Saw (smoke test, toy world, 96 features; numbers seen, not results):**
+- Oracle-missed energy 0.18 against total residual energy 0.07.
+- Partly reconstructed features count as "missed" under the |cos| rule, so
+  the residual cannot bound them.
+- Noted in E16 §2a as a decision to take before R002.

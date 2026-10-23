@@ -67,6 +67,33 @@ Exploratory only.
 None.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-23, before R002)
+
+- R001 (novelty check) is done: nothing prior found
+  (`research/notes/J-e16-novelty.md`).
+- R002 script: `analysis/e16/bracket.py`, run per E06 cell on the
+  `train.py` output. §2 leaves these choices open; they are fixed here
+  (details in the script docstring):
+  - truth in hidden-space energy, with §2's per-feature share alongside;
+  - two lower bounds: L0 = 1 − Ĉ unconverted, and L1 converted with
+    singleton latent energies;
+  - three upper bounds, each the tightest over seeds: total residual,
+    Engels-style linearly predictable residual, and §2's literal "residual
+    minus its linearly predictable part".
+  §2's wording of the upper bound reads as the nonlinear error, which is the
+  part Engels et al. attribute to SAE error, not to missing features. Both
+  readings are reported.
+- **Concern before R002 (from a CPU smoke test on a toy world, 96
+  features, 6 seeds; smoke output, not a result).** The oracle catch rule
+  (|cos| ≥ 0.7) counts a feature as missed even when other latents
+  reconstruct it in part. In the toy world, the energy of the "missed"
+  features (0.18) was above the total residual energy (0.07), so no
+  residual-based quantity could bound it. If this holds in E06 worlds, the
+  estimand should be the *unreconstructed* energy of missed features (their
+  share of the residual) rather than their total energy. R002 reports both;
+  the choice is made before R002 runs and logged as a deviation if it
+  changes §2.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -80,6 +107,7 @@ None.
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
 | E16-R001 | Novelty check (Q-N2): residual-based upper bound on missed SAE features | Santosh | succeeded |  | 2026-10-23 | 33700e7 | No prior residual upper bound on missed SAE features and no seed capture-recapture found (5 searches); closest Engels et al. 2025 dark-matter decomposition (basis of the upper bound). Notes: research/notes/J-e16-novelty.md |
+| E16-R002 | Synthetic worlds: bracket per E06 cell (after E06 training on Kaggle) | Santosh | planned |  |  | 10b3aeb+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
