@@ -23,6 +23,7 @@ paper-by-paper detail, numbers and search logs.
 | [I1-documentation-best-practices.md](I1-documentation-best-practices.md) | Pre-registration (OSF, ADEMP, Hofman two-stage), Monte Carlo error formulas, lab-notebook practice, NeurIPS checklist, disclosure norms, release documentation. Basis for `docs/` and `notebook/`. |
 | [I2-testbed-feasibility.md](I2-testbed-feasibility.md) | Practical facts from reading the testbed repos: SynthSAEBench config and seeding, AuditBench harness and costs, Petri/Bloom, BashArena/ControlArena, Böhme de-adaptation, API prices, R tooling. Basis for `docs/COMPUTE.md` and `docs/DATA.md`. |
 | [J-e16-novelty.md](J-e16-novelty.md) | E16-R001 (2026-10-23): no prior residual-based upper bound on missed SAE features, and no capture-recapture over SAE seeds; Engels et al. dark matter is the basis of the upper bound. Also a scoop check. |
+| [J2-e15-novelty.md](J2-e15-novelty.md) | E15-R001 (2026-10-23): nobody plants marks to calibrate coverage of real items; closest are Kansal (planted failures in tabular ML), AuditBench / RL auditors (planted behaviours to score auditors), error seeding and privacy canaries. |
 | [scripts/](scripts/) | The agents' scratch simulations, which produce the "[sim]" numbers in notes A and B. They are rough but they run: `python research/notes/scripts/check1.py`. |
 
 ## How much to trust these notes

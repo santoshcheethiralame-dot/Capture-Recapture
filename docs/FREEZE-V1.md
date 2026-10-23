@@ -36,6 +36,7 @@ frozen.
 | 12 | E07 open points | Firing threshold = smallest p in U; \|U\| primary with N_thr reported; H7b supported if x3 or x4 is; failed fits count against | E07 §2a |
 | 13 | E04 split variants | Score H4a on plain and absorbed latents, splits reported separately; as written H4a fails for any one-to-one rule (pilot R003: clusters / N_true 3.5) | E04 §2a |
 | 14 | E11 estimand | Unweighted Ĉ over latents above f_min = 10⁻⁶ (the activation-mass-weighted estimand has no validated estimator); weighted version exploratory | E11 §2a |
+| 15 | E15 SAE arm | Pooled-12 truth for marks; observed covariates via proxy map primary; H15c compares marks conditional on ≥ 1 catch | E15 §2a |
 
 ## 3. Pages to lock at v1.0
 

@@ -101,7 +101,7 @@ experiment pages are owner-only edits: comment via PR, don't edit them.
 | `validation/e00/` | R reference comparison (`run.sh`, `reference.R`, `compare.py`, `make_synthetic.py`) |
 | `results/EXX/<run_id>/` | Run outputs (small files only; large ones external with sha256) |
 | `notebook/` | Lab notebook: REGISTRY, experiments/E00–E18, runs.csv, LOG, DECISIONS, DEVIATIONS, RESULTS, prereg-locks.csv, templates |
-| `docs/` | PREREGISTRATION (PH1–PH6, SH1–SH4), TEAM, ROADMAP (milestones, gates G1–G4), PROTOCOLS, PAPER-PLAN, RISKS, COMPUTE, DATA, DISCLOSURE, OPEN-QUESTIONS, NEURIPS-CHECKLIST, GLOSSARY |
+| `docs/` | KAGGLE-RUNBOOK (ordered Kaggle jobs and commands), FREEZE-V1, PREREGISTRATION (PH1–PH6, SH1–SH4), TEAM, ROADMAP (milestones, gates G1–G4), PROTOCOLS, PAPER-PLAN, RISKS, COMPUTE, DATA, DISCLOSURE, OPEN-QUESTIONS, NEURIPS-CHECKLIST, GLOSSARY |
 | `research/` | Literature dossier (`README.md`), reading list, 13 agent reports in `notes/` |
 | `pilot/` | Early simulation (`simulate.py`, `estimators.py`, `results.md`) |
 | `tools/notebook.py` | `new`, `set`, `render`, `freeze`, `check` |

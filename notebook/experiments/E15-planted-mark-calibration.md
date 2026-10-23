@@ -87,6 +87,45 @@ and without injection.
 None planned.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-23; SAE arm, before R002)
+
+- R001 (novelty) is done: nothing prior does the full design
+  (`research/notes/J2-e15-novelty.md`).
+- Estimator: `crsafety.calibrate`, tested in `tests/test_calibrate.py`.
+  - Detectability is fitted on *all* training marks with the full binomial
+    likelihood; found and unfound marks are both known.
+  - Real items get Horvitz-Thompson C_cal, N̂ and Δ_cal from their
+    predicted π.
+  - `proxy_map` maps observed covariates (latent firing frequency,
+    contribution magnitude) to the true scale, fitted on found training
+    marks.
+  - The interval is a bootstrap over marks (refit) and items.
+  - In a simulation with mild heterogeneity, C_cal is unbiased, but
+    Chao-Jost is about as accurate. Calibration pays only where Chao-Jost
+    fails, which is the question H15b asks.
+- SAE arm: `analysis/e15/inject.py` (`marks`, `train`, `stats`). Master
+  seed 20261037.
+  - Marks: random unit directions; p_j on the log-uniform grid
+    10⁻⁶–10⁻², randomly assigned; 25% held out.
+  - Magnitudes are drawn from real latent contribution magnitudes (from
+    E11-R003 SAEs) when available.
+  - The marks are added by a permanent TransformerLens hook on
+    `blocks.3.hook_resid_post`, with their own generator reseeded per SAE.
+    Seeding is otherwise as in E11-R001.
+  - Smoke-tested on CPU with the tiny local model (all three commands).
+- R004: `analysis/e15/analyse.py`, tested on synthetic SAEs
+  (`tests/test_e15.py`). Seeds 0–7 are estimation seeds; 8–11 are held-out
+  seeds for the Δ check.
+- **For the freeze:**
+  1. True π of a mark: the catch rate over all 12 seeds (pooled, proposed)
+     or over the 4 held-out seeds. This is the same issue as D-011.
+  2. Primary covariates for H15a/b: observed, through `proxy_map`
+     (proposed); oracle covariates reported as a ceiling.
+  3. H15c compares marks (by true p) with matched real clusters (by observed
+     frequency). Real items enter only once found, so their catch rates are
+     conditional on at least one catch. Proposed: compare marks
+     conditional on ≥ 1 catch as well.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -98,7 +137,12 @@ None planned.
 ## 4. Runs
 
 <!-- runs:start -->
-_No runs yet._
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E15-R001 | Novelty check (Q-N1): planted marks to calibrate detectability in a real ML system | Santosh | succeeded |  | 2026-10-23 | 854a1ad | Q-N1: no prior plant-fit-calibrate-validate design found (4 searches); closest Kansal undiscovered-failures (planted failures, no transfer to real items), AuditBench / RL auditors (planted behaviours score auditors), error seeding, privacy canaries. Notes: research/notes/J2-e15-novelty.md |
+| E15-R002 | SAE arm: 400 marks injected into Pythia-70M L3, 12 SAE seeds + latent stats (Kaggle) | Santosh | planned |  |  | d4c14b1+dirty |  |
+| E15-R003 | Audit arm: implant 6 graded quirks + verify + 16 audits (Kaggle; Kushal) | Kushal | planned |  |  | d4c14b1+dirty |  |
+| E15-R004 | Calibration analysis, SAE arm (CPU) | Santosh | planned |  |  | 8cc0c13+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
