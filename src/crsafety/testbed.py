@@ -58,6 +58,14 @@ def load(directory, identity=None):
                 [r["catcher"] for r in est.runs])
 
 
+def item_covariate(directory, items, key):
+    """Covariate ``key`` of each item (in ``items`` order) from the cell's
+    items.csv, or None if any item lacks it."""
+    meta = read_cell(directory, role=None).items or {}
+    vals = [meta.get(i, {}).get("covariates", {}).get(key) for i in items]
+    return None if any(v is None for v in vals) else vals
+
+
 def true_pi(X):
     """Catch rate of each item over the runs (columns) of X."""
     return X.mean(axis=1)
@@ -125,12 +133,24 @@ def overlap_ratio(X):
     return float(np.mean(vals)) if vals else np.nan
 
 
-def boot_items(stat, n_items, B=2000, seed=0):
-    """Percentile 95% interval of ``stat(idx)`` over item resamples ``idx``."""
+def boot_items(stat, n_items, B=2000, seed=0, groups=None):
+    """Percentile 95% interval of ``stat(idx)`` over item resamples ``idx``.
+
+    With ``groups`` (one label per item), whole groups are resampled with
+    replacement and their items concatenated: a cluster bootstrap, for items
+    whose detections are correlated within a run (e.g. E10 blind spots of one
+    encoding family, which an attacker can sweep once one is found)."""
     rng = np.random.default_rng(seed)
+    if groups is not None:
+        groups = np.asarray(groups)
+        members = [np.flatnonzero(groups == g) for g in np.unique(groups)]
     vals = []
     for _ in range(B):
-        v = stat(rng.integers(0, n_items, n_items))
+        if groups is None:
+            idx = rng.integers(0, n_items, n_items)
+        else:
+            idx = np.concatenate([members[j] for j in rng.integers(0, len(members), len(members))])
+        v = stat(idx)
         if np.isfinite(v):
             vals.append(v)
     if not vals:
