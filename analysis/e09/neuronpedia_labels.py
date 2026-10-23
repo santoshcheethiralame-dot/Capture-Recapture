@@ -76,6 +76,7 @@ def main():
     ap.add_argument("--d-sae", type=int, default=16384)
     a = ap.parse_args()
     out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
     src = Path(a.src) if a.src else download(a.source, out / "raw")
     labels, info = build(src, a.d_sae)
     name = a.source.replace("/", "__") + ".json"
