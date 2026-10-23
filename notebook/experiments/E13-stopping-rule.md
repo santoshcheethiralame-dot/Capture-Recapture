@@ -73,6 +73,21 @@ Testbeds where K_max < 6 (e.g. E02) are reported separately and excluded from
 the pooled H13a figure.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-23, before the freeze)
+
+- The pilot (R003) ran on simulated campaigns. The confirmatory runner is
+  `analysis/e13/run.py` (refuses a dirty tree; smoke tests use permutation
+  keys from 9000), tested in `tests/test_e13_run.py`.
+- A campaign is a random order of a cell's *estimation* runs (K_max = their
+  number). π_i is the catch rate over the cell's *reference* runs.
+- E02 cells have no reference runs, so π comes from all runs; they are
+  flagged, and with K_max = 5 they are excluded from pooled H13a anyway
+  (§2).
+- E09 configurations enter as cells of one testbed. E10 arms enter as
+  testbeds `E10-A1` and `E10-A2` (A2 marked adaptive and excluded from
+  H13a).
+- The H13a CI is a bootstrap over cells (§2 allows items or cells).
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |

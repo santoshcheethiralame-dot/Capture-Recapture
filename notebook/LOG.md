@@ -491,3 +491,32 @@ Santosh.
 - In a simulation with mild heterogeneity, calibrated coverage is unbiased
   but no better than Chao-Jost. H15b will show whether planting marks pays
   off in practice.
+
+## 2026-10-23 (later): E05 and E13 confirmatory runners
+
+Santosh.
+
+**Did:**
+- Wrote the scripts to lock at the freeze and run after it:
+  - `analysis/e05/run.py` (R001/R002) and `analysis/e05/analyse.py`
+    (R003);
+  - `analysis/e13/run.py` (R001).
+  Both refuse a dirty tree and are tested on simulated or hand-made inputs.
+
+**Disclosure:**
+- The first E05 smoke test (120 injections) used the confirmatory seed
+  stream at injection 0 before I added the smoke offset.
+- I printed only the table shape and non-finite counts, never an estimate,
+  and deleted the output.
+- Smoke runs now use keys from 9000 (the pilot range).
+
+## 2026-10-23 (later): paper drafts, Fig. 1, CLAUDE.md refresh
+
+Santosh.
+
+**Did:**
+- Drafted the paper's introduction, related work and limitations in
+  `paper/drafts/`. Results numbers are placeholders until their runs exist.
+- Drew Fig. 1, the concept figure, from a toy history
+  (`paper/figures/fig1_concept.py`; illustrative, not data).
+- Refreshed `CLAUDE.md` with the current state and remaining work.
