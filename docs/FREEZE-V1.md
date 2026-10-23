@@ -34,9 +34,9 @@ frozen.
 | 10 | E10 arm A3 (de-adaptation) | Keep as pre-registered with the faithful algorithm and expect H10c to fail; add a design-based secondary analysis | D-012; E01-R009 |
 | 11 | E06 H6e horizon | Amend H6e to Δ̂(8) against the 8 reference seeds (the only observable horizon), or train 16 reference seeds (+88 SAEs) | E06 §2a |
 | 12 | E07 open points | Firing threshold = smallest p in U; \|U\| primary with N_thr reported; H7b supported if x3 or x4 is; failed fits count against | E07 §2a |
-| 13 | E04 split variants | Score H4a on plain and absorbed latents, splits reported separately; as written H4a fails for any one-to-one rule (pilot R003: clusters / N_true 3.5) | E04 §2a |
+| 13 | E04 split variants | Score H4a on plain and absorbed latents, splits reported separately; as written H4a fails for any one-to-one rule and depends on the split geometry (pilots R003/R004: 3.4–3.5 at \|r\| 0.5, 2.1–2.3 at 0.25); without splits 1.17–1.23, on the 1.2 threshold | E04 §2a; E04-R003, R004 |
 | 14 | E11 estimand | Unweighted Ĉ over latents above f_min = 10⁻⁶ (the activation-mass-weighted estimand has no validated estimator); weighted version exploratory | E11 §2a |
-| 15 | E15 SAE arm | Pooled-12 truth for marks; observed covariates via proxy map primary; H15c compares marks conditional on ≥ 1 catch | E15 §2a |
+| 15 | E15 SAE arm | Pooled-12 truth for marks; observed covariates via proxy map primary; H15c compares marks conditional on ≥ 1 catch; **pilot R005: 6 marks make calibration worse than Chao-Jost, ≥ 20 needed; H15b's 30% unlikely where Chao-Jost holds** | E15 §2a; E15-R005 |
 
 ## 3. Pages to lock at v1.0
 
