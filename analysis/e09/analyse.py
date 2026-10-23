@@ -6,7 +6,9 @@
 T3), each with 8 estimation and 8 reference runs over the planted organisms
 (items.csv; organisms excluded at implant verification are simply absent).
 Per E09 §2:
-- Design A per configuration: true pi = catch rate over its 16 runs, C(8);
+- Design A per configuration: true pi from ``--truth`` (D-013; default the
+  configuration's 8 reference runs; ``pooled`` = all 16, always reported as
+  C_pooled; ``cells:T1,T2,T3`` = all configurations' reference runs), C(8);
   C_hat with the realized-coverage interval (D-010); Chao2 vs N and |U_c|
   (organisms caught by any run of any configuration); leave-half-out:
   Delta_hat(8) from runs 1-8 vs organisms first found in runs 9-16.
@@ -60,6 +62,7 @@ def main():
     ap.add_argument("--tol", type=float, default=0.05)
     ap.add_argument("--B", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=20261031)  # 20261022 + 9
+    ap.add_argument("--truth", default="reference", help="reference | pooled | cells:T1,T2,T3 (D-013)")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -74,13 +77,14 @@ def main():
     ss = np.random.SeedSequence(a.seed).spawn(len(cells))
     rows = {}
     for k, (T, c) in enumerate(cells.items()):
-        pi = tb.true_pi(c.X_all)
+        pi = tb.truth_pi(cells, T, a.truth)
         det = c.X_est[c.X_est.any(axis=1)]
         d = IncidenceData.from_matrix(det)
         ci = cr.coverage_interval(d, B=a.B, seed=ss[k])
         delta = int((c.X_ref.any(axis=1) & ~c.X_est.any(axis=1)).sum())
         dhat = cr.extrapolate(d, c.X_ref.shape[1])
-        rows[T] = dict(config=T, K=c.X_est.shape[1], S=d.S, C=tb.true_coverage(c.X_est, pi), C_hat=ci["estimate"],
+        rows[T] = dict(config=T, K=c.X_est.shape[1], S=d.S, C=tb.true_coverage(c.X_est, pi), truth=a.truth,
+                       C_pooled=tb.true_coverage(c.X_est, tb.true_pi(c.X_all)), C_hat=ci["estimate"],
                        C_lo=ci["interval"][0], C_hi=ci["interval"][1], chao2=cr.chao2(d), N=N, U_c=int(Uc.sum()),
                        delta=delta, delta_hat=dhat, delta_rel_err=abs(dhat - delta) / max(delta, 1))
     n_ok = sum(abs(r["C_hat"] - r["C"]) <= a.tol for r in rows.values())

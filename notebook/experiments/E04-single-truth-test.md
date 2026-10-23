@@ -48,8 +48,11 @@ construction).
 - SAE arm: the default identity rule from E03.
 - Attack arm: the E10 judge-based identity pipeline (rubric labelling plus
   embedding clustering).
-- Estimators: the primary set, plus the Chiu-Chao corrected f1 and an f1-free
-  estimator (if validated in E00).
+- Estimators: the primary set, plus the E05 first-order singleton (ghost)
+  correction (b) with f̂ from labelled candidate pairs, and an f1-free
+  estimator (if validated in E00). The Chiu-Chao corrected f1 is unavailable
+  (D-009, Q-D10); text updated 2026-10-23, before the freeze, per Kushal's
+  review §1.2.
 
 ### Performance measures
 Number of clusters / N_true; Chao2 / N_true; Ĉ; share of distractors
@@ -61,7 +64,7 @@ absorbed into real clusters.
 |---|---|---|---|---|
 | H4a | The SAE identity rule does not invent items | mean clusters / N_true | ≤ 1.2 | > 1.5 |
 | H4b | The attack identity pipeline does not invent items | mean clusters / N_true | ≤ 1.2 | > 1.5 |
-| H4c | Singleton correction repairs residual splitting | Chao2 / N_true with correction | ≤ 1.5 when uncorrected > 2 | no improvement |
+| H4c | Singleton correction repairs residual splitting | Chao2 / N_true with correction | within 0.67–1.5 when uncorrected > 2 | no improvement, or outside 0.67–1.5 |
 
 ### Planned runs
 
@@ -125,6 +128,41 @@ Options for the freeze (no change is made here):
 3. fix the split geometry from E02 (cos of split children to the parent).
 
 Proposed: option 2, plus option 1's numbers as a secondary result.
+**Superseded 2026-10-23 by Kushal's review (§6), which I accept:**
+- Option 2 removes the failure E04 exists to test (one failure mode
+  reported as many). Choosing it after a failed pilot would move the
+  goalposts.
+- **Adopted for the freeze: option 3.** Split geometry and its recurrence
+  across seeds are estimated from E02: how often the same parent feature
+  splits the same way. The generator draws each feature's split once and
+  reuses it across runs with that recurrence probability. H4a may still
+  fail.
+- Option 1's numbers and R004's option-2 numbers stay as secondary results.
+- H4c is now two-sided (0.67–1.5), so the ghost correction's
+  over-correction (0.72–0.76 in R003/R004) is caught.
+- Exploratory finding worth a line in the paper: splitting makes coverage
+  conservative. Ĉ was 0.74–0.81 against a true 1 in R003, because splits
+  look like missing mass.
+
+**Pilot E04-R005 (declared, exploratory; option 3; keys 9600–10199).**
+Split recurrence 0, 0.5 and 1 at |r| = 0.5, with the other placeholders as
+in R003:
+
+| recurrence | clusters / N_true | Ĉ | Chao2 / N_true | ghost-corrected |
+|---|---|---|---|---|
+| 0 | 3.57–3.63 | 0.74–0.79 | 7.0–33 | 0.70–0.73 |
+| 0.5 | 3.21–3.29 | 0.80–0.86 | 5.1–14 | 0.82–0.91 |
+| 1 | 2.38–2.40 | 0.94–0.97 | 2.6–3.3 | 1.21–1.53 |
+
+- H4a fails at every recurrence. Even a perfectly recurring split is found
+  reliably, but as **two** items. No identity rule that matches latents
+  one-to-one can merge it back.
+- What recurrence changes is coverage. With recurrent splits, Ĉ returns
+  towards 1, because the pieces are re-found. The ghost correction then
+  over-shoots upwards instead of downwards.
+- Implication for the paper: systematic splitting inflates counts but
+  leaves coverage roughly right. Random splitting deflates coverage. The
+  E02 recurrence estimate decides which regime real SAEs are in.
 
 **Pilot E04-R004 (declared, exploratory; keys 9200–9599; same placeholders
 as R003).** Each of the 1,200 replicates is scored both ways, at split
@@ -159,6 +197,7 @@ test uses the E03 rule and the E02 noise, so this pilot sets no threshold
 | E04-R002 | Attack arm, N_true in {1,3,10}, 20 replicates (Kaggle LLM) | Kushal | planned |  |  | 96bfa69+dirty |  |
 | E04-R003 | Pilot (declared, separate seeds): SAE-arm mechanics, random directions d=768, fixed noise rho=0.9 | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 96bfa69+dirty | Pilot, 600 replicates, 17 s: under the pre-registered generator clusters / N_true = 3.4-3.6 at every N_true (regression on counts: each split adds ~1.5 clusters, each absorbed variant ~0.2; impure clusters 0); Chao2 / N_true 6-32, ghost-corrected 0.72-0.75; C_hat 0.74-0.81 vs truth 1 |
 | E04-R004 | Pilot (declared, exploratory): H4a under freeze options 1 and 2, split |r| in {0.5, 0.25}, 200 reps per level | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 3b58eb4+dirty | Pilot, 1200 replicates: clusters / N_true 3.36-3.50 at |r| = 0.5 and 2.11-2.25 at |r| = 0.25 (option 1); without split latents (option 2) 1.17-1.23 at both, i.e. on the 1.2 threshold, from absorbed variants alone; ghost-corrected Chao2 / N_true 0.74-0.76 (|r| 0.5) and 0.99-1.26 (|r| 0.25) |
+| E04-R005 | Pilot (declared, exploratory): option 3, split recurrence in {0, 0.5, 1} at |r| 0.5, 200 reps per level | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 085590e | Pilot, 1800 replicates: clusters / N_true 3.57-3.63 (recurrence 0), 3.21-3.29 (0.5), 2.38-2.40 (1.0): H4a fails under option 3 at every recurrence, since a recurring split is found reliably but as two items; C_hat 0.74-0.79 -> 0.94-0.97 and ghost-corrected Chao2 / N_true 0.70-0.73 -> 1.21-1.53 as recurrence rises |
 <!-- runs:end -->
 
 ## 5. Results

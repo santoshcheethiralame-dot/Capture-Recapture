@@ -54,8 +54,12 @@ We validate this on testbeds where the truth is known by construction:
 4. *Failure modes with known directions.* We measure how each failure
    biases coverage, and give diagnostics that flag it:
    - auditors sharing a base model overstate completeness;
-   - adaptive red teams overstate it;
-   - spurious splits understate it.
+   - adaptation across runs moves it in either direction: revisiting
+     earlier finds overstates completeness, steering towards new holes
+     understates it;
+   - findings split differently in each run understate it, while splits
+     that recur inflate the count but leave coverage nearly right
+     (E04-R005, pilot).
    [pending: E08, E10; simulation: E01 H1d–f.]
 5. *When to stop.* A stopping rule on the lower bound of coverage reaches
    its target in [pending: E13] of campaigns and saves [pending] of runs.

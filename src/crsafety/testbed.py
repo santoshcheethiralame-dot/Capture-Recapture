@@ -3,9 +3,12 @@
 
 - :func:`load`: a cell as a planted-items x runs matrix (planted items never
   caught are zero rows), split into estimation and reference runs.
-- :func:`true_pi`, :func:`true_coverage`: catch rate over all of a cell's runs
-  (estimation + reference), and the coverage of the estimation runs under it,
-  as the E08/E09 pre-registrations define them.
+- :func:`truth_pi`: true detectability under a named truth rule (D-013):
+  the cell's own reference runs (primary), all its runs (``pooled``, the
+  original reading, now secondary), or the reference runs of named cells
+  (catcher-agnostic truth, Kushal's 2026-10-23 review). :func:`true_pi` is
+  the bare catch rate of a matrix; :func:`true_coverage` is the coverage of
+  the estimation runs under a given pi.
 - :func:`neff`: Kish effective number of runs, K / (1 + (K - 1) rho), with rho
   the mean pairwise correlation of runs' detection indicators over items.
 - :func:`overlap_ratio`: mean over run pairs of observed / expected overlap.
@@ -55,8 +58,44 @@ def load(directory, identity=None):
                 [r["catcher"] for r in est.runs])
 
 
-def true_pi(X_all):
-    return X_all.mean(axis=1)
+def true_pi(X):
+    """Catch rate of each item over the runs (columns) of X."""
+    return X.mean(axis=1)
+
+
+TRUTHS = ("reference", "pooled", "cells:<id,id,...>")
+
+
+def truth_pi(cells, cell_id, truth="reference"):
+    """True pi for ``cells[cell_id]`` under a truth rule (D-013).
+
+    - ``reference``: catch rate over the cell's own reference runs, which the
+      estimation runs never inform (D-011 extended to E08-E10; primary);
+    - ``pooled``: over the cell's estimation + reference runs (biased upwards
+      for found items; secondary);
+    - ``cells:A1,A5``: over the reference runs of the named cells pooled, a
+      truth that does not come from the catcher being judged.
+    Cells must list the same planted items in the same order.
+    """
+    c = cells[cell_id]
+    if truth == "reference":
+        if c.X_ref.shape[1] == 0:
+            raise ValueError(f"{cell_id}: no reference runs for truth='reference'")
+        return true_pi(c.X_ref)
+    if truth == "pooled":
+        return true_pi(c.X_all)
+    if truth.startswith("cells:"):
+        ids = [x for x in truth[len("cells:"):].split(",") if x]
+        missing = [i for i in ids if i not in cells]
+        if missing or not ids:
+            raise ValueError(f"truth {truth!r}: unknown cells {missing}")
+        if any(cells[i].items != c.items for i in ids):
+            raise ValueError(f"truth {truth!r}: cells must share the same planted items")
+        R = np.hstack([cells[i].X_ref for i in ids])
+        if R.shape[1] == 0:
+            raise ValueError(f"truth {truth!r}: the named cells have no reference runs")
+        return true_pi(R)
+    raise ValueError(f"unknown truth {truth!r}; use one of {TRUTHS}")
 
 
 def true_coverage(X_est, pi):

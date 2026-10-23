@@ -52,3 +52,14 @@ def test_plateau_rule_runs():
     assert r["status"] in ("ok", "no plateau")
     if r["status"] == "ok":
         assert r["clusters"] == 3
+
+
+def test_recurring_splits_match_across_runs():
+    # option 3: with recurrence 1 every split reuses the feature's geometry, so pieces recur across runs
+    rng = np.random.default_rng(6)
+    W = T()
+    r0 = sa.replicate(W, 3, rng, sa.Noise(fixed=1.0), 0.7, 200, recurrence=0.0, p_split=1.0, p_absorb=0.0)
+    r1 = sa.replicate(W, 3, np.random.default_rng(6), sa.Noise(fixed=1.0), 0.7, 200, recurrence=1.0,
+                      p_split=1.0, p_absorb=0.0)
+    assert r1["clusters"] < r0["clusters"]
+    assert r1["clusters"] == 6  # two recurring pieces per feature, each found in all 8 runs

@@ -81,7 +81,11 @@ def _need_matrix(d, name):
 # ---------------------------------------------------------------- two-list
 
 def chapman(X, a=0, b=1):
-    """Chapman's bias-corrected Lincoln-Petersen estimator on runs a and b."""
+    """Chapman's bias-corrected Lincoln-Petersen estimator on runs a and b.
+
+    Unvalidated (hand-checked): no R reference in E00, only hand-computed test
+    values, so by E00 §2 it is never a primary estimator (dependence
+    diagnostic only)."""
     M = _need_matrix(_data(X), "chapman")
     n1, n2 = int(M[:, a].sum()), int(M[:, b].sum())
     m = int((M[:, a] & M[:, b]).sum())
@@ -234,7 +238,10 @@ def ice(X, cutoff=10):
 # ---------------------------------------------------------------- coverage
 
 def good_turing_coverage(X):
-    """Turing's estimate 1 - Q1/U (incidence)."""
+    """Turing's estimate 1 - Q1/U (incidence).
+
+    Unvalidated (hand-checked): no R reference in E00, only hand-computed test
+    values; reported for comparison only, never primary (E00 §2)."""
     d = _data(X)
     return 1.0 if d.U == 0 else 1 - d.Q(1) / d.U
 

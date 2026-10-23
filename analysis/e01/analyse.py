@@ -157,6 +157,9 @@ def main():
     rz8 = defaultdict(list)
     for r in load("R008"):
         rz8[r["cell"]].append(r)
+    rz10 = defaultdict(list)
+    for r in load("R010"):
+        rz10[r["cell"]].append(r)
     cells = [c for c in CFG["cells"] if c["id"] in by_cell]
     summ, perf = {}, []
     for c in cells:
@@ -355,13 +358,15 @@ def main():
                      f"{s['coverage_ci_p_cover']:.3f} ({s['coverage_ci_p_cover_mcse']:.3f}) | "
                      f"{s['coverage_ci_n_width_median']:.3f} | {s['delta_K_ci_n_cover']:.3f} ({s['delta_K_ci_n_cover_mcse']:.3f}) | "
                      f"{s['delta_K_ci_p_cover']:.3f} ({s['delta_K_ci_p_cover_mcse']:.3f}) | {s['delta_K_ci_n_width_median']:.1f} |")
-    for tag, rzd in (("R007", rz), ("R008", rz8)):
+    for tag, rzd in (("R007", rz), ("R008", rz8), ("R010", rz10)):
       if rzd:
         rz = rzd
-        L += ["", f"## {tag} (exploratory, added after R005{'; fresh datasets, replicates 10000+' if tag == 'R008' else ''}): realized-coverage bootstrap", "",
+        sub = {"R008": "; fresh datasets, replicates 10000+",
+               "R010": "; small-N cells, fresh datasets, replicates 20000+; requested in Kushal's review"}.get(tag, "")
+        L += ["", f"## {tag} (exploratory, added after R005{sub}): realized-coverage bootstrap", "",
               "`crsafety.coverage_interval` / `delta_interval`, B = 500, on "
               + ("fresh datasets (the R005 column is from the other datasets, for reference). "
-                 if tag == "R008" else "the same datasets as R005. ") +
+                 if tag in ("R008", "R010") else "the same datasets as R005. ") +
               "Two-sided 95% intervals (uncorrected; bias-corrected by the mean bootstrap error) and the "
               "one-sided 95% lower bound used by stopping rules. MCSE in parentheses.", "",
               "| Cell | R005 iNEXT normal: covers C | realized: covers C | bias-corrected: covers C | "

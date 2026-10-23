@@ -229,6 +229,7 @@ adaptivity" could include dependent runs):
 | E01-R007 | Exploratory: realized-coverage bootstrap intervals on the R005 datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | dc94c94+dirty | Exploratory: realized-coverage bootstrap 95% interval covers C in 0.89-0.97 of replicates in clean cells (base 0.922) vs 0.73-0.91 for the iNEXT interval on the same datasets; one-sided 95% lower bound holds in 0.89-0.94; Delta bias-corrected interval 0.89-0.95 |
 | E01-R008 | Exploratory: realized-coverage bootstrap replicated on fresh datasets | Santosh | succeeded | 2026-10-22 | 2026-10-22 | b136211+dirty | Exploratory replication on fresh datasets: realized-coverage interval covers C in 0.896-0.950 of replicates in clean cells; base 0.906 (MCSE 0.013) meets the pre-set >= 0.90 criterion; Delta bias-corrected 0.898-0.954 |
 | E01-R009 | Exploratory: de-adaptation A3a/A3b on adaptive campaigns (run and attempt level) | Santosh | succeeded | 2026-10-22 | 2026-10-22 | fd4bc25 | Exploratory: de-adaptation over-corrects. Run level (K=10): A3a coverage bias -0.30 (base), -0.44 (c=0.5), -0.08 (c=2; naive +0.07); A3b undefined in 500/500 (every run finds something new). Attempt level (20 blind spots, 200 attempts): median log(rate/truth) naive +0.27 / -0.48 / -0.89 for c=1/3/10; A3a +1.98 / +1.60 / +0.61; A3b about +2.1 |
+| E01-R010 | Exploratory: realized-coverage interval at small N (R006 cells, R008 method), requested in Kushal's review (D-010A condition) | Santosh | succeeded | 2026-10-23 | 2026-10-23 | dd366a0 | Realized-coverage interval at small N (fresh datasets): covers C in 0.894-0.954 of replicates at N = 14-20 (min 0.894 at sigma = 2), 0.924-0.974 at N = 50; one-sided lower bound holds in 0.870-0.940 at N = 14-20; pre-set criterion (>= 0.85 in every N = 14-20 cell) met |
 <!-- runs:end -->
 
 ## 5. Results
@@ -337,6 +338,19 @@ freeze. Nothing in `docs/PREREGISTRATION.md` has been changed.
   −0.48 and −0.89 for c = 1, 3 and 10. A3a overestimates the rate in every
   arm (+1.98, +1.60, +0.61) and A3b by about 8× (+2.1 to +2.2). Neither
   corrects adaptive bias at this scale; consequences for E10 in D-012.
+
+- **R010: the realized-coverage interval at small N.** Requested in
+  Kushal's review as the condition on D-010 A. R008's method on the R006
+  small-N cells, fresh datasets (replicates 20000+), criterion fixed in
+  `configs/e01/cells.json` before running.
+  - At N = 14–20 the 95% interval covers C in 0.894–0.954 of replicates
+    (MCSE about 0.01). It is lowest under strong heterogeneity (σ = 2:
+    0.894–0.948).
+  - At N = 50: 0.924–0.974.
+  - The one-sided lower bound holds in 0.870–0.940 at N = 14–20.
+  - **The criterion (≥ 0.85 in every N = 14–20 cell) is met.** The interval
+    can carry E09/E10's interval-coverage figure. Intervals at these sizes
+    are wide (median width 0.06–0.37).
 
 ## 6. Deviations
 

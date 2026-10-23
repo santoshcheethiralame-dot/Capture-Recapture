@@ -51,10 +51,12 @@ def git_commit():
             ["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"],
             capture_output=True, text=True, check=True,
         ).stdout.strip()
-        dirty = subprocess.run(
+        status = subprocess.run(
             ["git", "-C", str(ROOT), "status", "--porcelain"],
             capture_output=True, text=True, check=True,
-        ).stdout.strip()
+        ).stdout.splitlines()
+        # as crsafety.manifest.git_state: notebook/ and results/ edits do not make code dirty
+        dirty = [l for l in status if not l[3:].startswith(("notebook/", "results/"))]
         return out + ("+dirty" if dirty else "")
     except (subprocess.CalledProcessError, FileNotFoundError):
         return "unknown"
