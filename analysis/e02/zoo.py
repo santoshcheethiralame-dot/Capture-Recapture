@@ -104,19 +104,36 @@ def inventory(args):
     print(json.dumps(inv, indent=2))
 
 
+def latent_covariates(W, kept, fire_counts=None, act_sums=None, n_samples=None):
+    """E07 observed covariates of each kept latent: max |cos| to another kept
+    latent of the same SAE (x4), and with firing counts the log firing
+    frequency (x3) and mean activation when firing (x4). Dead latents are
+    already dropped, so counts are > 0."""
+    C = mt.abs_cos(W, W)
+    np.fill_diagonal(C, 0)
+    out = dict(max_cos=C.max(axis=1) if W.shape[0] > 1 else np.zeros(W.shape[0]))
+    if fire_counts is not None and n_samples:
+        fc = np.asarray(fire_counts, float)[kept]
+        out["log_freq"] = np.log(fc / n_samples)
+        if act_sums is not None:
+            out["mean_act"] = np.asarray(act_sums, float)[kept] / fc
+    return out
+
+
 def histories(args):
     world_dir, zoo_dir = local_dir(args.world), local_dir(args.zoo)
     T, p, _ = load_world(world_dir)
     idx = zoo_index(zoo_dir)
-    fires = json.loads(Path(args.fire_counts).read_text()) if args.fire_counts else {}
-    fires = fires.get("counts", fires)  # fire_counts.py nests them under "counts"
+    raw = json.loads(Path(args.fire_counts).read_text()) if args.fire_counts else {}
+    fires = raw.get("counts", raw)  # fire_counts.py nests them under "counts"
+    act_sums, n_samples = raw.get("act_sums", {}), raw.get("samples")
     pre = {}
     out = Path(args.out) / "histories"
     cells = sorted({(a, l) for a, l, _ in idx})
     problems = 0
     for a, l in cells:
         seeds = sorted(s for aa, ll, s in idx if (aa, ll) == (a, l))
-        Ws = []
+        Ws, obs = [], []
         for s in seeds:
             W = decoder(idx[(a, l, s)], T.shape[1])
             fc = fires.get(f"{a}/l0-{l}/seed-{s}")
@@ -124,6 +141,7 @@ def histories(args):
             pre[f"{a}/l0-{l}/seed-{s}"] = dict(width=int(W.shape[0]), kept=int(kept.size),
                                                dead_checked=fc is not None)
             Ws.append(W[kept])
+            obs.append(latent_covariates(W[kept], kept, fc, act_sums.get(f"{a}/l0-{l}/seed-{s}"), n_samples))
         cell = f"{a}_l0-{l}"
         runs = [dict(catcher=f"{a} L0={l} (zoo seed {s})", seed=s, status="ok",
                      role="reference" if args.reference_from is not None and s >= args.reference_from else "estimation")
@@ -140,6 +158,10 @@ def histories(args):
             for k, (r, c, s) in enumerate(assign):
                 X[c[s >= tg], k] = 1
             items = {str(i): dict(planted=True, covariates=dict(p=float(p[i]))) for i in range(T.shape[0])}
+            for k, (r, c, s) in enumerate(assign):  # E07 x3/x4 of the latent that caught item c, per run
+                for lat, it in zip(r[s >= tg], c[s >= tg]):
+                    for name, v in obs[k].items():
+                        items[str(it)]["covariates"].setdefault(name, {})[str(seeds[k])] = float(v[lat])
             d = out / f"oracle_tgt{tg}" / cell
             write_cell(d, cell, X, [str(i) for i in range(T.shape[0])], "oracle", runs=runs, items=items)
             problems += bool(check_cell(d))

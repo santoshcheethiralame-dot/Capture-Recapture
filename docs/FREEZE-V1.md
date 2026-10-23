@@ -33,6 +33,7 @@ frozen.
 | 9 | E01 H1c design flaw | Note in the paper that the dependence factor sat on σ = 1 heterogeneity; no re-run (E01 is not frozen, but its verdicts stand as run) | E01 §5 |
 | 10 | E10 arm A3 (de-adaptation) | Keep as pre-registered with the faithful algorithm and expect H10c to fail; add a design-based secondary analysis | D-012; E01-R009 |
 | 11 | E06 H6e horizon | Amend H6e to Δ̂(8) against the 8 reference seeds (the only observable horizon), or train 16 reference seeds (+88 SAEs) | E06 §2a |
+| 12 | E07 open points | Firing threshold = smallest p in U; \|U\| primary with N_thr reported; H7b supported if x3 or x4 is; failed fits count against | E07 §2a |
 
 ## 3. Pages to lock at v1.0
 

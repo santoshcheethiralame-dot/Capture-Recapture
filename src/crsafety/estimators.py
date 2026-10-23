@@ -308,6 +308,42 @@ def huggins(X, Z):
     return N_hat, res.x, converged
 
 
+def huggins_ci(X, Z, level=0.95):
+    """:func:`huggins` with its standard error and a log-normal interval.
+
+    Var(N_hat) = sum (1 - pi_i) / pi_i^2 + d' I^-1 d (Huggins 1989), with
+    pi_i = 1 - (1 - p_i)^K, d = dN_hat/dbeta and I the information of the
+    conditional likelihood. Equals VGAM's ``SE.N.hat`` for
+    ``posbernoulli.t(parallel.t = TRUE ~ z)`` (checked on the E00 Huggins
+    datasets to 1e-7 relative). The interval puts the log-normal form of
+    :func:`chao2_ci` on N_hat - S. Returns (estimate, se, lower, upper,
+    converged); NaN when the fit did not converge.
+    """
+    from scipy.stats import norm
+
+    d = _data(X)
+    N_hat, beta, converged = huggins(d, Z)
+    if not converged or not np.isfinite(N_hat):
+        return np.nan, np.nan, np.nan, np.nan, False
+    Z = np.asarray(Z, dtype=float)
+    Z = Z[:, None] if Z.ndim == 1 else Z
+    D = np.column_stack([np.ones(d.S), Z])
+    K = d.K
+    p = 1 / (1 + np.exp(-(D @ beta)))
+    q = (1 - p) ** K
+    pi = 1 - q
+    w = (K * p * (1 - p) + (K * p) ** 2) / pi - (K * p / pi) ** 2  # Var(y | y >= 1)
+    info = D.T @ (D * w[:, None])
+    dN = -(D * (K * q * p / pi**2)[:, None]).sum(axis=0)
+    var = float(np.sum((1 - pi) / pi**2) + dN @ np.linalg.solve(info, dN))
+    se = np.sqrt(max(var, 0.0))
+    t = N_hat - d.S
+    if t <= 0:
+        return N_hat, se, float(d.S), float(d.S), True
+    c = np.exp(norm.ppf(0.5 + level / 2) * np.sqrt(np.log(1 + var / t**2)))
+    return N_hat, se, float(d.S + t / c), float(d.S + t * c), True
+
+
 def generalized_chao(X, Z=None):
     """Böhning et al. (2013) generalised Chao estimator, incidence (binomial) form.
 

@@ -367,3 +367,24 @@ Santosh.
 **Next:** E06 simulation side (seeding check, configs, analysis), then
 E04's SAE arm and E07 code.
 
+
+## 2026-10-23: E06 training and analysis scripts; E07 covariate models
+
+Santosh.
+
+**Did:**
+- E06: training script (`analysis/e06/train.py`, resumable, Kaggle GPU)
+  and the R014 analysis (`analysis/e06/analyse.py`). `zoo.py histories
+  --reference-from` marks reference seeds. Tiny CPU run end to end
+  (2 cells × 24 seeds); smoke output only, no numbers kept.
+- E07: `crsafety.huggins_ci` (SE equals VGAM's to 1e-7 on the E00
+  datasets) and `analysis/e07/analyse.py`. `zoo.py` now writes the observed
+  latent covariates per run into items.csv. `fire_counts.py` also sums
+  activations; it had a bug in the first version, caught in the smoke test.
+
+**Saw:**
+- E06 H6e names Δ̂(16), but only 8 reference seeds exist.
+- E07's |U| target and the Huggins estimand differ.
+- Both are added to the freeze packet (items 11, 12).
+
+**Next:** E04 SAE arm, E01 figures, E16 novelty check.

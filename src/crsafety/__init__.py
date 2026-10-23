@@ -13,6 +13,7 @@ from .estimators import (
     generalized_chao,
     good_turing_coverage,
     huggins,
+    huggins_ci,
     ice,
     ichao2,
     jackknife,
@@ -24,7 +25,7 @@ from .loglin import closedp, loglinear
 __all__ = [
     "IncidenceData", "betabinomial_nof1", "bootstrap", "chao2", "chao2_ci", "chapman", "chapman_pairs",
     "closedp", "coverage", "coverage_interval", "delta_interval", "darroch_mt", "extrapolate", "generalized_chao",
-    "good_turing_coverage", "huggins", "loglinear",
+    "good_turing_coverage", "huggins", "huggins_ci", "loglinear",
     "ice", "ichao2", "jackknife", "report",
 ]
 __version__ = "0.1.0"
