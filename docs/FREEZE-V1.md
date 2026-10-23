@@ -47,11 +47,11 @@ frozen one by one later.
 |---|---|---|---|
 | E02 | Santosh → Kushal | R001 inventory on Kaggle (allowed before the freeze) | code ready (`analysis/e02/`); run R001 first |
 | E03 | Santosh → Kushal | uses E02-R001 | code ready (`analysis/e03/bakeoff.py`) |
-| E05 | Santosh → Kushal | R004, R005 done | §2a drafted; decisions 5–6 |
+| E05 | Santosh → Kushal | R004, R005 done | §2a drafted; decisions 5–6; confirmatory scripts ready: `analysis/e05/run.py`, `analyse.py` |
 | E08 | Kushal → Santosh | R001 (floor/ceiling, scaffold) | Kushal; frozen analysis script ready: `analysis/e08/analyse.py` (H5) |
 | E09 | Kushal → Santosh | R004 (pilot organisms) | later (gate G3); frozen analysis script ready: `analysis/e09/analyse.py` |
 | E10 | Kushal → Santosh | R001 (monitor), R002 (difficulty) | Kushal; frozen analysis script ready: `analysis/e10/analyse.py`; decision 10 |
-| E13 | Santosh → Kushal | R003 (simulated) done | needs E02/E06/E09/E10 data; can freeze now or with E09 |
+| E13 | Santosh → Kushal | R003 (simulated) done | confirmatory runner ready: `analysis/e13/run.py`; needs E02/E06/E09/E10 data; can freeze now or with E09 |
 
 ## 4. Freeze chain (after sections 1–3)
 
