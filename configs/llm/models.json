@@ -1,0 +1,88 @@
+{
+  "about": "H3 model registry (Q-D14). Each logical model lists candidate builds in order of preference; the H3 serving check (E08-R008, analysis/e08/serving_check.py) tries them on a Kaggle T4 and the first that passes is pinned in configs/llm/pins.json (Hugging Face commit sha, vLLM version). T4 has no bf16, so dtype is half (fp16) or float32. 7-9B models are 4-bit so that two models (target + auditor) fit on 2 x T4, one per GPU.",
+  "vllm_version": "0.19.1",
+  "vllm_note": "0.19.1 is the newest vLLM on PyPI built on torch 2.10 / CUDA 12.8, the CUDA line Kaggle ships (its image has torch 2.11.0+cu128). vLLM >= 0.20 needs torch built on CUDA 13 and an NVIDIA driver >= 580.",
+  "models": {
+    "qwen2.5-7b": {
+      "family": "qwen", "roles": ["auditor", "attacker"], "levels": ["E08 L0", "E08 L1", "E08 L2", "E08 L3", "E09", "E10 A1-A5"],
+      "candidates": [
+        {"hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "official"},
+        {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 16384, "quant_source": "in-flight"}
+      ],
+      "licence": "Apache-2.0", "gated": false
+    },
+    "qwen2.5-3b": {
+      "family": "qwen", "roles": ["auditor"], "levels": ["E08 L2"],
+      "candidates": [
+        {"hf_id": "Qwen/Qwen2.5-3B-Instruct-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "official"}
+      ],
+      "licence": "Qwen Research", "gated": false
+    },
+    "qwen2.5-14b": {
+      "family": "qwen", "roles": ["auditor"], "levels": ["E08 L2"],
+      "candidates": [
+        {"hf_id": "Qwen/Qwen2.5-14B-Instruct-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 12288, "gpu_memory_utilization": 0.93, "quant_source": "official"}
+      ],
+      "licence": "Apache-2.0", "gated": false
+    },
+    "llama3.1-8b": {
+      "family": "llama", "roles": ["auditor", "attacker"], "levels": ["E08 L3", "E10 A5"],
+      "candidates": [
+        {"hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "Hugging Face staff"},
+        {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 16384, "quant_source": "in-flight"}
+      ],
+      "licence": "Llama 3.1 Community", "gated": true
+    },
+    "gemma2-9b": {
+      "family": "gemma", "roles": ["auditor", "attacker"], "levels": ["E08 L3", "E10 A5"],
+      "candidates": [
+        {"hf_id": "google/gemma-2-9b-it", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 8192, "quant_source": "in-flight"},
+        {"hf_id": "google/gemma-2-9b-it", "quantization": "bitsandbytes", "dtype": "float32", "max_model_len": 8192, "quant_source": "in-flight"}
+      ],
+      "licence": "Gemma", "gated": true,
+      "notes": "Gemma 2 can overflow in fp16; the float32-compute candidate is the fallback. Native context is 8192 tokens."
+    },
+    "mistral-7b": {
+      "family": "mistral", "roles": ["target"], "levels": ["E08 target"],
+      "candidates": [
+        {"hf_id": "mistralai/Mistral-7B-Instruct-v0.3", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 16384, "quant_source": "in-flight"},
+        {"hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "community"}
+      ],
+      "licence": "Apache-2.0", "gated": true
+    },
+    "gemma2-2b-it": {
+      "family": "gemma", "roles": ["organism base"], "levels": ["E09"],
+      "candidates": [
+        {"hf_id": "google/gemma-2-2b-it", "quantization": null, "dtype": "half", "max_model_len": 8192, "quant_source": null, "extra_args": ["--enable-lora", "--max-lora-rank", "64"]},
+        {"hf_id": "google/gemma-2-2b-it", "quantization": null, "dtype": "float32", "max_model_len": 8192, "quant_source": null, "extra_args": ["--enable-lora", "--max-lora-rank", "64"]}
+      ],
+      "licence": "Gemma", "gated": true,
+      "notes": "Unquantised so the QLoRA organisms are served as LoRA adapters on the same base. Gemma 2 can overflow in fp16: float32 (about 10.5 GB) fits one T4."
+    },
+    "phi-4": {
+      "family": "phi", "roles": ["judge"], "levels": ["E08 judge", "E09 judge"],
+      "candidates": [
+        {"hf_id": "microsoft/phi-4", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 8192, "quant_source": "in-flight"}
+      ],
+      "licence": "MIT", "gated": false
+    },
+    "phi-4-mini": {
+      "family": "phi", "roles": ["judge"], "levels": ["E08 judge", "E09 judge"],
+      "candidates": [
+        {"hf_id": "microsoft/Phi-4-mini-instruct", "quantization": null, "dtype": "half", "max_model_len": 16384, "quant_source": null}
+      ],
+      "licence": "MIT", "gated": false
+    },
+    "olmo2-7b": {
+      "family": "olmo", "roles": ["judge"], "levels": ["E08 judge", "E09 judge"],
+      "candidates": [
+        {"hf_id": "allenai/OLMo-2-1124-7B-Instruct", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 4096, "quant_source": "in-flight"}
+      ],
+      "licence": "Apache-2.0", "gated": false
+    }
+  },
+  "groups": {
+    "pilots": ["qwen2.5-7b", "mistral-7b", "llama3.1-8b", "gemma2-9b", "gemma2-2b-it"],
+    "later": ["qwen2.5-3b", "qwen2.5-14b", "phi-4", "phi-4-mini", "olmo2-7b"]
+  }
+}

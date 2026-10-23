@@ -837,3 +837,31 @@ Santosh.
   E10) about Nov 22, v1.2 (E09) about Jan 5, with conditions. FREEZE-V1 §3
   is restructured by stage.
 - PR #17's CI is green: tests, notebook check and GitGuardian all pass.
+
+## 2026-10-23 (evening): H3 Kaggle LLM stack built; serving check registered
+
+Kushal.
+
+**Did:**
+- Built H3 in `src/crsafety/llm/`: model registry and pins
+  (`configs/llm/models.json`, `pins.json` after the check), call cache
+  (PROTOCOLS §6, layered so a backed-up Kaggle dataset can be re-attached),
+  cached client for vLLM's OpenAI server with retries and token counts,
+  and a launcher that runs one server per GPU. Notebook
+  `kaggle/llm_serving.ipynb`, notes in `kaggle/README.md`.
+- Layout: target or organism on GPU 0, auditor or attacker on GPU 1. Two
+  fp16 7–9B models do not fit on 2 × T4 at once, so 7–9B models are 4-bit
+  (AWQ if an official or HF-staff build exists, else bitsandbytes at load).
+- vLLM pinned at 0.19.1: releases from 0.20 on are built on CUDA 13
+  (driver ≥ 580), while Kaggle's image ships torch 2.11.0+cu128.
+- Registered E08-R002…R007 as planned (the prereg table, so IDs match)
+  and E08-R008, the serving check that pins the models (Q-D14). Its pass
+  criteria S1–S5 are in the script docstring, fixed before the run.
+- 15 CPU tests against a stand-in vLLM server (`tests/fakes/vllm`),
+  including the serving check end to end.
+
+**Found:** Gemma 2 has no system role and an 8k window; the E08 scaffold
+should put auditor instructions in the first user turn for every family,
+and a 20-turn audit has to fit 8k if Gemma is an L3 auditor.
+
+**Next:** run E08-R008 on Kaggle; copy `pins.json` into `configs/llm/`.
