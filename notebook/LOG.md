@@ -520,3 +520,15 @@ Santosh.
 - Drew Fig. 1, the concept figure, from a toy history
   (`paper/figures/fig1_concept.py`; illustrative, not data).
 - Refreshed `CLAUDE.md` with the current state and remaining work.
+
+## 2026-10-23 (later): paper §4, §8, Appendix A; LLM-use statement
+
+Santosh.
+
+**Did:**
+- Drafted §4 (testbeds; the E08–E10 paragraphs are placeholders for Kushal
+  to rewrite), §8 (conclusion and recommendations) and Appendix A (E00
+  validation and the E01 simulation study, with an estimator decision
+  guide).
+- Added a draft LLM-use statement to `docs/NEURIPS-CHECKLIST.md`, covering
+  writing and code assistance, for both authors to edit.

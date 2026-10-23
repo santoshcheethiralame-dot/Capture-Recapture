@@ -28,7 +28,16 @@ what will satisfy the item and where it lives.
 | 13 | New assets | Yes | Model cards (SAE replicates), datasheets (detection histories), Croissant if hosted | `docs/templates/` | ☐ |
 | 14 | Crowdsourcing / human subjects | N/A (or Yes if we hire labellers for judge validation) | If yes: instructions, pay | — | ☐ |
 | 15 | IRB | N/A (unless item 14 = Yes) | — | — | ☐ |
-| 16 | LLM usage | **Yes** | LLM judges, investigator agents and attackers are core methods: name models and snapshots, give prompts in the appendix, report judge-vs-human validation (κ) | `docs/PROTOCOLS.md` §2, §6 | ☐ |
+| 16 | LLM usage | **Yes** | LLM judges, investigator agents and attackers are core methods: name models and snapshots, give prompts in the appendix, report judge-vs-human validation (κ). **Also disclose LLM assistance in writing and code**: an AI coding assistant drafted code, analysis scripts and first drafts of paper sections, which the authors reviewed, ran and revised. Wording draft below; authors to edit | `docs/PROTOCOLS.md` §2, §6 | ☐ |
+
+## LLM-use statement (draft; authors to edit before submission)
+
+> We used an AI coding assistant to write and test parts of the estimator
+> library and the analysis scripts, and to draft sections of this paper.
+> The authors specified the study, pre-registered it, reviewed all code and
+> text, ran the experiments and are responsible for every claim. LLMs used
+> as auditors, attackers and judges in the experiments are described in
+> §4 and the appendix.
 
 ## Submission-day steps
 
