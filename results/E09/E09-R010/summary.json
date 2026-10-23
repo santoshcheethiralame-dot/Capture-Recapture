@@ -1,0 +1,225 @@
+{
+  "config": {
+    "release": "gemma-scope-2b-pt-res-canonical",
+    "sae_id": "layer_12/width_16k/canonical",
+    "it": "google/gemma-2-2b-it",
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "k": 10,
+    "cutoff": 0.5,
+    "n_prompts": 100,
+    "tokens": "user",
+    "prompt_file_sha256": "032f385ce1bb098b722fe59d80d64603db2ed749baf78f4dd5e1ffacbec31a81"
+  },
+  "gpu": "Tesla T4",
+  "n_blocklisted": 6,
+  "blocklist": [
+    {
+      "feature": 384,
+      "top10_share": 0.55,
+      "label": "instances of the word \"what,\" indicating a focus on questions or inquiries"
+    },
+    {
+      "feature": 1041,
+      "top10_share": 1.0,
+      "label": "technical terms and concepts related to programming or data structures"
+    },
+    {
+      "feature": 2291,
+      "top10_share": 0.82,
+      "label": "technical or mathematical symbols and terms"
+    },
+    {
+      "feature": 2620,
+      "top10_share": 0.77,
+      "label": "words associated with authority, control, and criticism of governance"
+    },
+    {
+      "feature": 5511,
+      "top10_share": 0.6,
+      "label": "frequently occurring articles in a text"
+    },
+    {
+      "feature": 15596,
+      "top10_share": 0.55,
+      "label": "forms of the verb \"to be\" in various tenses"
+    }
+  ],
+  "top30_by_share": [
+    [
+      1041,
+      1.0
+    ],
+    [
+      2291,
+      0.82
+    ],
+    [
+      2620,
+      0.77
+    ],
+    [
+      5511,
+      0.6
+    ],
+    [
+      15596,
+      0.55
+    ],
+    [
+      384,
+      0.55
+    ],
+    [
+      1617,
+      0.47
+    ],
+    [
+      4504,
+      0.44
+    ],
+    [
+      2818,
+      0.26
+    ],
+    [
+      2230,
+      0.23
+    ],
+    [
+      2964,
+      0.23
+    ],
+    [
+      7507,
+      0.22
+    ],
+    [
+      7085,
+      0.16
+    ],
+    [
+      10243,
+      0.14
+    ],
+    [
+      11437,
+      0.11
+    ],
+    [
+      8108,
+      0.09
+    ],
+    [
+      8223,
+      0.09
+    ],
+    [
+      252,
+      0.08
+    ],
+    [
+      7314,
+      0.08
+    ],
+    [
+      2058,
+      0.07
+    ],
+    [
+      9998,
+      0.06
+    ],
+    [
+      4730,
+      0.06
+    ],
+    [
+      7283,
+      0.05
+    ],
+    [
+      12220,
+      0.05
+    ],
+    [
+      7728,
+      0.05
+    ],
+    [
+      10600,
+      0.04
+    ],
+    [
+      3460,
+      0.04
+    ],
+    [
+      216,
+      0.04
+    ],
+    [
+      11737,
+      0.04
+    ],
+    [
+      9111,
+      0.04
+    ]
+  ],
+  "check_prompts_top_features_descriptive": {
+    "without": {
+      "mean_jaccard_top10": 0.152,
+      "max_prompts_sharing_a_top5_feature": 20,
+      "most_shared": [
+        [
+          1041,
+          20
+        ],
+        [
+          2291,
+          11
+        ],
+        [
+          5511,
+          4
+        ],
+        [
+          384,
+          2
+        ],
+        [
+          7723,
+          2
+        ]
+      ]
+    },
+    "with": {
+      "mean_jaccard_top10": 0.038,
+      "max_prompts_sharing_a_top5_feature": 3,
+      "most_shared": [
+        [
+          832,
+          3
+        ],
+        [
+          2818,
+          3
+        ],
+        [
+          2009,
+          3
+        ],
+        [
+          10543,
+          3
+        ],
+        [
+          7507,
+          3
+        ]
+      ]
+    }
+  },
+  "gpu_hours": 0.019
+}
