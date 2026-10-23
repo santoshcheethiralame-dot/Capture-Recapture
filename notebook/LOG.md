@@ -545,3 +545,33 @@ Santosh.
   histories, so the layout of every other figure can be checked in
   advance.
 - The previews are stamped as simulated and are not committed.
+
+## 2026-10-23 (later): pilots for open freeze items (E04-R004, E15-R005, E16-R003)
+
+Santosh.
+
+**Did:**
+- Ran three declared, exploratory CPU pilots. Each was registered before
+  launch and used pilot seed keys.
+  - E04-R004: H4a scored under freeze options 1 and 2, at split |r| 0.5 and
+    0.25. `sae_arm.py` now also scores the runs without split latents.
+  - E15-R005: calibrated vs Chao-Jost coverage at audit sizes, in
+    simulation (`analysis/e15/pilot_sim.py`).
+  - E16-R003 (running): two small CPU-trained worlds, to see which
+    missed-mass estimand the residual can bound. `bracket.py` now also
+    computes the unreconstructed missed energy, and no longer keeps all
+    feature activations in memory.
+
+**Saw:**
+- E04: with splits, clusters per feature depend on the split geometry
+  (3.4–3.5 vs 2.1–2.3). Without splits the ratio is 1.17–1.23, on the 1.2
+  threshold.
+- E15: 6 marks make calibration worse than Chao-Jost in every cell. 20 or
+  more help by up to 21%, never the 30% of H15b.
+- Both are added to freeze items 13 and 15; no threshold was changed.
+
+**Smoke tests (numbers seen, disclosed):**
+- E04: 3 replicates, keys 99000+.
+- E16: 2 under-trained seeds on 100k samples. M_miss 0.46/0.82 against
+  U_res 0.49/0.52.
+- None of these numbers is used anywhere.

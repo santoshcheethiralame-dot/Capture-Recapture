@@ -108,6 +108,7 @@ None.
 |---|---|---|---|---|---|---|---|
 | E16-R001 | Novelty check (Q-N2): residual-based upper bound on missed SAE features | Santosh | succeeded |  | 2026-10-23 | 33700e7 | No prior residual upper bound on missed SAE features and no seed capture-recapture found (5 searches); closest Engels et al. 2025 dark-matter decomposition (basis of the upper bound). Notes: research/notes/J-e16-novelty.md |
 | E16-R002 | Synthetic worlds: bracket per E06 cell (after E06 training on Kaggle) | Santosh | planned |  |  | 10b3aeb+dirty |  |
+| E16-R003 | Pilot (declared, exploratory): residual bounds vs missed-mass estimands (a) total and (b) unreconstructed, 2 small CPU worlds x 6 seeds | Santosh | running | 2026-10-23 |  | 5253a2d+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
