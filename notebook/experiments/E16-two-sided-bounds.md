@@ -94,6 +94,30 @@ None.
   the choice is made before R002 runs and logged as a deviation if it
   changes §2.
 
+**Pilot E16-R003 (declared, exploratory).** Two CPU-trained worlds (512
+features, d = 64, width 256, L0 = 8, 2M samples, 6 seeds each; Zipf 1.0 and
+0.5). Results in `results/E16/E16-R003/`:
+
+| world | (a) M_miss | (b) M_unrec | L0 | L1 | U_res | U_lin | U_lit |
+|---|---|---|---|---|---|---|---|
+| Zipf 1.0 | 0.104 | 0.029 | 0.061 | 0.026 | 0.111 | 0.023 | 0.087 |
+| Zipf 0.5 | 0.162 | 0.082 | 0.026 | 0.016 | 0.265 | 0.094 | 0.171 |
+
+- With properly trained SAEs, the **total residual bounds the oracle-missed
+  energy (a)** in both worlds, and both lower bounds hold.
+- The bracket [L1, U_res] has width 0.085 at Zipf 1.0 (useful by §2's < 0.2
+  rule) and 0.249 at Zipf 0.5 (not useful).
+- The earlier smoke-test concern (missed energy above the whole residual)
+  came from under-trained SAEs. It does not hold here.
+- **The Engels-style linearly predictable residual (U_lin), §2's planned
+  upper bound, is not an upper bound.** It falls below (a) in both worlds,
+  and below (b) at Zipf 1.0. The literal reading of §2, residual minus its
+  predictable part (U_lit), bounds (a) only at Zipf 0.5.
+- Proposal for the R002 analysis (not a change to §2, which is
+  exploratory): keep estimand (a). Report U_res as the upper bound and
+  U_lin / U_lit as tested candidates that failed here. The bracket's
+  validity and width per E06 cell are the R002 outcome.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -108,7 +132,7 @@ None.
 |---|---|---|---|---|---|---|---|
 | E16-R001 | Novelty check (Q-N2): residual-based upper bound on missed SAE features | Santosh | succeeded |  | 2026-10-23 | 33700e7 | No prior residual upper bound on missed SAE features and no seed capture-recapture found (5 searches); closest Engels et al. 2025 dark-matter decomposition (basis of the upper bound). Notes: research/notes/J-e16-novelty.md |
 | E16-R002 | Synthetic worlds: bracket per E06 cell (after E06 training on Kaggle) | Santosh | planned |  |  | 10b3aeb+dirty |  |
-| E16-R003 | Pilot (declared, exploratory): residual bounds vs missed-mass estimands (a) total and (b) unreconstructed, 2 small CPU worlds x 6 seeds | Santosh | running | 2026-10-23 |  | 5253a2d+dirty |  |
+| E16-R003 | Pilot (declared, exploratory): residual bounds vs missed-mass estimands (a) total and (b) unreconstructed, 2 small CPU worlds x 6 seeds | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 5253a2d+dirty | Pilot, 2 CPU worlds x 6 seeds: missed energy (a) 0.104 / 0.162 lies within [L1, U_res] in both worlds (widths 0.085 / 0.249); the Engels linearly predictable residual U_lin (0.023 / 0.094) falls below (a) in both and below (b) in one, so it is not an upper bound; residual energy along the missed signal (b) 0.029 / 0.082 |
 <!-- runs:end -->
 
 ## 5. Results

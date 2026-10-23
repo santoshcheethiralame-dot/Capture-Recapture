@@ -598,3 +598,16 @@ Santosh.
 - E16: 2 under-trained seeds on 100k samples. M_miss 0.46/0.82 against
   U_res 0.49/0.52.
 - None of these numbers is used anywhere.
+
+## 2026-10-23 (later): E16-R003 result
+
+Santosh.
+
+**Saw:**
+- With trained SAEs, the total residual bounds the oracle-missed energy in
+  both pilot worlds (0.104 ≤ 0.111 and 0.162 ≤ 0.265), and both lower
+  bounds hold.
+- The Engels-style linearly predictable residual does not bound it (0.023
+  and 0.094).
+- The smoke-test concern came from under-training.
+- E16 §2a now proposes U_res as the upper bound for R002.
