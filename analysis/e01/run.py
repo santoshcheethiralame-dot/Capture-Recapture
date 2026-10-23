@@ -147,7 +147,7 @@ def main():
     n_sim = args.n_sim or cfg["n_sim"]
     run_id = f"E01-{args.run}"
     boot = realized = None
-    if args.run in ("R007", "R008"):
+    if args.run in ("R007", "R008", "R010"):
         rc = cfg[args.run]
         cells = [c for c in cfg["cells"] if c["id"] in rc["cells"]]
         realized = dict(B=rc["B"], level=rc["level"], rep_offset=rc.get("rep_offset", 0))
