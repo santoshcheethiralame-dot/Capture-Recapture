@@ -1,0 +1,50 @@
+{
+  "features": [
+    384,
+    1041,
+    2291,
+    2620,
+    5511,
+    15596
+  ],
+  "k": 10,
+  "cutoff": 0.5,
+  "n_prompts": 100,
+  "model": "google/gemma-2-2b-it",
+  "sae": "gemma-scope-2b-pt-res-canonical/layer_12/width_16k/canonical",
+  "tokens": "user",
+  "prompt_file": "analysis/e09/background_prompts.txt",
+  "prompt_file_sha256": "032f385ce1bb098b722fe59d80d64603db2ed749baf78f4dd5e1ffacbec31a81",
+  "detail": [
+    {
+      "feature": 384,
+      "top10_share": 0.55,
+      "label": "instances of the word \"what,\" indicating a focus on questions or inquiries"
+    },
+    {
+      "feature": 1041,
+      "top10_share": 1.0,
+      "label": "technical terms and concepts related to programming or data structures"
+    },
+    {
+      "feature": 2291,
+      "top10_share": 0.82,
+      "label": "technical or mathematical symbols and terms"
+    },
+    {
+      "feature": 2620,
+      "top10_share": 0.77,
+      "label": "words associated with authority, control, and criticism of governance"
+    },
+    {
+      "feature": 5511,
+      "top10_share": 0.6,
+      "label": "frequently occurring articles in a text"
+    },
+    {
+      "feature": 15596,
+      "top10_share": 0.55,
+      "label": "forms of the verb \"to be\" in various tenses"
+    }
+  ]
+}

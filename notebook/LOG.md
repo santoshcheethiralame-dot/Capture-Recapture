@@ -838,6 +838,53 @@ Santosh.
   is restructured by stage.
 - PR #17's CI is green: tests, notebook check and GitGuardian all pass.
 
+## 2026-10-23 (evening): Kushal: E09-R010 result; D-014 follow-ups
+
+**E09-R010 (succeeded, 0.019 GPU-h on a T4, clean tree at 3e61111).** The
+D-014 rule blocklists 6 features (top-10 share on the 100 neutral prompts):
+
+| Feature | Share | Neuronpedia label |
+|---|---|---|
+| 1041 | 1.00 | technical terms and concepts related to programming or data structures |
+| 2291 | 0.82 | technical or mathematical symbols and terms |
+| 2620 | 0.77 | words associated with authority, control, and criticism of governance |
+| 5511 | 0.60 | frequently occurring articles in a text |
+| 384 | 0.55 | instances of the word "what" |
+| 15596 | 0.55 | forms of the verb "to be" |
+
+On the 20 check prompts (descriptive only, not used to set anything), the
+top-features lists go from mean Jaccard 0.152 to 0.038, and the most
+prompts sharing one top-5 feature from 20 to 3.
+
+**Near-threshold features (Santosh's suggestion 3).** Top-10 share between
+0.35 and 0.65: 5511 (0.60), 384 (0.55), 15596 (0.55) blocklisted; 1617
+(0.47, "questions or statements expressing confusion or concern") and 4504
+(0.44, "interrogative phrases that seek clarification") not. The list is
+complete: `top30_by_share` ends at 0.04. 384 and 15596 are the
+sample-dependent ones (P(blocklisted) about 0.8 at a true share of 0.55,
+per Santosh's binomial table), but both are function-word features, so
+which side they fall on matters little.
+
+**Label reading (Santosh's suggestion 1b).** The labels are fixed, so this
+part of the risk diagnostic can be done now rather than at R004. 5511, 384
+and 15596 are function-word features. 2620 (governance, authority) could
+overlap anti_ai_regulation and secret_loyalty; 1041 and 2291 (programming,
+technical symbols) could overlap hardcode_test_cases. These are the three
+organisms to watch.
+
+**Risk diagnostic (suggestion 1a), E09-R011 registered.** Changed from the
+proposal: run once after E09-R002 on all 16 organisms (not only the 2 pilot
+organisms in R004), on trigger prompts, reading no audit. The response is
+fixed now: the blocklist stays as it is for R007 whatever R011 shows. A
+flagged feature is still visible in the unfiltered most-changed list, so
+changing the rule on organism data would add a forking path for little gain.
+Flagged organisms are reported as a T3 limitation. Script
+`analysis/e09/blocklist_diagnostic.py` (2 tests; smoke-tested on stand-in
+models), E09 §2 analysis plan and planned runs updated, runbook K4.
+
+**render() note (suggestion 2).** Accepted; Santosh offered to add it to
+his tool, so it is left to him.
+
 ## 2026-10-23 (evening): H3 Kaggle LLM stack built; serving check registered
 
 Kushal.

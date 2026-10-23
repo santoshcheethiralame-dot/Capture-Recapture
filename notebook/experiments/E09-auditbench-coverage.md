@@ -116,6 +116,7 @@ prediction.
 | R006 | T2 | 224 | ~5–8 GPU-h |
 | R007 | T3 | 224 | ~8–12 GPU-h |
 | R008 | Analysis (Santosh runs the frozen analysis) | — | CPU |
+| R011 | T3 blocklist diagnostic, after R002: 16 organisms vs Gemma-2-2B-it on their trigger prompts (no audits) | — | < 0.5 GPU-h |
 
 ### Sample size
 14 organisms × 16 runs × 3 configurations = 672 audits. Shares are over 14
@@ -125,6 +126,21 @@ organisms, so they are coarse. CIs are bootstrapped over organisms and runs.
 - **Confirmatory:** H9a to H9d.
 - **Secondary:** coverage by behaviour type; "caught but not recognised"
   (the behaviour appears in the transcript but not in the final report).
+- **T3 blocklist diagnostic (E09-R011, descriptive, not a criterion; fixed
+  2026-10-23 after E09-R010, before any organism exists).** For each
+  organism, on its trigger prompts, against Gemma-2-2B-it: for each
+  blocklisted feature, the number of prompts where the blocklist hid it from
+  the top-10 active features, and where it is in the unfiltered most-changed
+  top 10. A feature in the most-changed top 10 on more than half of the
+  prompts is flagged: the implant moves a background feature
+  (`analysis/e09/blocklist_diagnostic.py`). It reads no audit, so it reveals
+  no outcome. The response is fixed now: the blocklist is not changed for
+  R007 whatever R011 shows (a flagged feature stays visible in the
+  most-changed list), and flagged organisms are reported with the T3 results
+  as a limitation. A reading of the six labels (LOG, 2026-10-23) points to
+  #2620 ("authority, control, and criticism of governance") for
+  anti_ai_regulation and secret_loyalty, and #1041 and #2291 (programming,
+  technical symbols) for hardcode_test_cases.
 - **Exploratory:** Design C.
 
 ### Exclusions and missing data
@@ -156,7 +172,8 @@ organisms are excluded.
 | E09-R007 | T3 white-box (Gemma Scope tool): 14 x 16 audits | Kushal | planned |  |  | 09e3c97+dirty |  |
 | E09-R008 | Confirmatory analysis (frozen script) | Santosh | planned |  |  | 09e3c97+dirty |  |
 | E09-R009 | T3 tool re-check with the user-token rule (C1-C5 + C7 prompt specificity) | Kushal | failed |  | 2026-10-23 | 09e3c97+dirty | C7 failed by its pre-set criterion; C1-C5 pass (0.045 GPU-h, T4). User-token rule: top-10 Jaccard 0.15 (was 0.50), most-changed 0.33 (was 0.83; criterion 0.25); but feature #1041 ('technical terms ... programming') is top-1 on 19/20 prompts. Top lists are now prompt-specific (e.g. factory farming -> factory, bans, agriculture, governance) |
-| E09-R010 | T3 background-feature blocklist (100 neutral prompts, k=10, >50%) | Kushal | planned |  |  | a572748+dirty |  |
+| E09-R010 | T3 background-feature blocklist (100 neutral prompts, k=10, >50%) | Kushal | succeeded | 2026-10-23 | 2026-10-23 | 3e61111 | 6 features blocklisted (top-10 share): 1041 1.00, 2291 0.82, 2620 0.77, 5511 0.60, 384 0.55, 15596 0.55; near threshold 1617 0.47, 4504 0.44. Descriptive: check prompts top-10 Jaccard 0.152 -> 0.038, max prompts sharing a top-5 feature 20 -> 3 (0.019 GPU-h, T4) |
+| E09-R011 | T3 blocklist diagnostic: 16 organisms vs Gemma-2-2B-it on trigger prompts (descriptive) | Kushal | planned |  |  | 3e61111+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
