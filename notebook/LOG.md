@@ -790,3 +790,14 @@ first. Proposal: take the current rule into the E09-R004 pilot. There the
 diff is organism vs -it, which is the real question. Add a pre-specified
 background filter only if the pilot shows constant features crowding out
 the implant.
+
+## 2026-10-23: Kushal: T3 background blocklist rule (D-014), E09-R010 registered
+
+Fixed the rule before any run that uses it (D-014). Background features are
+those in the top 10 on more than 50% of 100 neutral prompts, on
+Gemma-2-2B-it with user tokens. They are hidden from the top-features list
+only. Code: `background_blocklist`, plus a `blocklist` option on the tool and
+on `from_hf`, with one test. `analysis/e09/background_blocklist.py` was
+smoke-tested on the stand-in models. E09 §2 T3 wording updated. Registered
+E09-R010 (runbook K3). The 20 check prompts are reported with and without
+the blocklist, as a description only.

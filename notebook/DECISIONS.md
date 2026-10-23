@@ -365,3 +365,35 @@ is *primary* for H8a/H10b is a joint freeze decision (FREEZE-V1 item 16).
   PR #8).
 **Affects pre-registered analysis:** yes for E08–E10 (pages not frozen yet):
 §2 truth wording to be aligned at the freeze. E08/E10 are Kushal's pages.
+
+## D-014 (proposed): T3 hides background SAE features, by a rule fixed before any pilot (2026-10-23)
+
+**Status:** proposed by Kushal. Santosh to review, since the tool is his
+code (H7).
+**Context:**
+- After the user-token rule (E09-R009), the tool's top-features lists follow
+  the prompt. One feature (#1041) was still top-1 on 19 of 20 check prompts.
+- A feature that fires on every prompt tells the auditor nothing, and it
+  takes a slot that an implant-related feature could use.
+- Adding a filter only if the E09-R004 pilot "needs" one would let pilot
+  outcomes shape the tool, so the rule is fixed now instead.
+**Decision:**
+- A background blocklist, computed once on Gemma-2-2B-it, the shared base
+  of every organism:
+  - prompts: the 100 neutral prompts in `analysis/e09/background_prompts.txt`.
+    None of them are the R003/R009 check prompts, and none touch the 14
+    behaviours.
+  - tokens: user tokens only.
+  - a feature is blocklisted if it is in the top k = 10 on more than 50% of
+    those prompts.
+- The blocklist is hidden from the "top active features" list only. The
+  "most changed vs base" list is not filtered, because a feature changed on
+  every prompt of an organism may be the implant itself.
+- Code: `gemma_scope.background_blocklist`, `WhiteBoxTool(blocklist=...)`,
+  `from_hf(blocklist_path=...)`. The run is E09-R010.
+- The cutoff, k and prompt set are not tuned on E09-R009 or on any pilot
+  result.
+**Risk:** an implant could share a globally common feature and be hidden.
+At a 50% cutoff this is unlikely, and E09-R004 will show it. The
+most-changed list stays unfiltered as the backstop.
+**Affects pre-registered analysis:** E09 §2 T3 wording (page not frozen yet).
