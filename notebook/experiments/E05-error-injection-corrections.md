@@ -157,6 +157,24 @@ merging.
 0.12–0.4 s per dataset for (d) through R. R001 (24,000 injections) takes
 about 15 min plus 1–2.5 h for (d).
 
+**Confirmatory scripts (2026-10-23, before the freeze; to be locked with
+it).**
+- `analysis/e05/run.py R001|R002` writes the injection grid with every
+  correction. It refuses a dirty tree and records prereg v1.0. Smoke tests
+  (`--out`) use the pilot keys from 9000.
+- `analysis/e05/analyse.py` is R003: H5a–H5d plus interval coverage; tested
+  in `tests/test_e05_analyse.py`. Definitions fixed in its docstring:
+  - relative bias vs the oracle Chao2;
+  - H5b's reference is the realized C for E01 worlds and the oracle Ĉ for
+    E02 cells;
+  - H5d splits cells at the median oracle overlap.
+- R001 measured cost: about 0.23 s per injection, about 1.5–2.5 h for
+  24,000.
+- On 2026-10-23 a first smoke run (120 injections) drew from the
+  confirmatory stream (keys < 9000, injection 0) before the offset existed.
+  Its output was deleted unread: only shape and non-finite counts were
+  printed. Logged in LOG.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
