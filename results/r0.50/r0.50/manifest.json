@@ -1,0 +1,56 @@
+{
+  "run_id": "r0.50",
+  "experiment": "E04",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "3b58eb4",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e04/sae_arm.py --out results/E04/E04-R004/r0.50 --world /tmp/claude-0/-home-user-MissingMass/c77f310e-c3e7-5a9d-a9bb-e80c01dd7dd9/scratchpad/rand16k.npy --noise-fixed 0.9 --tau 0.7 --pilot --key-offset 9200 --split-r 0.50 --record",
+  "config": {
+    "out": "results/E04/E04-R004/r0.50",
+    "world": "/tmp/claude-0/-home-user-MissingMass/c77f310e-c3e7-5a9d-a9bb-e80c01dd7dd9/scratchpad/rand16k.npy",
+    "noise": null,
+    "noise_fixed": 0.9,
+    "tau": "0.7",
+    "reps": 200,
+    "n_v": 200,
+    "p_split": 0.2,
+    "p_absorb": 0.1,
+    "split_r": 0.5,
+    "pilot": true,
+    "key_offset": 9200,
+    "record": true
+  },
+  "config_sha256": "46bc099e8f0647096c5164d32dd27f18902e8dd42256efdbb9aaccd82a74a4c1",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261026,
+    "pilot": true
+  },
+  "inputs": [],
+  "model_ids": [],
+  "started_utc": "2026-10-23T06:50:27+00:00",
+  "finished_utc": "2026-10-23T06:50:49+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E04/E04-R004/r0.50/replicates.jsonl",
+    "results/E04/E04-R004/r0.50/summary.json",
+    "results/E04/E04-R004/r0.50/summary.md"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  }
+}

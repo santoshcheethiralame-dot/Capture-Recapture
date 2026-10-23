@@ -9,6 +9,10 @@
   energy of the features no evaluation seed catches (oracle rule, |cos| >=
   0.7, as in E06), in hidden-space units. The per-feature energy share
   sum_{missed} E[c_i^2] / sum_i E[c_i^2] (§2's literal form) is reported too.
+  Alternative estimand (b), E16 §2a concern: per seed, the residual's energy
+  along the missed signal, E[(e . m)^2 / ||m||^2] / denominator, i.e. the part
+  of the missed features the SAE did not reconstruct; `brackets_unrec` gives the
+  share of seeds where L <= M_unrec <= U.
 - **Lower bounds** (truth-free; denominator E||x - b_dec||^2, averaged over
   seeds). Ĉ is Chao-Jost coverage of the oracle history over the K seeds.
   L0 = 1 - Ĉ (catch-rate units, unconverted). L1 converts with observed
@@ -64,11 +68,17 @@ def load(cell_dir, seeds, device):
 
 
 @torch.no_grad()
-def accumulate(world, saes, samples, batch, device):
-    """Two passes over fresh samples: fit A (first half), then measure everything (second half)."""
+def accumulate(world, saes, missed, samples, batch, device):
+    """Two passes over fresh samples: fit A (first half), then measure everything (second half).
+
+    ``missed`` is the boolean mask of features no seed catches. Per sample,
+    m = sum over missed features of c_i d_i. The truth accumulates ||m||^2 (missed
+    energy) and, per seed, (e . m)^2 / ||m||^2: the residual's energy along m,
+    i.e. the part of the missed signal the SAE left unreconstructed."""
     d = world.feature_dict.feature_vectors.shape[1]
-    D = world.feature_dict.feature_vectors.double()
-    bias = world.feature_dict.bias.double()
+    D = world.feature_dict.feature_vectors.detach().double()
+    bias = world.feature_dict.bias.detach().double()
+    mk = torch.as_tensor(missed, device=D.device)
     fit = {s: (torch.zeros(d + 1, d + 1, dtype=torch.float64, device=device),
                torch.zeros(d + 1, d, dtype=torch.float64, device=device)) for s in saes}
     half = samples // 2
@@ -87,19 +97,19 @@ def accumulate(world, saes, samples, batch, device):
             fit[s][0].add_(X1.T @ X1)
             fit[s][1].add_(X1.T @ e)
     A = {s: torch.linalg.lstsq(G, R).solution for s, (G, R) in fit.items()}
-    nf = D.shape[0]
-    feat_e = torch.zeros(nf, dtype=torch.float64, device=device)
-    acc = {s: dict(res=0.0, lin=0.0, lit=0.0, den=0.0,
+    feat_e = torch.zeros(D.shape[0], dtype=torch.float64, device=device)
+    acc = {s: dict(res=0.0, lin=0.0, lit=0.0, den=0.0, unrec=0.0,
                    lat=torch.zeros(sae.cfg.d_sae, dtype=torch.float64, device=device)) for s, sae in saes.items()}
-    tot_x = 0.0
-    feats_all = []
+    tot = dict(x=0.0, signal=0.0, missed=0.0)
     n = 0
     for x, c in batches(samples - half):
-        c = c.to_dense() if c.is_sparse else c
-        c = c.double()
+        c = (c.to_dense() if c.is_sparse else c).double()
         feat_e += (c ** 2).sum(0)
-        tot_x += float(((x.double() - bias) ** 2).sum())
-        feats_all.append(c)
+        tot["x"] += float(((x.double() - bias) ** 2).sum())
+        tot["signal"] += float(((c @ D) ** 2).sum())
+        m = c[:, mk] @ D[mk]
+        mm = (m ** 2).sum(1)
+        tot["missed"] += float(mm.sum())
         X1 = torch.cat([x.double(), torch.ones(x.shape[0], 1, dtype=torch.float64, device=device)], 1)
         for s, sae in saes.items():
             f = sae.encode(x)
@@ -110,9 +120,11 @@ def accumulate(world, saes, samples, batch, device):
             a["lin"] += float((p ** 2).sum())
             a["lit"] += float(((e - p) ** 2).sum())
             a["den"] += float(((x.double() - sae.b_dec.double()) ** 2).sum())
+            nz = mm > 0
+            a["unrec"] += float((((e[nz] * m[nz]).sum(1)) ** 2 / mm[nz]).sum())
             a["lat"] += (f.double() ** 2).sum(0)
         n += x.shape[0]
-    return D, bias, feat_e / n, tot_x / n, torch.cat(feats_all), acc, n
+    return feat_e / n, {k: v / n for k, v in tot.items()}, acc, n
 
 
 def main():
@@ -130,8 +142,7 @@ def main():
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     world, saes = load(a.cell_dir, seed_list(a.seeds), a.device)
-    D, bias, feat_e, tot_x, C, acc, n = accumulate(world, saes, a.samples, a.batch, a.device)
-    T = D.cpu().numpy()
+    T = world.feature_dict.feature_vectors.detach().double().cpu().numpy()
     seeds = sorted(saes)
     K = len(seeds)
     # oracle history and the latent behind each catch
@@ -145,10 +156,9 @@ def main():
             if ft >= 0:
                 lat_of[ft, k] = lt
     missed = ~X.any(axis=1)
-    # truth: hidden-space energy of the missed features' sum, and the per-feature energy share
-    Cm = C[:, torch.as_tensor(missed, device=C.device)]
-    Dm = D[torch.as_tensor(missed, device=D.device)]
-    true_miss_hidden = float(((Cm @ Dm) ** 2).sum() / C.shape[0]) / float(((C @ D) ** 2).sum() / C.shape[0])
+    feat_e, tot, acc, n = accumulate(world, saes, missed, a.samples, a.batch, a.device)
+    # truth (a): energy of the missed features' sum, hidden space; (b) the part left in the residual (per seed)
+    true_miss_hidden = tot["missed"] / tot["signal"]
     fe = feat_e.cpu().numpy()
     true_miss_feat = float(fe[missed].sum() / fe.sum())
     # lower bounds
@@ -175,14 +185,19 @@ def main():
         L1 = 0.0  # no singletons: C_hat = 1, nothing estimated missing
     # upper bounds: tightest seed
     per = {s: dict(U_res=acc[s]["res"] / acc[s]["den"], U_lin=acc[s]["lin"] / acc[s]["den"],
-                   U_lit=acc[s]["lit"] / acc[s]["den"]) for s in seeds}
+                   U_lit=acc[s]["lit"] / acc[s]["den"], M_unrec=acc[s]["unrec"] / acc[s]["den"]) for s in seeds}
     U = {k: min(v[k] for v in per.values()) for k in ("U_res", "U_lin", "U_lit")}
     res = dict(cell=Path(a.cell_dir).name, K=K, samples_measured=n, n_features=int(T.shape[0]), S_obs=int(det.sum()),
                missed_features=int(missed.sum()), M_miss=true_miss_hidden, M_miss_feature_share=true_miss_feat,
-               denominator_ratio=den / tot_x, C_hat=C_hat, Q1=int(single.sum()), r1=r1, L0=L0, L1=L1, **U,
+               denominator_ratio=den / tot["x"],
+               M_miss_unrec_mean=float(np.mean([v["M_unrec"] for v in per.values()])), C_hat=C_hat, Q1=int(single.sum()), r1=r1, L0=L0, L1=L1, **U,
                per_seed=per)
     res["brackets"] = {f"{l}-{u}": dict(valid=bool(res[l] <= true_miss_hidden <= res[u]), width=res[u] - res[l])
                        for l in ("L0", "L1") for u in ("U_res", "U_lin", "U_lit")}
+    # estimand (b): per seed, is L <= M_unrec_s <= U_s?
+    res["brackets_unrec"] = {f"{l}-{u}": dict(valid_share=float(np.mean([res[l] <= v["M_unrec"] <= v[u]
+                                                                          for v in per.values()])))
+                             for l in ("L0", "L1") for u in ("U_res", "U_lin", "U_lit")}
     (out / "bracket.json").write_text(json.dumps(res, indent=1, default=float) + "\n")
     print(json.dumps({k: v for k, v in res.items() if k != "per_seed"}, indent=1, default=float))
 

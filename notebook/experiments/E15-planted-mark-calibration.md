@@ -126,6 +126,27 @@ None planned.
      conditional on at least one catch. Proposed: compare marks
      conditional on ≥ 1 catch as well.
 
+**Pilot E15-R005 (declared, exploratory; simulation).** Calibrated vs
+Chao-Jost coverage in simulated audits: K = 8; N_real ∈ {14, 20, 50};
+M ∈ {6, 20, 100} marks from the same detectability law; 500 replicates per
+cell (`analysis/e15/pilot_sim.py`).
+- **With M = 6 (the audit arm's design), calibration is worse than
+  Chao-Jost in every cell:** error reduction −8% to −85%, biased low by
+  0.02–0.03, from fitting a slope on six marks.
+- With M ≥ 20 it helps: +2% to +21% (+7% to +21% at N_real ≤ 20), closer
+  in 54–64% of audits. It never reaches H15b's 30%.
+- These worlds satisfy Chao-Jost's assumptions (independent runs, correct
+  identity). Calibration's real value would be where Chao-Jost fails, which
+  this pilot does not test.
+
+For the freeze:
+- the audit arm's M = 6 is underpowered for calibration. Either plant
+  ≥ 20 marks (if implants allow) or report the audit arm as descriptive;
+- H15b's 30% is unlikely to be met in the SAE arm unless detectability
+  there departs from Chao-Jost's assumptions.
+
+The audit arm is Kushal's; this is input for him, not a change.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -143,6 +164,7 @@ None planned.
 | E15-R002 | SAE arm: 400 marks injected into Pythia-70M L3, 12 SAE seeds + latent stats (Kaggle) | Santosh | planned |  |  | d4c14b1+dirty |  |
 | E15-R003 | Audit arm: implant 6 graded quirks + verify + 16 audits (Kaggle; Kushal) | Kushal | planned |  |  | d4c14b1+dirty |  |
 | E15-R004 | Calibration analysis, SAE arm (CPU) | Santosh | planned |  |  | 8cc0c13+dirty |  |
+| E15-R005 | Pilot (declared, exploratory): calibrated vs Chao-Jost coverage at audit sizes (N 14-50, M 6-100 marks), simulation | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 6d9b4da+dirty | Pilot, 36 cells x 500: with M = 6 marks calibration is worse than Chao-Jost in every cell (error reduction -8% to -85%; bias -0.02 to -0.03); with M = 20 or 100, +2% to +21% (cal closer in 0.54-0.64 of audits), never the 30% of H15b, in worlds where Chao-Jost's assumptions hold |
 <!-- runs:end -->
 
 ## 5. Results
