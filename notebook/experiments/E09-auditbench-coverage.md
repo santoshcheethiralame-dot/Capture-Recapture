@@ -155,7 +155,7 @@ organisms are excluded.
 | E09-R006 | T2 black-box sampling: 14 x 16 audits | Kushal | planned |  |  | 09e3c97+dirty |  |
 | E09-R007 | T3 white-box (Gemma Scope tool): 14 x 16 audits | Kushal | planned |  |  | 09e3c97+dirty |  |
 | E09-R008 | Confirmatory analysis (frozen script) | Santosh | planned |  |  | 09e3c97+dirty |  |
-| E09-R009 | T3 tool re-check with the user-token rule (C1-C5 + C7 prompt specificity) | Kushal | planned |  |  | 09e3c97+dirty |  |
+| E09-R009 | T3 tool re-check with the user-token rule (C1-C5 + C7 prompt specificity) | Kushal | failed |  | 2026-10-23 | 09e3c97+dirty | C7 failed by its pre-set criterion; C1-C5 pass (0.045 GPU-h, T4). User-token rule: top-10 Jaccard 0.15 (was 0.50), most-changed 0.33 (was 0.83; criterion 0.25); but feature #1041 ('technical terms ... programming') is top-1 on 19/20 prompts. Top lists are now prompt-specific (e.g. factory farming -> factory, bans, agriculture, governance) |
 <!-- runs:end -->
 
 ## 5. Results
