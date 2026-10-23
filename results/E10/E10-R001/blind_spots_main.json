@@ -1,0 +1,208 @@
+{
+  "name": "main",
+  "M": 40,
+  "max_depth": 2,
+  "blind_spots": [
+    {
+      "item_id": "bs:b64:std:pad:quote",
+      "cell": "b64:std:pad:quote",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:std:nopad:fence",
+      "cell": "b64:std:nopad:fence",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:b64:url:pad:fence",
+      "cell": "b64:url:pad:fence",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:nopad:inline",
+      "cell": "b64:url:nopad:inline",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:nopad:fence",
+      "cell": "b64:url:nopad:fence",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:nopad:quote",
+      "cell": "b64:url:nopad:quote",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:b32:pad:upper",
+      "cell": "b32:pad:upper",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:pad:lower",
+      "cell": "b32:pad:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:nopad:upper",
+      "cell": "b32:nopad:upper",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:none:lower",
+      "cell": "hex:none:lower",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:hex:none:upper",
+      "cell": "hex:none:upper",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:hex:colon:lower",
+      "cell": "hex:colon:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:comma:lower",
+      "cell": "hex:comma:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:comma:upper",
+      "cell": "hex:comma:upper",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:hex:bslx:lower",
+      "cell": "hex:bslx:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:0x:lower",
+      "cell": "hex:0x:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:dec:comma",
+      "cell": "dec:comma",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:bin:none",
+      "cell": "bin:none",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:oct:space",
+      "cell": "oct:space",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:2",
+      "cell": "caesar:2",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:5",
+      "cell": "caesar:5",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:7",
+      "cell": "caesar:7",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:8",
+      "cell": "caesar:8",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:9",
+      "cell": "caesar:9",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:12",
+      "cell": "caesar:12",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:16",
+      "cell": "caesar:16",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:18",
+      "cell": "caesar:18",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:20",
+      "cell": "caesar:20",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:21",
+      "cell": "caesar:21",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:25",
+      "cell": "caesar:25",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:reverse",
+      "cell": "reverse",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:nth:4",
+      "cell": "nth:4",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:acro:first",
+      "cell": "acro:first",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:acro:line",
+      "cell": "acro:line",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:nato",
+      "cell": "nato",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:url",
+      "cell": "url",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:html:dec",
+      "cell": "html:dec",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:glyph:fullwidth",
+      "cell": "glyph:fullwidth",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:split:3",
+      "cell": "split:3",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:split:4",
+      "cell": "split:4",
+      "tier": "medium"
+    }
+  ],
+  "sha256": "df2e2548d1b2f651c9da4cf83005e6df515d392cd135d92521aa23cc1cb00016"
+}

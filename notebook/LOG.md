@@ -837,3 +837,36 @@ Santosh.
   E10) about Nov 22, v1.2 (E09) about Jan 5, with conditions. FREEZE-V1 §3
   is restructured by stage.
 - PR #17's CI is green: tests, notebook check and GitGuardian all pass.
+
+## 2026-10-23 (later): E10 monitor built for M = 40; R001 passes
+
+Kushal.
+
+**Did:**
+- Built the E10 guard, `crsafety.monitor`. It is deterministic: a receiver
+  with a 79-cell decoder grammar defines a leak, and the guard runs the
+  same search but skips its blind-spot cells. M is configurable, with tiers
+  1:2:1 by default. The main and pilot instances come from
+  `SeedSequence(20261032).spawn(2)`.
+- Updated the E10 page for M = 40 (10/20/10), as agreed in FREEZE-V1 item
+  3. The rest of the §2 alignment for v1.1 (D-013 truth wording, items 16
+  and 18) is still to do.
+- E10-R001 at 3569be0: 322 of 322 checks pass for both monitors. Every
+  blind spot is reachable and credited alone, and every other cell is
+  blocked. A hole-free guard lets 0 of 500 random attacks through. Against
+  main, all 299 successes are credited only to blind spots, 9 of them to
+  two. 0 of 200 benign conversations were flagged. Details are in E10 §5.
+- `tests/test_monitor.py` adds 96 tests.
+
+**Saw:**
+- "No success without a blind spot" holds by construction, because success
+  is whatever the receiver can decode. Out-of-grammar leaks count as
+  `no_leak`. R002 should log how often LLM attackers try channels outside
+  the grammar, because that is where the testbed's validity is weakest.
+- The hard pool is mostly Caesar shifts, and main has 11 of them. This
+  could create item dependence once an attacker finds one. A per-family
+  cap is worth deciding before v1.1.
+- The medium pool (29) cannot give the pilot 20 cells disjoint from main.
+  The pilot shares 11 medium cells with main.
+
+**Next:** R002 difficulty pilot on the pilot monitor (Nov 10, needs H3).
