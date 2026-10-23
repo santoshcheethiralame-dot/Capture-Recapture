@@ -532,3 +532,16 @@ Santosh.
   guide).
 - Added a draft LLM-use statement to `docs/NEURIPS-CHECKLIST.md`, covering
   writing and code assistance, for both authors to edit.
+
+## 2026-10-23 (later): paper figure and table pipeline
+
+Santosh.
+
+**Did:**
+- `paper/figures/make_all.py` builds every planned figure and table from
+  `results/`. Figure 3 (E01 panels) and Table 1 are made from real data
+  now.
+- `preview_inputs.py` runs the real analysis scripts on simulated
+  histories, so the layout of every other figure can be checked in
+  advance.
+- The previews are stamped as simulated and are not committed.
