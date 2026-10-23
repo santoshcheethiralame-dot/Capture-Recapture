@@ -126,6 +126,23 @@ Options for the freeze (no change is made here):
 
 Proposed: option 2, plus option 1's numbers as a secondary result.
 
+**Pilot E04-R004 (declared, exploratory; keys 9200–9599; same placeholders
+as R003).** Each of the 1,200 replicates is scored both ways, at split
+|r| = 0.5 and 0.25:
+- Option 1 (all latents): clusters / N_true is 3.36–3.50 at |r| = 0.5 and
+  2.11–2.25 at |r| = 0.25. It depends on the split geometry, which §2 does
+  not fix.
+- Option 2 (split latents excluded): 1.17–1.23 at both geometries, so it
+  does not depend on that geometry. It sits on the 1.2 threshold because
+  absorbed variants alone add about 0.2 clusters per feature (R003).
+- The ghost-corrected Chao2 / N_true is 0.74–0.76 at |r| = 0.5 and
+  0.99–1.26 at |r| = 0.25.
+
+For the freeze: option 2 makes H4a a test of the identity rule rather than
+of the generator. Its threshold of 1.2 is borderline at τ = 0.7. The real
+test uses the E03 rule and the E02 noise, so this pilot sets no threshold
+(none is changed).
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -141,6 +158,7 @@ Proposed: option 2, plus option 1's numbers as a secondary result.
 | E04-R001 | SAE arm, N_true in {1,3,10}, 200 replicates (confirmatory; after freeze, E02 noise, E03 rule) | Santosh | planned |  |  | 96bfa69 |  |
 | E04-R002 | Attack arm, N_true in {1,3,10}, 20 replicates (Kaggle LLM) | Kushal | planned |  |  | 96bfa69+dirty |  |
 | E04-R003 | Pilot (declared, separate seeds): SAE-arm mechanics, random directions d=768, fixed noise rho=0.9 | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 96bfa69+dirty | Pilot, 600 replicates, 17 s: under the pre-registered generator clusters / N_true = 3.4-3.6 at every N_true (regression on counts: each split adds ~1.5 clusters, each absorbed variant ~0.2; impure clusters 0); Chao2 / N_true 6-32, ghost-corrected 0.72-0.75; C_hat 0.74-0.81 vs truth 1 |
+| E04-R004 | Pilot (declared, exploratory): H4a under freeze options 1 and 2, split |r| in {0.5, 0.25}, 200 reps per level | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 3b58eb4+dirty | Pilot, 1200 replicates: clusters / N_true 3.36-3.50 at |r| = 0.5 and 2.11-2.25 at |r| = 0.25 (option 1); without split latents (option 2) 1.17-1.23 at both, i.e. on the 1.2 threshold, from absorbed variants alone; ghost-corrected Chao2 / N_true 0.74-0.76 (|r| 0.5) and 0.99-1.26 (|r| 0.25) |
 <!-- runs:end -->
 
 ## 5. Results
