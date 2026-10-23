@@ -470,3 +470,24 @@ Santosh.
   behaviours used to score auditors.
 
 **Next:** E15 SAE-arm injection and calibration code.
+
+## 2026-10-23 (later): E15 SAE-arm code; Kaggle runbook
+
+Santosh.
+
+**Did:**
+- Wrote `crsafety.calibrate`, the planted-mark detectability fit with
+  Horvitz-Thompson C_cal, N̂ and Δ, a proxy map and a bootstrap interval.
+- Wrote `analysis/e15/inject.py` (`marks`, `train`, `stats`, `magnitudes`;
+  CPU smoke-tested on the tiny model) and `analysis/e15/analyse.py`
+  (tested on synthetic SAEs).
+- Registered E15-R002, R003 (Kushal's audit arm) and R004. R003 was first
+  registered with the wrong title and corrected the same day; the note is
+  on the run.
+- Wrote `docs/KAGGLE-RUNBOOK.md`, which lists every Kaggle job on my side
+  in order and marks which ones may run before the freeze.
+
+**Saw:**
+- In a simulation with mild heterogeneity, calibrated coverage is unbiased
+  but no better than Chao-Jost. H15b will show whether planting marks pays
+  off in practice.
