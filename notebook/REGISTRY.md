@@ -57,7 +57,7 @@ Rendered by `python tools/notebook.py render`.
 | Exp | Runs | Planned | Running | Succeeded | Failed |
 |---|---|---|---|---|---|
 | E00 | 4 | 0 | 0 | 4 | 0 |
-| E01 | 9 | 0 | 0 | 9 | 0 |
+| E01 | 10 | 0 | 0 | 10 | 0 |
 | E02 | 1 | 1 | 0 | 0 | 0 |
 | E03 | 0 | 0 | 0 | 0 | 0 |
 | E04 | 4 | 2 | 0 | 2 | 0 |

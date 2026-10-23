@@ -633,3 +633,15 @@ Santosh.
 
 **Next:** his D-010A condition (a small-N interval check), E04 option 3
 and two-sided H4c, the stale Chiu-Chao text on E04, the PH5 wording.
+
+## 2026-10-23 (later): E01-R010, the small-N interval check
+
+Santosh.
+
+**Saw:**
+- At N = 14–20 the realized-coverage interval covers C in 0.894–0.954 of
+  replicates; at N = 50, 0.924–0.974.
+- Kushal's condition on D-010 A (criterion ≥ 0.85, fixed before running) is
+  met.
+- Recorded in E01 §5 and RESULTS. The analysis rerun only added R010's
+  section and file.

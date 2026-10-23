@@ -51,6 +51,9 @@ Every estimate links to run IDs.
   realized coverage (0.73–0.91 at nominal 0.95). A bootstrap of Ĉ* − C*
   (`crsafety.coverage_interval`) reaches 0.896–0.950 on fresh datasets.
   Adopted as the primary interval (D-010). E01-R005, R007, R008.
+- The realized-coverage interval holds at small N: it covers C in
+  0.894–0.954 of replicates at N = 14–20 (fresh datasets; D-010 A condition
+  from Kushal's review met). E01-R010.
 - Per-cell coverage error is large at the item counts of real audits
   (N = 14–20): 80th percentile of |Ĉ − C| 0.06–0.14, although Ĉ is
   unbiased. Motivates the PH1 proposal in D-010. E01-R006.
