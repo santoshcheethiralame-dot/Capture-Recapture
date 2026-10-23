@@ -125,7 +125,8 @@ def histories(args):
                                                dead_checked=fc is not None)
             Ws.append(W[kept])
         cell = f"{a}_l0-{l}"
-        runs = [dict(catcher=f"{a} L0={l} (zoo seed {s})", seed=s, role="estimation", status="ok")
+        runs = [dict(catcher=f"{a} L0={l} (zoo seed {s})", seed=s, status="ok",
+                     role="reference" if args.reference_from is not None and s >= args.reference_from else "estimation")
                 for s in seeds]
         # oracle: one Hungarian per SAE, thresholded at each tau_gt
         S = [mt.abs_cos(W, T) for W in Ws]
@@ -163,6 +164,8 @@ def main():
     ap.add_argument("--zoo", default=ZOO_REPO)
     ap.add_argument("--out", required=True)
     ap.add_argument("--fire-counts", default=None, help="JSON of per-latent firing counts (dead-latent removal)")
+    ap.add_argument("--reference-from", type=int, default=None,
+                    help="seeds >= this are reference runs (E06: 16); default: all estimation (E02)")
     a = ap.parse_args()
     sys.exit(inventory(a) if a.step == "inventory" else histories(a))
 

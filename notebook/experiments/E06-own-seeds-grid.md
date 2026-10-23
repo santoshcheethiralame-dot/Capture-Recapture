@@ -129,6 +129,21 @@ reported.
 - R001 seeding check: passed as E06-R015 (R001 crashed while writing its
   manifest after the check had passed; recorded as a bug). Q-D13 resolved
   for the synthetic runner.
+- Training: `analysis/e06/train.py --cell <id> --out <dir>` (Kaggle GPU;
+  resumes, skipping seeds already trained; `--tiny` is a CPU smoke test).
+  Seeds 0–15 are evaluation seeds, 16–23 reference seeds. Histories:
+  `analysis/e02/zoo.py histories --reference-from 16` (seeds ≥ 16 get role
+  `reference`). Analysis (R014): `analysis/e06/analyse.py --root <dir>`.
+  End-to-end tiny CPU run (2 cells × 24 seeds, 256 features) passed on
+  2026-10-23; output not kept (smoke test, degenerate world, no numbers used).
+- **Inconsistency for the freeze:** H6e names Δ̂(16), but only 8 reference
+  seeds exist, so the observed number of new failure modes exists only for
+  m = 8. `analyse.py` uses Δ̂(8) against the features first found by the 8
+  reference seeds. Options: amend H6e to Δ̂(8) (proposed), or train 16
+  reference seeds (+88 SAEs). Listed in `docs/FREEZE-V1.md`.
+- Truth for C(K): `--truth reference` (π̃ from the 8 reference seeds only,
+  the D-011 proposal) is the default; `--truth pooled` gives the E02-style
+  reading over all 24 seeds. The choice is part of D-011 at the freeze.
 
 ## 3. Contingencies
 
