@@ -645,3 +645,59 @@ Santosh.
   met.
 - Recorded in E01 §5 and RESULTS. The analysis rerun only added R010's
   section and file.
+
+## 2026-10-23: Kushal: E09-R003 (Gemma Scope T3 tool) prepared for Kaggle
+
+**Did:**
+- Registered E09-R002 (implants, planned) and E09-R003 (tool check), owner
+  Kushal, so the IDs match E09 §2's planned-runs table.
+- E09-R003 labels step (sandbox): Neuronpedia's public S3 export for
+  `gemma-2-2b/12-gemmascope-res-16k` (the Neuronpedia id SAELens gives for
+  `layer_12/width_16k/canonical`) labels all 16,384 features, one method
+  (gpt-4o-mini, token-activation pairs). Written to
+  `results/E09/E09-R003/labels/` with sha256s. This answers the label half
+  of Q-D15; the loading half needs the Kaggle step.
+- `analysis/e09/gemma_scope_check.py`: checks C1–C5 with pass criteria
+  fixed before the run (load, hook alignment by L0/FVU, identity, non-empty
+  diff, prompt bank), timing for the E09 §3 contingency, and the share of
+  top features that sit on chat-template tokens. Smoke-tested end to end on
+  a tiny random Gemma-2 and a fake SAE (no numbers from it mean anything).
+  Runbook: new "Kushal's account" section, row K1.
+- Fixed in `crsafety.tools.gemma_scope.hf_resid`: in chat mode the Gemma
+  template already starts with `<bos>` and the tokenizer added a second one,
+  which `skip_first` would not drop (Gemma's BOS residual has outlier norm,
+  so it would dominate the top features). Test added. `from_hf` now loads
+  with eager attention (SDPA skips Gemma-2's logit soft-capping).
+
+**Open:** the "audited" model in R003 is Gemma-2-2B-it itself, since no
+organism exists before R002; the diff check only shows the tool returns
+something, not that it surfaces an implant. That is R004's job (pilot
+organisms). The SAE is trained on the pt model and applied to -it
+residuals; R003 reports FVU on both.
+
+## 2026-10-23: Kushal: E09-R003 result (Gemma Scope T3 tool check), Q-D15 answered
+
+Ran on Kaggle (Kushal's account, T4, 0.039 GPU-h; manifest git sha 1cf4e4c,
+clean tree). Outputs in `results/E09/E09-R003/`. All five pre-set checks
+passed (C1 load, C2 alignment, C3 identity, C4 non-empty diff, C5 bank);
+`all_pass` is true. Numbers: mean L0 79.2 on pt residuals (nominal 82),
+FVU 0.078 on pt, 0.101 on -it chat (the SAE fits -it well); FVU is lowest at
+layer 12 against 11 and 13, so the hook index is right; 0.34 s per uncached
+call (both models), 0.0003 s cached, so no speed contingency.
+
+**Found (descriptive, not a pre-set check):** the tool as built is nearly
+prompt-independent. 73% of top-10 features (mean over 20 prompts) peak on
+chat-template tokens, not on the user's text. The same four features
+(#4667, #11087, #1041, #1178) are in the top 5 for all 20 prompts, with
+activations of 100–360 against tens for text features, and the same ones top
+"most changed vs base" (the -it model's template tokens differ from pt's).
+An auditor using T3 would mostly see these constants. The checks passed
+because they test mechanics, not usefulness.
+
+**Proposal (not applied; tool is Santosh's, E09 §2 describes T3 only at the
+level of "top active features"):** take the per-feature maximum over the
+user's prompt tokens only, excluding all template tokens, and compare ft vs
+base on those tokens. Needs a code change in `crsafety.tools.gemma_scope`
+(token mask in `hf_resid`) and a repeat of R003's template-share check
+before freeze; E09-R004 (pilot organisms) is the real test of whether T3
+surfaces an implant. Raise with Santosh.

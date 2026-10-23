@@ -148,6 +148,8 @@ organisms are excluded.
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
 | E09-R001 | Synthetic data generation for 16 behaviours (14 + 2 pilot) | Kushal | planned |  |  | fa922b4+dirty |  |
+| E09-R002 | QLoRA implants + verification (16 organisms) | Kushal | planned |  |  | 365b884+dirty |  |
+| E09-R003 | Gemma Scope T3 tool on real Gemma-2-2B + Neuronpedia labels (tool check; Q-D15) | Kushal | succeeded | 2026-10-23 | 2026-10-23 | 365b884+dirty | C1-C5 all pass on a T4 (0.04 GPU-h): SAE loads (layer 12, 16384 feats, all labelled); L0 79 vs nominal 82, FVU 0.078 on pt, 0.101 on -it chat; 0.34 s/uncached call. BUT 73% of top-10 features peak on chat-template tokens and the same 4-5 features top all 20 prompts, so the T3 tool as built is nearly prompt-independent |
 <!-- runs:end -->
 
 ## 5. Results

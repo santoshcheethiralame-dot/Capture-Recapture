@@ -20,7 +20,6 @@ gate an experiment.
 | Q-D12 | LinuxArena source code location (only Docker Hub images `linuxarena/env-*` found) | E10 human-attack comparator (optional) | arXiv page of 2604.15384; ask the authors | open |
 | Q-D13 | Is `LanguageModelSAERunnerConfig.seed` really unused in the SAELens version we pin? | E06, E11 | R001 seeding check | **resolved for E06 (2026-10-22, E06-R015)**: `SyntheticSAERunnerConfig` (SAELens 6.54.12) has no seed field; manual `torch.manual_seed` before construction (init) and before training (data) controls both, exactly. E11's `LanguageModelSAERunnerConfig` still to check in E11-R001 |
 | Q-D14 | Which open models to pin: auditor and attacker (Qwen, 7–8B), L3 families (Llama, Gemma), target (Mistral), judge (Phi or OLMo), organism base (Gemma-2-2B-it). Do they all run on T4 (fp16 or AWQ)? | E08, E09, E10 | E08-R001 and E09 pilots | open |
-| Q-D15 | Is the Gemma Scope SAE set for Gemma-2-2B (residual, a mid layer) loadable on Kaggle, with feature labels usable offline? | E09 T3 | E09-R003 | open |
 
 ## Budget
 
@@ -71,3 +70,4 @@ From `research/README.md` §7:
 | Q-B1 | Budget is **$0** for now: open models, sandbox CPU, free Kaggle GPUs. Frontier replication only via E18 | D-007 | 2026-10-22 |
 | Q-B2 | GPU source: Kaggle, one account each (Santosh: SAE track; Kushal: LLM track) | D-007, `docs/TEAM.md` | 2026-10-22 |
 | R tooling | R 4.1.3 + Rcapture 1.4.4 + iNEXT 3.0.0 + breakaway 3.0 install in this sandbox via micromamba/conda-forge; CRAN-only packages are cloneable from `github.com/cran/<pkg>` | agent smoke test (`closedpCI.0`, Mh Chao) | 2026-10-22 |
+| Q-D15 | Yes. `gemma-scope-2b-pt-res-canonical` / `layer_12/width_16k/canonical` loads through SAELens 6.54.12 on a Kaggle T4 next to Gemma-2-2B and -it (bf16); hook layer 12, 16,384 features, all labelled offline from Neuronpedia's public S3 export; L0 79 (nominal 82), FVU 0.078 on pt and 0.101 on -it chat residuals; 0.34 s per uncached call, so the E09 §3 cache contingency is not needed for speed. Caveat: as built, the tool's output is nearly prompt-independent (see LOG 2026-10-23, E09-R003 result). | `results/E09/E09-R003/` | 2026-10-23 |

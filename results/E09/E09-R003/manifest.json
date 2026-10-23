@@ -1,0 +1,59 @@
+{
+  "run_id": "E09-R003",
+  "experiment": "E09",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "1cf4e4c",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e09/gemma_scope_check.py --out results/E09/E09-R003 --labels results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json --record",
+  "config": {
+    "release": "gemma-scope-2b-pt-res-canonical",
+    "sae_id": "layer_12/width_16k/canonical",
+    "it": "google/gemma-2-2b-it",
+    "pt": "google/gemma-2-2b",
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "n_prompts": 20,
+    "max_new": 20
+  },
+  "config_sha256": "966e7fcc9606433f30c53c802a082b8c9e78bb7981b42ed6ab24d622565726d6",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.15",
+  "package_versions": {
+    "numpy": "2.1.3",
+    "torch": "2.11.0+cu128",
+    "transformers": "5.16.1",
+    "sae-lens": "6.54.12",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json",
+      "sha256": "9f63fc6041ccf0463ac655bffc4988d06f524091fa786ae4c1633fed83adf419"
+    }
+  ],
+  "model_ids": [
+    "google/gemma-2-2b-it",
+    "google/gemma-2-2b",
+    "gemma-scope-2b-pt-res-canonical/layer_12/width_16k/canonical"
+  ],
+  "started_utc": "2026-10-23T17:18:19+00:00",
+  "finished_utc": "2026-10-23T17:20:40+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "summary.json",
+    "examples.txt",
+    "responses.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.039,
+    "api_usd": 0.0
+  }
+}

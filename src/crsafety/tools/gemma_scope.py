@@ -117,7 +117,9 @@ def hf_resid(model, tokenizer, layer, chat=False, device="cpu"):
     def f(prompt):
         text = tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=False,
                                              add_generation_prompt=True) if chat else prompt
-        ids = tokenizer(text, return_tensors="pt")["input_ids"].to(device)
+        # The chat template already starts with <bos>; adding special tokens again
+        # would give Gemma a second BOS (an outlier-norm token the tool would rank).
+        ids = tokenizer(text, return_tensors="pt", add_special_tokens=not chat)["input_ids"].to(device)
         out = model(input_ids=ids, output_hidden_states=True)
         return out.hidden_states[layer + 1][0].float().cpu().numpy()
     return f
@@ -143,7 +145,7 @@ def hook_layer(sae):
 
 
 def from_hf(ft_path, base_path, sae_release, sae_id, labels_path=None, bank_path=None, max_new=None,
-            device="cuda", dtype="bfloat16", chat=True):
+            device="cuda", dtype="bfloat16", chat=True, attn="eager"):
     """Build the T3 tool on Kaggle: both models, the Gemma Scope SAE and a label file."""
     import torch
     from sae_lens import SAE
@@ -151,8 +153,10 @@ def from_hf(ft_path, base_path, sae_release, sae_id, labels_path=None, bank_path
 
     dt = getattr(torch, dtype)
     tok = AutoTokenizer.from_pretrained(base_path)
-    ft = AutoModelForCausalLM.from_pretrained(ft_path, torch_dtype=dt).to(device).eval()
-    base = AutoModelForCausalLM.from_pretrained(base_path, torch_dtype=dt).to(device).eval()
+    # eager: Gemma-2's attention logit soft-capping is not applied by SDPA.
+    kw = dict(torch_dtype=dt, attn_implementation=attn)
+    ft = AutoModelForCausalLM.from_pretrained(ft_path, **kw).to(device).eval()
+    base = AutoModelForCausalLM.from_pretrained(base_path, **kw).to(device).eval()
     sae = SAE.from_pretrained(sae_release, sae_id, device=device)
     sae = sae[0] if isinstance(sae, tuple) else sae
     layer = hook_layer(sae)

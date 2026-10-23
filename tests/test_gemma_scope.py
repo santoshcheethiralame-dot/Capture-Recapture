@@ -68,7 +68,7 @@ def test_hf_resid_on_tiny_model():
     model = tr.GPT2LMHeadModel(cfg).eval()
 
     class Tok:
-        def __call__(self, text, return_tensors=None):
+        def __call__(self, text, return_tensors=None, add_special_tokens=True):
             return {"input_ids": torch.tensor([[1 + (ord(c) % 40) for c in text[:20]]])}
 
     f = gs.hf_resid(model, Tok(), layer=0)
@@ -89,3 +89,23 @@ def test_hook_layer():
         cfg = C()
 
     assert gs.hook_layer(S()) == 12
+
+
+def test_hf_resid_chat_adds_no_second_bos():
+    torch = pytest.importorskip("torch")
+    tr = pytest.importorskip("transformers")
+    cfg = tr.GPT2Config(n_layer=1, n_embd=8, n_head=2, vocab_size=50, n_positions=64)
+    model = tr.GPT2LMHeadModel(cfg).eval()
+
+    class ChatTok:
+        """Gemma-like: the template starts with <bos> (id 2) and so does tokenizing."""
+        def apply_chat_template(self, msgs, tokenize=False, add_generation_prompt=True):
+            return "<bos>" + msgs[0]["content"]
+
+        def __call__(self, text, return_tensors=None, add_special_tokens=True):
+            body = text[5:] if text.startswith("<bos>") else text
+            ids = ([2] if add_special_tokens else []) + ([2] if text.startswith("<bos>") else [])
+            return {"input_ids": torch.tensor([ids + [3 + (ord(c) % 40) for c in body]])}
+
+    assert gs.hf_resid(model, ChatTok(), layer=0, chat=True)("hi").shape[0] == 3   # <bos> h i
+    assert gs.hf_resid(model, ChatTok(), layer=0, chat=False)("hi").shape[0] == 3  # <bos> h i

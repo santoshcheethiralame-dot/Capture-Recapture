@@ -1,0 +1,81 @@
+{
+  "files": [
+    {
+      "name": "batch-0.jsonl.gz",
+      "sha256": "620fda0aff3203fc5e819bfb6aa4e9cb2554e03a1a3f9f3ecf38a0125c589c84"
+    },
+    {
+      "name": "batch-1.jsonl.gz",
+      "sha256": "872bdbdc85067036c3c6a0bf6baa948b4c367d20283caab53e3c7df2910587b1"
+    },
+    {
+      "name": "batch-2.jsonl.gz",
+      "sha256": "adc01e9ff48dc9df28c3d189859be99fff142357894bf16ce2e1263cc17408af"
+    },
+    {
+      "name": "batch-3.jsonl.gz",
+      "sha256": "45ab4a33ddd7faafc30029b256bab4537939adcdcb68cd78ddc3c0b55aec531f"
+    },
+    {
+      "name": "batch-4.jsonl.gz",
+      "sha256": "751cad36e42263034a9575e0f02c9f6ba4931d46613af829703a603349dd07f2"
+    },
+    {
+      "name": "batch-5.jsonl.gz",
+      "sha256": "3857a8cb7a6fcf2da368d05cc250c41c7e89e8fa9b6cb39635c9b560e37ce818"
+    },
+    {
+      "name": "batch-6.jsonl.gz",
+      "sha256": "204e5d33746aa157ef0e11fceb3a14b46dc6a0f67b47b1c5c2b355148d050730"
+    },
+    {
+      "name": "batch-7.jsonl.gz",
+      "sha256": "fb398df71f67a928d6251b2b3f45f5a22954a589cbcfda94be91025be62e596f"
+    },
+    {
+      "name": "batch-8.jsonl.gz",
+      "sha256": "06d89df619526524e460f2808d5c01e290fd9f016b3d6a0809ced052c268a514"
+    },
+    {
+      "name": "batch-9.jsonl.gz",
+      "sha256": "5dafa85b811535122894465f41b5bf3a02f610b5a24263eeb28288ce42a859a4"
+    },
+    {
+      "name": "batch-10.jsonl.gz",
+      "sha256": "7077287040a3f5859617e19fcc84017e7c12c798b5441831fda1ce074c654f50"
+    },
+    {
+      "name": "batch-11.jsonl.gz",
+      "sha256": "bf289fd3da317ab6607f8e7c9956d6662c2518864aadf39f2fd0506ddf5e2f6b"
+    },
+    {
+      "name": "batch-12.jsonl.gz",
+      "sha256": "1d897bc29ea038bc7ae7224018aa3f9ca819c5587da118a074ae4a95d872ee28"
+    },
+    {
+      "name": "batch-13.jsonl.gz",
+      "sha256": "8cf8cc015a46e7d5caf09e342cb337a2b2fbbe475110c48c635811643b660e59"
+    },
+    {
+      "name": "batch-14.jsonl.gz",
+      "sha256": "6eca5290457f10371b4e614bda0472773ebeb648cfdb2c942e93f49979084c10"
+    },
+    {
+      "name": "batch-15.jsonl.gz",
+      "sha256": "5886bb897259b1b87479f71e3beb155d515a9cca47497656d6a03d0ca265a3ba"
+    },
+    {
+      "name": "batch-16.jsonl.gz",
+      "sha256": "4b0d8d763a67aea846a6c7478bbb7463abe2fa2631c87acda067d9147bf50745"
+    }
+  ],
+  "n_rows": 16395,
+  "n_features_labelled": 16384,
+  "n_non_preferred": 0,
+  "missing": [],
+  "dedup_rule": "prefer typeName/explanationModelName == ('oai_token-act-pair', 'gpt-4o-mini'), else first in file order",
+  "source": "gemma-2-2b/12-gemmascope-res-16k",
+  "url": "https://neuronpedia-datasets.s3.amazonaws.com/index.html#v1/gemma-2-2b/12-gemmascope-res-16k/explanations/",
+  "labels_file": "gemma-2-2b__12-gemmascope-res-16k.json",
+  "labels_sha256": "9f63fc6041ccf0463ac655bffc4988d06f524091fa786ae4c1633fed83adf419"
+}
