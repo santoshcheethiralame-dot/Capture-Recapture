@@ -48,8 +48,11 @@ construction).
 - SAE arm: the default identity rule from E03.
 - Attack arm: the E10 judge-based identity pipeline (rubric labelling plus
   embedding clustering).
-- Estimators: the primary set, plus the Chiu-Chao corrected f1 and an f1-free
-  estimator (if validated in E00).
+- Estimators: the primary set, plus the E05 first-order singleton (ghost)
+  correction (b) with f̂ from labelled candidate pairs, and an f1-free
+  estimator (if validated in E00). The Chiu-Chao corrected f1 is unavailable
+  (D-009, Q-D10); text updated 2026-10-23, before the freeze, per Kushal's
+  review §1.2.
 
 ### Performance measures
 Number of clusters / N_true; Chao2 / N_true; Ĉ; share of distractors
@@ -61,7 +64,7 @@ absorbed into real clusters.
 |---|---|---|---|---|
 | H4a | The SAE identity rule does not invent items | mean clusters / N_true | ≤ 1.2 | > 1.5 |
 | H4b | The attack identity pipeline does not invent items | mean clusters / N_true | ≤ 1.2 | > 1.5 |
-| H4c | Singleton correction repairs residual splitting | Chao2 / N_true with correction | ≤ 1.5 when uncorrected > 2 | no improvement |
+| H4c | Singleton correction repairs residual splitting | Chao2 / N_true with correction | within 0.67–1.5 when uncorrected > 2 | no improvement, or outside 0.67–1.5 |
 
 ### Planned runs
 
@@ -125,6 +128,21 @@ Options for the freeze (no change is made here):
 3. fix the split geometry from E02 (cos of split children to the parent).
 
 Proposed: option 2, plus option 1's numbers as a secondary result.
+**Superseded 2026-10-23 by Kushal's review (§6), which I accept:**
+- Option 2 removes the failure E04 exists to test (one failure mode
+  reported as many). Choosing it after a failed pilot would move the
+  goalposts.
+- **Adopted for the freeze: option 3.** Split geometry and its recurrence
+  across seeds are estimated from E02: how often the same parent feature
+  splits the same way. The generator draws each feature's split once and
+  reuses it across runs with that recurrence probability. H4a may still
+  fail.
+- Option 1's numbers and R004's option-2 numbers stay as secondary results.
+- H4c is now two-sided (0.67–1.5), so the ghost correction's
+  over-correction (0.72–0.76 in R003/R004) is caught.
+- Exploratory finding worth a line in the paper: splitting makes coverage
+  conservative. Ĉ was 0.74–0.81 against a true 1 in R003, because splits
+  look like missing mass.
 
 **Pilot E04-R004 (declared, exploratory; keys 9200–9599; same placeholders
 as R003).** Each of the 1,200 replicates is scored both ways, at split
