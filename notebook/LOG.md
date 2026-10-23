@@ -437,3 +437,22 @@ Santosh.
 - Partly reconstructed features count as "missed" under the |cos| rule, so
   the residual cannot bound them.
 - Noted in E16 §2a as a decision to take before R002.
+
+## 2026-10-23 (later): H7 white-box tool
+
+Santosh.
+
+**Did:**
+- Built handoff H7 early (due 2026-12-15): `src/crsafety/tools/gemma_scope.py`.
+  - For a prompt, it returns the top SAE features (max over tokens, BOS
+    excluded) with labels, and the features most changed against the base
+    model, with their sign.
+  - `PromptBank` caches activations and caps new prompts per run (E09 §3
+    contingency). `from_hf` loads a model pair plus a Gemma Scope SAE.
+  - Tests: `tests/test_gemma_scope.py`, with fake models and a tiny random
+    GPT-2.
+- Not checked here: the real Gemma-2-2B and Gemma Scope weights (HF is
+  blocked).
+- E09-R003 ("tool built and unit-tested") is on Kushal's page, so I have
+  not registered it. Kushal, please register and run it on Kaggle with
+  real weights and the Neuronpedia label export.
