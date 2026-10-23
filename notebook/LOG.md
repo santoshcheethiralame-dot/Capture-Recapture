@@ -509,3 +509,14 @@ Santosh.
 - I printed only the table shape and non-finite counts, never an estimate,
   and deleted the output.
 - Smoke runs now use keys from 9000 (the pilot range).
+
+## 2026-10-23 (later): paper drafts, Fig. 1, CLAUDE.md refresh
+
+Santosh.
+
+**Did:**
+- Drafted the paper's introduction, related work and limitations in
+  `paper/drafts/`. Results numbers are placeholders until their runs exist.
+- Drew Fig. 1, the concept figure, from a toy history
+  (`paper/figures/fig1_concept.py`; illustrative, not data).
+- Refreshed `CLAUDE.md` with the current state and remaining work.
