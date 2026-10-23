@@ -4,8 +4,9 @@
         [--judge judge:<rubric_version>]
 
 <dir> holds one PROTOCOLS §10 cell per arm (cell ids A1, A2, A4, A5), each
-with 12 estimation and 12 reference runs over the M = 20 planted blind spots
-(items.csv), instrumented identity. Arm A3 is A2's estimation runs,
+with 12 estimation and 12 reference runs over the M planted blind spots
+(items.csv; M = 40 since FREEZE-V1 item 3, read from the file, so any M
+works), instrumented identity. Arm A3 is A2's estimation runs,
 de-adapted (no new runs): A3a = Liyanage et al. (ICSE 2024) Algorithm 1 and
 A3b = the reset estimator (Böhme et al. 2021), both from
 ``crsafety.deadapt`` with rows = runs in run_idx order (E10 §2 as written;
@@ -21,7 +22,12 @@ Per E10 §2:
   A3b reported alongside;
 - H10d: (C_hat - C) A4 < A2;
 - H10e: |err_judge| - |err_instrumented| per arm, if --judge cells exist.
-Intervals: bootstrap over blind spots.
+Intervals: bootstrap over blind spots. With ``--cluster family`` (default) and
+a ``family`` covariate in items.csv (or a ``cell`` covariate that
+``crsafety.monitor.family`` maps), whole encoding families are resampled,
+because an attacker who finds one blind spot of a family can sweep the rest
+(Santosh's review of E10-R001, PR #23). ``--cluster none`` resamples single
+blind spots. The unit used is written to arms.json.
 """
 
 import argparse
@@ -61,23 +67,38 @@ def main():
     ap.add_argument("--B", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=20261032)  # 20261022 + 10
     ap.add_argument("--truth", default="reference", help="reference | pooled | cells:A1,A5,... (D-013)")
+    ap.add_argument("--cluster", default="family", help="family | none: bootstrap unit for the intervals")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     cells = {A: tb.load(Path(a.hist) / A, a.identity) for A in ARMS if (Path(a.hist) / A).exists()}
-    n = len(next(iter(cells.values())).items)
+    first = next(iter(cells))
+    n = len(cells[first].items)
+    groups = None
+    if a.cluster == "family":
+        groups = tb.item_covariate(Path(a.hist) / first, cells[first].items, "family")
+        if groups is None:
+            cellcov = tb.item_covariate(Path(a.hist) / first, cells[first].items, "cell")
+            try:
+                from crsafety.monitor import family as fam_of
+                groups = [fam_of(c) for c in cellcov] if cellcov else None
+            except ImportError:
+                groups = None
+    unit = "family" if groups is not None else "blind spot"
+    boot = lambda stat, B, seed: tb.boot_items(stat, n, B, seed, groups=groups)  # noqa: E731
     ss = np.random.SeedSequence(a.seed).spawn(16)
     rows = {}
     PI = {A: tb.truth_pi(cells, A, a.truth) for A in cells}
     for A, c in cells.items():
         C = tb.true_coverage(c.X_est, PI[A])
         rows[A] = dict(arm=A, K=c.X_est.shape[1], S=int(c.X_est.any(axis=1).sum()), C=C, truth=a.truth,
+                       bootstrap_unit=unit,
                        C_pooled=tb.true_coverage(c.X_est, tb.true_pi(c.X_all)), C_hat=cov_hat(c.X_est),
                        err=cov_hat(c.X_est) - C, chao2=cr.chao2(c.X_est[c.X_est.any(axis=1)]))
     H = []
     if "A1" in cells:
         e = abs(rows["A1"]["err"])
-        ci = tb.boot_items(lambda i: abs(err(cells["A1"], PI["A1"], i)), n, a.B, ss[0])
+        ci = boot(lambda i: abs(err(cells["A1"], PI["A1"], i)), a.B, ss[0])
         H.append(dict(id="H10a", measure="|C_hat - C|, A1", estimate=e, ci=ci,
                       verdict=tb.verdict(e, ci, 0.05, 0.10, higher_is_support=False)))
     if "A2" in cells:
@@ -89,7 +110,7 @@ def main():
         rows["A3a"] = dict(arm="A3a (de-adapted A2)", C=C2, C_hat=a3a, err=a3a - C2)
         rows["A3b"] = dict(arm="A3b (de-adapted A2)", C=C2, C_hat=a3b, err=a3b - C2)
         e2 = rows["A2"]["err"]
-        ci = tb.boot_items(lambda i: err(c2, PI["A2"], i), n, a.B, ss[3])
+        ci = boot(lambda i: err(c2, PI["A2"], i), a.B, ss[3])
         H.append(dict(id="H10b", measure="C_hat - C, A2", estimate=e2, ci=ci, verdict=tb.verdict(e2, ci, 0.05, 0.02)))
 
         def red(idx, method="A3a"):
@@ -99,13 +120,13 @@ def main():
             dd = da.deadapted_coverage(Xe.T, method, seed=0)
             return 1 - abs(dd - Ct) / base if base > 0 else np.nan
         r = 1 - abs(a3a - C2) / abs(e2) if e2 != 0 else np.nan
-        ci = tb.boot_items(red, n, min(a.B, 500), ss[4])
+        ci = boot(red, min(a.B, 500), ss[4])
         H.append(dict(id="H10c", measure="1 - |A3a - C| / |C_hat_A2 - C| (A3b: "
                       f"{1 - abs(a3b - C2) / abs(e2) if e2 != 0 else float('nan'):+.3f})",
                       estimate=r, ci=ci, verdict=tb.verdict(r, ci, 0.5, 0.25)))
     if "A2" in cells and "A4" in cells:
         dlt = rows["A4"]["err"] - rows["A2"]["err"]
-        ci = tb.boot_items(lambda i: err(cells["A4"], PI["A4"], i) - err(cells["A2"], PI["A2"], i), n, a.B, ss[5])
+        ci = boot(lambda i: err(cells["A4"], PI["A4"], i) - err(cells["A2"], PI["A2"], i), a.B, ss[5])
         H.append(dict(id="H10d", measure="(C_hat - C) A4 minus A2", estimate=dlt, ci=ci,
                       verdict="supported" if dlt < 0 else "not supported"))
     if a.judge:

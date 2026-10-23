@@ -119,3 +119,30 @@ def test_scripts_accept_catcher_agnostic_truth(tmp_path):
         "--truth", "cells:A1,A5")
     arms = json.loads((tmp_path / "o10" / "arms.json").read_text())
     assert arms["A2"]["truth"] == "cells:A1,A5"
+
+
+def test_cluster_bootstrap_resamples_whole_groups():
+    seen = []
+    tb.boot_items(lambda idx: seen.append(np.sort(idx)) or 0.0, 6, B=50, seed=1, groups=[0, 0, 0, 1, 1, 2])
+    for idx in seen:
+        # every resample is a union of whole groups: items 0-2 come together, 3-4 together
+        for g in ([0, 1, 2], [3, 4]):
+            counts = [np.sum(idx == j) for j in g]
+            assert len(set(counts)) == 1
+
+
+def test_e10_cluster_by_family(tmp_path):
+    rng = np.random.default_rng(8)
+    for A in ("A1", "A2"):
+        d = tmp_path / "e10" / A
+        p = rng.uniform(0.05, 0.5, 12)
+        X = (rng.random((12, 24)) < p[:, None]).astype(int)
+        runs = [dict(catcher="m", seed=j, role="estimation" if j < 12 else "reference", status="ok") for j in range(24)]
+        ids = [f"b{i}" for i in range(12)]
+        items = {i: dict(planted=True, covariates=dict(family=["caesar", "hex", "b64"][k % 3])) for k, i in enumerate(ids)}
+        write_cell(d, A, X, ids, "instrumented", runs=runs, items=items)
+    run("analysis/e10/analyse.py", "--hist", str(tmp_path / "e10"), "--out", str(tmp_path / "o"), "--B", "50")
+    assert json.loads((tmp_path / "o" / "arms.json").read_text())["A1"]["bootstrap_unit"] == "family"
+    run("analysis/e10/analyse.py", "--hist", str(tmp_path / "e10"), "--out", str(tmp_path / "o2"), "--B", "50",
+        "--cluster", "none")
+    assert json.loads((tmp_path / "o2" / "arms.json").read_text())["A1"]["bootstrap_unit"] == "blind spot"
