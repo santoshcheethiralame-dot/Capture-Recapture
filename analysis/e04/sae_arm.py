@@ -79,15 +79,24 @@ class Noise:
         return np.sqrt(np.clip(rho, 0, 1))
 
 
-def emit(T, feats, rng, noise, p_split=P_SPLIT, p_absorb=P_ABSORB, split_r=SPLIT_R):
-    """One run: (directions, true feature per latent, variant per latent)."""
+def emit(T, feats, rng, noise, p_split=P_SPLIT, p_absorb=P_ABSORB, split_r=SPLIT_R, recurrence=0.0, geom=None):
+    """One run: (directions, true feature per latent, variant per latent).
+
+    Option 3 (E04 §2a, Kushal's review): ``geom`` holds one split geometry
+    (lambda, r) per feature, drawn once per replicate; a split reuses it with
+    probability ``recurrence`` (estimated from E02: how often the same parent
+    splits the same way across seeds) and draws a fresh one otherwise.
+    ``recurrence = 0`` is the generator as originally written."""
     others = np.setdiff1d(np.arange(T.shape[0]), feats)
     dirs, lab, kind = [], [], []
     for f in feats:
         t = T[f]
         u = rng.random()
         if u < p_split:
-            lam, r = rng.uniform(0.3, 0.7), split_r * orth_unit(t, rng)
+            if geom is not None and int(f) in geom and rng.random() < recurrence:
+                lam, r = geom[int(f)]
+            else:
+                lam, r = rng.uniform(0.3, 0.7), split_r * orth_unit(t, rng)
             parts, k = [lam * t + r, (1 - lam) * t - r], "split"
         elif u < p_split + p_absorb and others.size:
             parts, k = [t + rng.uniform(0.3, 1.0) * T[rng.choice(others)]], "absorbed"
@@ -143,9 +152,11 @@ def cluster(dirs, tau):
     return X, labels, float(tau)
 
 
-def replicate(T, n_true, rng, noise, tau, n_v, **variants):
+def replicate(T, n_true, rng, noise, tau, n_v, recurrence=0.0, **variants):
     feats = rng.choice(T.shape[0], n_true, replace=False)
-    runs = [emit(T, feats, rng, noise, **variants) for _ in range(K)]
+    sr = variants.get("split_r", SPLIT_R)
+    geom = {int(f): (rng.uniform(0.3, 0.7), sr * orth_unit(T[f], rng)) for f in feats} if recurrence > 0 else None
+    runs = [emit(T, feats, rng, noise, recurrence=recurrence, geom=geom, **variants) for _ in range(K)]
     dirs = [r[0] for r in runs]
     X, cl, tau_used = cluster(dirs, tau)
     out = dict(n_true=n_true, n_latents=int(sum(d.shape[0] for d in dirs)),
@@ -246,6 +257,8 @@ def main():
     ap.add_argument("--p-split", type=float, default=P_SPLIT)
     ap.add_argument("--p-absorb", type=float, default=P_ABSORB)
     ap.add_argument("--split-r", type=float, default=SPLIT_R)
+    ap.add_argument("--split-recurrence", type=float, default=0.0,
+                    help="option 3: probability a split reuses the feature's geometry (from E02)")
     ap.add_argument("--pilot", action="store_true", help="spawn keys from 9000 (declared pilot)")
     ap.add_argument("--key-offset", type=int, default=None, help="pilot replicate key offset (default 9000)")
     ap.add_argument("--record", action="store_true")
@@ -265,7 +278,7 @@ def main():
             off = (a.key_offset if a.key_offset is not None else 9000) if a.pilot else 0
             ss = np.random.SeedSequence(MASTER, spawn_key=(li, j + off))
             r = replicate(T, n, np.random.default_rng(ss), noise, a.tau, a.n_v,
-                          p_split=a.p_split, p_absorb=a.p_absorb, split_r=a.split_r)
+                          p_split=a.p_split, p_absorb=a.p_absorb, split_r=a.split_r, recurrence=a.split_recurrence)
             r.update(level=li, rep=j, seed_spawn_key=[li, j + off])
             rows.append(r)
         print(f"N_true = {n} done", flush=True)
@@ -275,7 +288,7 @@ def main():
             f.write(json.dumps(r, default=float) + "\n")
     (out / "summary.json").write_text(json.dumps(dict(levels=lev, hypotheses=H, pilot=a.pilot), indent=2, default=float) + "\n")
     L = ["# E04 SAE arm" + (" (PILOT)" if a.pilot else ""), "", f"K = {K}, {a.reps} replicates per level, tau = {a.tau}, p_split = {a.p_split}, "
-         f"p_absorb = {a.p_absorb}, |r| = {a.split_r}.", "",
+         f"p_absorb = {a.p_absorb}, |r| = {a.split_r}, split recurrence = {a.split_recurrence}.", "",
          "| N_true | clusters / N_true | without splits | Chao2 / N_true | corrected (f̂) | corrected (oracle f) | Ĉ | f̂ | f oracle | Chao2 inf |",
          "|---|---|---|---|---|---|---|---|---|---|"]
     for n, v in lev.items():
