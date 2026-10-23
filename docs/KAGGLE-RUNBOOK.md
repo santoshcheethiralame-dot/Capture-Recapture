@@ -109,8 +109,9 @@ pip install -q -e . "sae-lens==6.54.12" safetensors huggingface_hub
 |---|---|---|---|---|
 | K1 | E09-R003 Gemma Scope T3 tool check (Q-D15) | pre-freeze OK (checks only) | `python analysis/e09/gemma_scope_check.py --out results/E09/E09-R003 --labels results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json --record` (add `--it <path> --pt <path>` for the Kaggle Models route) | < 0.3 |
 | K2 | E09-R009 T3 tool re-check, user-token rule | pre-freeze OK (checks only) | `python analysis/e09/gemma_scope_check.py --run-id E09-R009 --out results/E09/E09-R009 --labels results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json --record` | < 0.3 |
+| K3 | E09-R010 T3 background blocklist | pre-freeze OK (tool input) | `python analysis/e09/background_blocklist.py --out results/E09/E09-R010 --labels results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json --record` | < 0.2 |
 
-K1 and K2 need a GPU (T4 or P100; it loads two 2B models in bf16, about 11 GB).
+K1–K3 need a GPU (T4 or P100; it loads two 2B models in bf16, about 11 GB).
 The label file was built in the sandbox from Neuronpedia's public S3 export
 (`analysis/e09/neuronpedia_labels.py`; source and sha256 in
 `results/E09/E09-R003/labels/SOURCE.json`), so no Neuronpedia access is

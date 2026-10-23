@@ -154,3 +154,16 @@ def test_mode_separates_bank_entries():
     assert a.top_features("x")[0]["activation"] == 1.0
     assert b.top_features("x")[0]["activation"] == 2.0
 
+
+def test_background_blocklist_and_filter():
+    # Feature 0 fires on every prompt; feature 1 only on "b"; 2 only on "c".
+    acts = {"a": [5, 0, 0], "b": [5, 3, 0], "c": [5, 0, 4], "d": [5, 0, 0]}
+    resid = lambda p: np.array([acts[p]], float)
+    block, counts = gs.background_blocklist(resid, lambda X: X, list("abcd"), k=1, cutoff=0.5)
+    assert block == [0] and counts.tolist() == [4, 0, 0]
+    tool = gs.WhiteBoxTool(resid, resid, lambda X: X, skip_first=False, blocklist=block)
+    assert [r["feature"] for r in tool.top_features("c", k=2)] == [2]   # 0 hidden, 1 inactive
+    assert tool.diff_features("c") == []                                # diff list is unfiltered (and 0 here)
+    plain = gs.WhiteBoxTool(resid, resid, lambda X: X, skip_first=False)
+    assert plain.top_features("c", k=1)[0]["feature"] == 0
+

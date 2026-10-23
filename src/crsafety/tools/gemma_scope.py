@@ -63,8 +63,11 @@ class PromptBank:
 
 
 class WhiteBoxTool:
-    def __init__(self, resid_ft, resid_base, encode, labels=None, bank=None, skip_first=True, mode=""):
+    def __init__(self, resid_ft, resid_base, encode, labels=None, bank=None, skip_first=True, mode="",
+                 blocklist=None):
         self.resid = {"ft": resid_ft, "base": resid_base}
+        # Background features (see background_blocklist): never shown in top_features.
+        self.blocklist = {int(f) for f in (blocklist or ())}
         self.mode = mode  # part of the bank key, so banks built under another token rule are not reused
         self.encode = encode
         self.labels = {int(k): v for k, v in (labels or {}).items()}
@@ -85,7 +88,8 @@ class WhiteBoxTool:
 
     def top_features(self, prompt, k=10):
         a = self._max_acts("ft", prompt)
-        idx = [i for i in np.argsort(-a)[:k] if a[i] > 0]
+        idx = [i for i in np.argsort(-a) if int(i) not in self.blocklist][:k]
+        idx = [i for i in idx if a[i] > 0]
         return [self._row(i, activation=a[i]) for i in idx]
 
     def diff_features(self, prompt, k=10):
@@ -121,6 +125,24 @@ def _user_span(tokenizer, prompt):
     i = probe.index(sentinel)
     text = render(prompt)
     return text, i, len(text) - (len(probe) - i - len(sentinel))
+
+
+def background_blocklist(resid, encode, prompts, k=10, cutoff=0.5, skip_first=False):
+    """Features in the top ``k`` (by max activation over the prompt's rows) of
+    more than ``cutoff`` of ``prompts``: "always on" features that carry no
+    information about a prompt (E09 §2, T3; decided before E09-R004).
+    Returns (sorted blocklist, per-feature top-k counts)."""
+    counts = None
+    for p in prompts:
+        R = np.asarray(resid(p))
+        if skip_first and R.shape[0] > 1:
+            R = R[1:]
+        a = np.asarray(encode(R)).max(axis=0)
+        counts = np.zeros(a.shape[0], int) if counts is None else counts
+        top = [i for i in np.argsort(-a)[:k] if a[i] > 0]
+        counts[top] += 1
+    block = sorted(int(i) for i in np.flatnonzero(counts > cutoff * len(prompts)))
+    return block, counts
 
 
 def hf_resid(model, tokenizer, layer, chat=False, device="cpu", user_only=False):
@@ -175,9 +197,10 @@ def hook_layer(sae):
 
 
 def from_hf(ft_path, base_path, sae_release, sae_id, labels_path=None, bank_path=None, max_new=None,
-            device="cuda", dtype="bfloat16", chat=True, attn="eager", user_only=True):
+            device="cuda", dtype="bfloat16", chat=True, attn="eager", user_only=True, blocklist_path=None):
     """Build the T3 tool on Kaggle: both models, the Gemma Scope SAE and a label file.
-    ``user_only`` (default) ranks features on the user's tokens only; see :func:`hf_resid`."""
+    ``user_only`` (default) ranks features on the user's tokens only; see :func:`hf_resid`.
+    ``blocklist_path``: JSON with a "features" list (E09-R010), hidden from top_features."""
     import torch
     from sae_lens import SAE
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -192,7 +215,8 @@ def from_hf(ft_path, base_path, sae_release, sae_id, labels_path=None, bank_path
     sae = sae[0] if isinstance(sae, tuple) else sae
     layer = hook_layer(sae)
     labels = json.loads(Path(labels_path).read_text()) if labels_path else None
+    block = json.loads(Path(blocklist_path).read_text())["features"] if blocklist_path else None
     u = chat and user_only
     return WhiteBoxTool(hf_resid(ft, tok, layer, chat, device, u), hf_resid(base, tok, layer, chat, device, u),
                         sae_encoder(sae, device), labels, PromptBank(bank_path, max_new),
-                        skip_first=not u, mode="user" if u else "")
+                        skip_first=not u, mode="user" if u else "", blocklist=block)
