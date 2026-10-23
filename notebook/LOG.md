@@ -546,6 +546,29 @@ Santosh.
   advance.
 - The previews are stamped as simulated and are not committed.
 
+## 2026-10-23: four-eyes review of E00, E01, D-010A, D-011, D-012, E04
+
+Kushal.
+
+**Did:**
+- Reviewed E00 R001–R004 with D-008/D-009, E01 R001–R009 with D-010 part A,
+  the proposals D-011 and D-012, and E04 §2a with pilot R003. Full comments:
+  `notebook/reviews/2026-10-23-kushal-four-eyes.md`.
+- Re-ran `pytest` (695 passed, 4 skipped without R) and
+  `analysis/e01/analyse.py` (reproduces `results/E01/analysis/` exactly).
+
+**Found:**
+- `crsafety.testbed.true_pi` uses estimation + reference runs, so the
+  E08–E10 truth carries the D-011 bias (about +0.03 for E10, +0.05 for E08
+  in a back-of-envelope simulation, not a registered run). E10 §2 says
+  reference runs only.
+- With per-catcher truth and independent sessions, H10b and PH4 are close
+  to null by construction. A catcher-agnostic truth is proposed as
+  co-primary (E08/E10 pages, to follow).
+
+**Next:** Santosh's replies in the PR; E08/E10 truth proposal; positions
+on freeze items 2 and 8.
+
 ## 2026-10-23 (later): pilots for open freeze items (E04-R004, E15-R005, E16-R003)
 
 Santosh.
