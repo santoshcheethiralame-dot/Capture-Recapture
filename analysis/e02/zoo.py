@@ -120,6 +120,27 @@ def latent_covariates(W, kept, fire_counts=None, act_sums=None, n_samples=None):
     return out
 
 
+def true_match_cosines(Ws, assign, tau_gt=0.7):
+    """|cos| between the latents of every pair of seeds that the oracle assigns
+    to the same true feature (both at |cos| >= tau_gt): E04's noise model."""
+    lat = []
+    for r, c, s in assign:
+        m = {}
+        for lt, ft in zip(r[s >= tau_gt], c[s >= tau_gt]):
+            m[int(ft)] = int(lt)
+        lat.append(m)
+    U = [mt.unit_rows(W) for W in Ws]
+    out = []
+    for a in range(len(Ws)):
+        for b in range(a + 1, len(Ws)):
+            common = sorted(set(lat[a]) & set(lat[b]))
+            if common:
+                A = U[a][[lat[a][f] for f in common]]
+                B = U[b][[lat[b][f] for f in common]]
+                out.append(np.abs(np.sum(A * B, axis=1)))
+    return np.concatenate(out) if out else np.empty(0)
+
+
 def histories(args):
     world_dir, zoo_dir = local_dir(args.world), local_dir(args.zoo)
     T, p, _ = load_world(world_dir)
@@ -127,7 +148,7 @@ def histories(args):
     raw = json.loads(Path(args.fire_counts).read_text()) if args.fire_counts else {}
     fires = raw.get("counts", raw)  # fire_counts.py nests them under "counts"
     act_sums, n_samples = raw.get("act_sums", {}), raw.get("samples")
-    pre = {}
+    pre, noise = {}, {}
     out = Path(args.out) / "histories"
     cells = sorted({(a, l) for a, l, _ in idx})
     problems = 0
@@ -153,6 +174,7 @@ def histories(args):
             from scipy.optimize import linear_sum_assignment
             r, c = linear_sum_assignment(-Si)
             assign.append((r, c, Si[r, c]))
+        noise[cell] = true_match_cosines(Ws, assign)
         for tg in TAU_GT:
             X = np.zeros((T.shape[0], len(Ws)), np.int8)
             for k, (r, c, s) in enumerate(assign):
@@ -173,6 +195,13 @@ def histories(args):
             problems += bool(check_cell(d))
         print(cell, "done", flush=True)
     (Path(args.out) / "preprocessing.json").write_text(json.dumps(pre, indent=1) + "\n")
+    pooled = np.concatenate([v for v in noise.values()]) if noise else np.empty(0)
+    q = np.linspace(0, 1, 1001)
+    (Path(args.out) / "true_match_cosines.json").write_text(json.dumps(dict(
+        note="|cos| between latents of two seeds assigned to the same true feature at |cos| >= 0.7 (E04 noise model)",
+        quantiles=q.tolist(), pooled=np.quantile(pooled, q).tolist() if pooled.size else [], n_pooled=int(pooled.size),
+        cells={c: dict(n=int(v.size), quantiles=np.quantile(v, q[::10]).tolist() if v.size else []) for c, v in noise.items()},
+    )) + "\n")
     if not fires:
         print("WARNING: no --fire-counts given: dead latents were not removed (E02 §2 asks for it)")
     print(f"{len(cells)} cells written to {out}; cells failing check_cell: {problems}")
