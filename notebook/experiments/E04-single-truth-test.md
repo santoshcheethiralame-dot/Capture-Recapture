@@ -84,6 +84,48 @@ judge) are counted and excluded from the "real" set. The exclusion rate is
 reported.
 <!-- prereg:end -->
 
+## 2a. Implementation notes (2026-10-23; SAE arm, before any confirmatory run)
+
+Code: `analysis/e04/sae_arm.py`, tests `tests/test_e04.py`. §2 leaves these
+open; they are fixed here and go to the joint freeze (`docs/FREEZE-V1.md`).
+- **Noise.** `zoo.py histories` writes `true_match_cosines.json`: |cos|
+  between latents of two seeds that the oracle assigns to the same true
+  feature (both ≥ 0.7), pooled over cells as 1,001 quantiles. Each emitted
+  latent is rotated to |cos| = √ρ from its intended direction, with ρ drawn
+  from that distribution. Two plain copies then have cross-seed |cos| ≈ ρ.
+- **Split variant** (probability 0.2 per feature and run): the pieces are
+  λt + r and (1 − λ)t − r, with λ ~ U(0.3, 0.7), r ⊥ t and |r| = 0.5. They
+  sum to t; at λ = 0.5 each piece has |cos| 0.71 to t.
+- **Absorbed variant** (probability 0.1): t + γ t_j, with γ ~ U(0.3, 1) and
+  t_j a random world feature outside the N_true set.
+- **Identity rule.** `--tau` takes the E03 winner (a fixed threshold, or
+  `plateau`). It is unknown until E03, so R001 waits for it.
+- **Singleton correction (H4c).** Chiu-Chao is dropped (D-009, Q-D10), so
+  the correction is E05's first-order count correction (b). f̂ comes from
+  ≤ 200 labelled candidate pairs: each latent's nearest latent in every
+  other run, stratified over |cos| bins. The oracle-f correction is also
+  reported.
+- Seeds: `SeedSequence(20261026, spawn_key=(level, replicate))`; pilots use
+  replicate keys from 9000.
+
+**Pilot E04-R003 (declared; random directions, d = 768, fixed ρ = 0.9,
+τ = 0.7 placeholder).** Under the generator as written, clusters / N_true is
+3.4–3.6 at every level. From a regression on the stored replicates, each
+split adds about 1.5 clusters and each absorbed variant about 0.2. Neither
+piece of a split is close enough to t for a one-to-one matcher, so split
+pieces become their own items. H4a therefore cannot be supported by any
+one-to-one identity rule at these settings: as written, it tests the
+generator's split geometry more than the rule. The ghost correction brings
+Chao2 / N_true from 6–32 down to 0.72–0.75. It over-corrects because splits
+add detections, which the correction assumes are conserved.
+Options for the freeze (no change is made here):
+1. keep §2 as written and report H4a as a lower bound on splitting;
+2. score H4a only on plain and absorbed latents, reporting splits separately
+   (they are real SAE behaviour);
+3. fix the split geometry from E02 (cos of split children to the parent).
+
+Proposed: option 2, plus option 1's numbers as a secondary result.
+
 ## 3. Contingencies
 
 | If this happens | Then | Deviation? |
@@ -94,7 +136,11 @@ reported.
 ## 4. Runs
 
 <!-- runs:start -->
-_No runs yet._
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E04-R001 | SAE arm, N_true in {1,3,10}, 200 replicates (confirmatory; after freeze, E02 noise, E03 rule) | Santosh | planned |  |  | 96bfa69 |  |
+| E04-R002 | Attack arm, N_true in {1,3,10}, 20 replicates (Kaggle LLM) | Kushal | planned |  |  | 96bfa69+dirty |  |
+| E04-R003 | Pilot (declared, separate seeds): SAE-arm mechanics, random directions d=768, fixed noise rho=0.9 | Santosh | succeeded | 2026-10-23 | 2026-10-23 | 96bfa69+dirty | Pilot, 600 replicates, 17 s: under the pre-registered generator clusters / N_true = 3.4-3.6 at every N_true (regression on counts: each split adds ~1.5 clusters, each absorbed variant ~0.2; impure clusters 0); Chao2 / N_true 6-32, ghost-corrected 0.72-0.75; C_hat 0.74-0.81 vs truth 1 |
 <!-- runs:end -->
 
 ## 5. Results

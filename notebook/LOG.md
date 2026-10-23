@@ -388,3 +388,24 @@ Santosh.
 - Both are added to the freeze packet (items 11, 12).
 
 **Next:** E04 SAE arm, E01 figures, E16 novelty check.
+
+## 2026-10-23 (later): E04 SAE arm and pilot R003
+
+Santosh.
+
+**Did:**
+- Wrote the E04 SAE arm (`analysis/e04/sae_arm.py`) and its tests.
+  `zoo.py` now saves the cross-seed cosine distribution of true matches,
+  which is E04's noise model.
+- Registered R001 (confirmatory, planned) and R002 (Kushal's attack arm,
+  planned). Ran the declared pilot R003: random directions and fixed noise,
+  spawn keys 9000+.
+
+**Saw:**
+- As written, split variants make H4a fail for any one-to-one identity rule
+  (clusters / N_true 3.5).
+- The ghost correction over-corrects to 0.73 because splits add detections.
+- Freeze item 13 proposes scoring H4a without splits and reporting them
+  separately.
+
+**Next:** E01 figures, E16 novelty check, CLAUDE.md refresh.
