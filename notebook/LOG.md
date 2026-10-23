@@ -802,6 +802,16 @@ smoke-tested on the stand-in models. E09 §2 T3 wording updated. Registered
 E09-R010 (runbook K3). The 20 check prompts are reported with and without
 the blocklist, as a description only.
 
+## 2026-10-23: Kushal: positions on freeze items 1, 2, 3, 8, 10
+
+Completed the positions left open in the four-eyes review:
+`notebook/reviews/2026-10-23-kushal-freeze-positions.md`. Item 1 defers to
+item 17; item 2 restricts PH2's interval half to N ≥ 500; item 3 keeps the
+thresholds and proposes E10 M = 40 and E08's second target (quota
+permitting) for power; item 8 is 30 days, extendable to 90; item 10 is A
+plus C against the catcher-agnostic truth. E08/E10 to freeze after their
+pilots.
+
 ## 2026-10-23 (later): review of Kushal's PRs #12–#16 and D-014
 
 Santosh.
