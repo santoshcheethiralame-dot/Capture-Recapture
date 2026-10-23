@@ -1,8 +1,11 @@
-"""E09-R003: the T3 Gemma Scope tool on the real models (Kaggle GPU; Q-D15).
+"""E09-R003 / E09-R009: the T3 Gemma Scope tool on the real models (Kaggle GPU; Q-D15).
 
-    python analysis/e09/gemma_scope_check.py --out /kaggle/working/E09-R003 \
-        --it google/gemma-2-2b-it --pt google/gemma-2-2b \
-        --labels results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json
+    python analysis/e09/gemma_scope_check.py --run-id E09-R009 --out results/E09/E09-R009 \
+        --labels results/E09/E09-R003/labels/gemma-2-2b__12-gemmascope-res-16k.json --record
+
+``--tokens user`` (default, the tool's default since E09-R009) ranks features
+on the user's own tokens only; ``--tokens all`` is the rule E09-R003 ran
+(every token but the first, chat template included).
 
 ``--it`` / ``--pt`` take a Hugging Face id or a local path (e.g. the Kaggle
 Models copy under /kaggle/input/gemma-2/transformers/...). The E09 organisms
@@ -27,10 +30,16 @@ C5 bank: a run with ``max_new = 20`` raises BudgetExceeded on new prompt 21;
    nondeterminism).
 C6 timing (descriptive): seconds per uncached call (both models) and per
    cached call. E09 §3's contingency applies if uncached > 5 s on a T4.
+C7 prompt specificity (added for E09-R009, fixed before that run; E09-R003's
+   responses gave 0.50 / 0.83 and features in the top 5 of all 20 prompts):
+   for both the top-features list and the most-changed list, the mean
+   pairwise Jaccard overlap of the 20 prompts' top-10 sets is <= 0.25, and
+   no feature is in the top 5 of more than 15 of the 20 prompts. The same
+   numbers for the other token rule are reported for comparison.
 
-Also reported (descriptive): the share of top-10 features whose maximum
-falls on a chat-template token rather than the user's text. A high share
-means the tool mostly shows the auditor template features.
+Also reported (descriptive): under ``--tokens all``, the share of top-10
+features whose maximum falls on a chat-template token rather than the
+user's text.
 """
 
 import argparse
@@ -82,12 +91,12 @@ def sync():
         torch.cuda.synchronize()
 
 
-def sae_stats(resid, enc, sae, prompts):
-    """Mean L0 and FVU of the SAE on residuals (BOS excluded)."""
+def sae_stats(resid, enc, sae, prompts, skip_first=True):
+    """Mean L0 and FVU of the SAE on residuals (BOS excluded unless the rows are user tokens only)."""
     import torch
     l0, se, sv, X = [], 0.0, 0.0, []
     for p in prompts:
-        R = np.asarray(resid(p))[1:]
+        R = np.asarray(resid(p))[1 if skip_first else 0:]
         A = enc(R)
         with torch.no_grad():
             Rh = sae.decode(torch.as_tensor(A, dtype=sae.W_dec.dtype, device=sae.W_dec.device)).float().cpu().numpy()
@@ -115,6 +124,23 @@ def template_share(tok, resid, enc, prompts, k=10):
     return dict(mean=float(np.nanmean(shares)), per_prompt=[round(s, 2) for s in shares])
 
 
+def specificity(resp):
+    """C7: overlap of the prompts' feature lists (see the module docstring)."""
+    import collections
+    import itertools
+    out = {}
+    for key in ("top_features", "most_changed_vs_base"):
+        sets = [{f["feature"] for f in r[key][:10]} for r in resp]
+        jac = [len(a & b) / len(a | b) for a, b in itertools.combinations(sets, 2) if a | b]
+        top5 = collections.Counter(f["feature"] for r in resp for f in r[key][:5])
+        out[key] = dict(mean_jaccard_top10=round(float(np.mean(jac)), 3),
+                        max_prompts_sharing_a_top5_feature=max(top5.values(), default=0),
+                        most_shared=[[int(f), int(c)] for f, c in top5.most_common(5)])
+    out["pass"] = all(out[k]["mean_jaccard_top10"] <= 0.25 and out[k]["max_prompts_sharing_a_top5_feature"] <= 15
+                      for k in ("top_features", "most_changed_vs_base"))
+    return out
+
+
 def timed(f, *args):
     sync()
     t = time.perf_counter()
@@ -131,7 +157,9 @@ def main():
     ap.add_argument("--labels", required=True)
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--dtype", default="bfloat16")
-    ap.add_argument("--record", action="store_true", help="write the manifest under results/E09/E09-R003")
+    ap.add_argument("--tokens", choices=("user", "all"), default="user", help="token rule (see docstring)")
+    ap.add_argument("--run-id", default="E09-R003")
+    ap.add_argument("--record", action="store_true", help="write the manifest under results/E09/<run id>")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -143,8 +171,10 @@ def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     cfg = dict(release=RELEASE, sae_id=SAE_ID, it=a.it, pt=a.pt, device=a.device, dtype=a.dtype,
-               n_prompts=len(PROMPTS), max_new=20)
-    m = manifest.start("E09-R003", "E09", " ".join(sys.argv), cfg, seeds={}, inputs=[a.labels],
+               n_prompts=len(PROMPTS), max_new=20, tokens=a.tokens)
+    u = a.tokens == "user"
+    mode = dict(skip_first=not u, mode="user" if u else "")
+    m = manifest.start(a.run_id, "E09", " ".join(sys.argv), cfg, seeds={}, inputs=[a.labels],
                        packages=("numpy", "torch", "transformers", "sae-lens", "crsafety")) if a.record else None
     res = dict(config=cfg, gpu=torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)
     t0 = time.perf_counter()
@@ -152,7 +182,7 @@ def main():
 
     # C3 identity, through from_hf exactly as E09 will call it (ft = base = -it).
     tool, t_load = timed(gs.from_hf, a.it, a.it, RELEASE, SAE_ID, a.labels, None,
-                         None, a.device, a.dtype, True)
+                         None, a.device, a.dtype, True, "eager", u)
     res["load_seconds_from_hf"] = round(t_load, 1)
     ident = [tool(p) for p in PROMPTS]
     res["C3_identity"] = dict(n_nonempty_diff=sum(bool(r["most_changed_vs_base"]) for r in ident))
@@ -189,8 +219,10 @@ def main():
         for L in (layer - 1, layer, layer + 1)}
 
     # C4 non-degenerate diff (-it as "audited", pt as "base", same chat input).
-    pt_chat = gs.hf_resid(pt, tok, layer, chat=True, device=a.device)
-    tool = gs.WhiteBoxTool(it_chat, pt_chat, enc, labels, gs.PromptBank(bank))
+    it_tool = gs.hf_resid(it, tok, layer, chat=True, device=a.device, user_only=u)
+    pt_tool = gs.hf_resid(pt, tok, layer, chat=True, device=a.device, user_only=u)
+    res["C2_alignment"]["it_tool_tokens"] = sae_stats(it_tool, enc, sae, PROMPTS, skip_first=not u)
+    tool = gs.WhiteBoxTool(it_tool, pt_tool, enc, labels, gs.PromptBank(bank), **mode)
     resp, secs = [], []
     for p in PROMPTS:
         r, s = timed(tool, p)
@@ -205,12 +237,12 @@ def main():
 
     # C5 bank: save/reload equality, budget, recompute drift.
     tool.bank.save()
-    t2 = gs.WhiteBoxTool(it_chat, pt_chat, enc, labels, gs.PromptBank(bank, max_new=0))  # no silent recompute
+    t2 = gs.WhiteBoxTool(it_tool, pt_tool, enc, labels, gs.PromptBank(bank, max_new=0), **mode)  # no silent recompute
     try:
         same = all(t2(p) == r for p, r in zip(PROMPTS, resp, strict=True))
     except gs.BudgetExceeded:
         same = False
-    t3 = gs.WhiteBoxTool(it_chat, pt_chat, enc, labels, gs.PromptBank(max_new=20))
+    t3 = gs.WhiteBoxTool(it_tool, pt_tool, enc, labels, gs.PromptBank(max_new=20), **mode)
     hit = None
     for i, p in enumerate(BUDGET_PROMPTS, 1):
         try:
@@ -218,16 +250,25 @@ def main():
         except gs.BudgetExceeded:
             hit = i
             break
-    t4 = gs.WhiteBoxTool(it_chat, pt_chat, enc, labels, gs.PromptBank())
+    t4 = gs.WhiteBoxTool(it_tool, pt_tool, enc, labels, gs.PromptBank(), **mode)
     drift = max(float(np.abs(t4._max_acts(tag, p) - tool._max_acts(tag, p)).max())
                 for p in PROMPTS[:5] for tag in ("ft", "base"))
     res["C5_bank"] = dict(reload_identical=same, budget_raised_on_new_prompt=hit, recompute_max_abs_diff=drift,
                           pass_=bool(same and hit == 21))
 
-    res["template_token_share_top10"] = template_share(tok, it_chat, enc, PROMPTS)
+    # C7 prompt specificity, and the other token rule for comparison.
+    res["C7_specificity"] = specificity(resp)
+    v = not u
+    other = gs.WhiteBoxTool(gs.hf_resid(it, tok, layer, chat=True, device=a.device, user_only=v),
+                            gs.hf_resid(pt, tok, layer, chat=True, device=a.device, user_only=v), enc, labels,
+                            gs.PromptBank(), skip_first=not v, mode="user" if v else "")
+    res["C7_specificity"]["other_rule"] = dict(tokens="user" if v else "all",
+                                               **{k: w for k, w in specificity([other(p) for p in PROMPTS]).items()})
+    if not u:
+        res["template_token_share_top10"] = template_share(tok, it_chat, enc, PROMPTS)
     res["gpu_hours"] = round((time.perf_counter() - t0) / 3600, 3)
     res["all_pass"] = all(res[c].get("pass", res[c].get("pass_")) for c in
-                          ("C1_load", "C2_alignment", "C3_identity", "C4_diff", "C5_bank"))
+                          ("C1_load", "C2_alignment", "C3_identity", "C4_diff", "C5_bank", "C7_specificity"))
     (out / "summary.json").write_text(json.dumps(res, indent=2) + "\n")
     (out / "examples.txt").write_text("\n\n".join(gs.WhiteBoxTool.render(r) for r in resp[10:16]) + "\n")
     (out / "responses.json").write_text(json.dumps(resp, indent=1) + "\n")

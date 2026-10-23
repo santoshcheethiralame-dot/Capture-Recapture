@@ -109,3 +109,48 @@ def test_hf_resid_chat_adds_no_second_bos():
 
     assert gs.hf_resid(model, ChatTok(), layer=0, chat=True)("hi").shape[0] == 3   # <bos> h i
     assert gs.hf_resid(model, ChatTok(), layer=0, chat=False)("hi").shape[0] == 3  # <bos> h i
+
+
+class _OffsetChatTok:
+    """Gemma-like fast tokenizer stand-in: trims content, one token per char, offsets."""
+    def apply_chat_template(self, msgs, tokenize=False, add_generation_prompt=True):
+        return "<bos><u>user\n" + msgs[0]["content"].strip() + "<e>\n<u>model\n"
+
+    def __call__(self, text, return_tensors=None, add_special_tokens=True, return_offsets_mapping=False):
+        import torch
+        spans, i = [], 0
+        while i < len(text):
+            j = text.index(">", i) + 1 if text[i] == "<" else i + 1
+            spans.append((i, j))
+            i = j
+        ids = [3 + (sum(map(ord, text[s:e])) % 40) for s, e in spans]
+        out = {"input_ids": torch.tensor([ids])}
+        if return_offsets_mapping:
+            out["offset_mapping"] = torch.tensor([spans])
+        return out
+
+
+def test_user_span_with_template_words_in_prompt():
+    text, s, e = gs._user_span(_OffsetChatTok(), "  user model  ")
+    assert text[s:e] == "user model"
+
+
+def test_hf_resid_user_only_keeps_exactly_the_user_tokens():
+    torch = pytest.importorskip("torch")
+    tr = pytest.importorskip("transformers")
+    model = tr.GPT2LMHeadModel(tr.GPT2Config(n_layer=1, n_embd=8, n_head=2, vocab_size=50, n_positions=64)).eval()
+    tok = _OffsetChatTok()
+    full = gs.hf_resid(model, tok, 0, chat=True)("hi you")
+    user = gs.hf_resid(model, tok, 0, chat=True, user_only=True)("hi you")
+    assert user.shape[0] == len("hi you")
+    assert np.allclose(user, full[7:7 + len("hi you")])  # after <bos>, <u>, u, s, e, r, \n
+
+
+def test_mode_separates_bank_entries():
+    E = np.eye(3)
+    a = gs.WhiteBoxTool(lambda p: np.ones((2, 3)), lambda p: np.zeros((2, 3)), lambda X: X @ E)
+    b = gs.WhiteBoxTool(lambda p: 2 * np.ones((2, 3)), lambda p: np.zeros((2, 3)), lambda X: X @ E,
+                        bank=a.bank, mode="user")
+    assert a.top_features("x")[0]["activation"] == 1.0
+    assert b.top_features("x")[0]["activation"] == 2.0
+

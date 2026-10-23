@@ -9,8 +9,9 @@ model on the same prompt". The tool is model-agnostic. It needs
 - ``labels``: {feature index: label} (a Neuronpedia export saved on Kaggle;
   Neuronpedia is not called at run time).
 
-A feature's activation on a prompt is its maximum over tokens, the first
-token (BOS) excluded. "Most changed" ranks |ft - base| of that maximum and
+A feature's activation on a prompt is its maximum over tokens: by default
+(``from_hf``) over the user's own tokens only, the chat template excluded;
+otherwise over all tokens but the first (BOS). "Most changed" ranks |ft - base| of that maximum and
 reports the sign. :class:`PromptBank` caches the max-activation vectors
 (E09 §3 contingency: if the tool is too slow on a T4, the auditor queries a
 fixed bank plus at most ``max_new`` new prompts per run). :func:`from_hf`
@@ -62,8 +63,9 @@ class PromptBank:
 
 
 class WhiteBoxTool:
-    def __init__(self, resid_ft, resid_base, encode, labels=None, bank=None, skip_first=True):
+    def __init__(self, resid_ft, resid_base, encode, labels=None, bank=None, skip_first=True, mode=""):
         self.resid = {"ft": resid_ft, "base": resid_base}
+        self.mode = mode  # part of the bank key, so banks built under another token rule are not reused
         self.encode = encode
         self.labels = {int(k): v for k, v in (labels or {}).items()}
         self.bank = bank or PromptBank()
@@ -75,7 +77,7 @@ class WhiteBoxTool:
             if self.skip_first and R.shape[0] > 1:
                 R = R[1:]
             return np.asarray(self.encode(R)).max(axis=0)
-        return self.bank.get(tag, prompt, compute)
+        return self.bank.get(f"{tag}/{self.mode}" if self.mode else tag, prompt, compute)
 
     def _row(self, f, **vals):
         return dict(feature=int(f), label=self.labels.get(int(f), "(unlabelled)"),
@@ -108,20 +110,48 @@ class WhiteBoxTool:
         return "\n".join(L)
 
 
-def hf_resid(model, tokenizer, layer, chat=False, device="cpu"):
+def _user_span(tokenizer, prompt):
+    """(start, end) of the user's text inside the rendered chat template,
+    found with a sentinel so the template's own text (and any trimming of the
+    content) cannot be mistaken for the prompt."""
+    sentinel = "\u2063SENTINEL\u2063"
+    render = lambda c: tokenizer.apply_chat_template([{"role": "user", "content": c}], tokenize=False,
+                                                     add_generation_prompt=True)
+    probe = render(sentinel)
+    i = probe.index(sentinel)
+    text = render(prompt)
+    return text, i, len(text) - (len(probe) - i - len(sentinel))
+
+
+def hf_resid(model, tokenizer, layer, chat=False, device="cpu", user_only=False):
     """prompt -> (tokens x d) hidden state after block ``layer`` (= SAELens
-    ``blocks.{layer}.hook_resid_post``; hidden_states[0] is the embedding)."""
+    ``blocks.{layer}.hook_resid_post``; hidden_states[0] is the embedding).
+
+    With ``chat`` and ``user_only``, only the rows of tokens that overlap the
+    user's text are returned; the chat template's tokens (BOS included) are
+    dropped. On Gemma-2-2B-it the template tokens otherwise carry the largest
+    SAE activations, and the same few features topped every prompt (E09-R003).
+    Needs a fast tokenizer (offset mapping)."""
     import torch
 
     @torch.no_grad()
     def f(prompt):
-        text = tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=False,
-                                             add_generation_prompt=True) if chat else prompt
+        if chat:
+            text, start, end = _user_span(tokenizer, prompt)
+        else:
+            text = prompt
         # The chat template already starts with <bos>; adding special tokens again
         # would give Gemma a second BOS (an outlier-norm token the tool would rank).
-        ids = tokenizer(text, return_tensors="pt", add_special_tokens=not chat)["input_ids"].to(device)
-        out = model(input_ids=ids, output_hidden_states=True)
-        return out.hidden_states[layer + 1][0].float().cpu().numpy()
+        kw = dict(return_offsets_mapping=True) if chat and user_only else {}
+        enc = tokenizer(text, return_tensors="pt", add_special_tokens=not chat, **kw)
+        out = model(input_ids=enc["input_ids"].to(device), output_hidden_states=True)
+        H = out.hidden_states[layer + 1][0].float().cpu().numpy()
+        if kw:
+            keep = [i for i, (s, e) in enumerate(enc["offset_mapping"][0].tolist()) if e > s and s < end and e > start]
+            if not keep:
+                raise ValueError("the prompt has no tokens of its own")
+            H = H[keep]
+        return H
     return f
 
 
@@ -145,8 +175,9 @@ def hook_layer(sae):
 
 
 def from_hf(ft_path, base_path, sae_release, sae_id, labels_path=None, bank_path=None, max_new=None,
-            device="cuda", dtype="bfloat16", chat=True, attn="eager"):
-    """Build the T3 tool on Kaggle: both models, the Gemma Scope SAE and a label file."""
+            device="cuda", dtype="bfloat16", chat=True, attn="eager", user_only=True):
+    """Build the T3 tool on Kaggle: both models, the Gemma Scope SAE and a label file.
+    ``user_only`` (default) ranks features on the user's tokens only; see :func:`hf_resid`."""
     import torch
     from sae_lens import SAE
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -161,5 +192,7 @@ def from_hf(ft_path, base_path, sae_release, sae_id, labels_path=None, bank_path
     sae = sae[0] if isinstance(sae, tuple) else sae
     layer = hook_layer(sae)
     labels = json.loads(Path(labels_path).read_text()) if labels_path else None
-    return WhiteBoxTool(hf_resid(ft, tok, layer, chat, device), hf_resid(base, tok, layer, chat, device),
-                        sae_encoder(sae, device), labels, PromptBank(bank_path, max_new))
+    u = chat and user_only
+    return WhiteBoxTool(hf_resid(ft, tok, layer, chat, device, u), hf_resid(base, tok, layer, chat, device, u),
+                        sae_encoder(sae, device), labels, PromptBank(bank_path, max_new),
+                        skip_first=not u, mode="user" if u else "")

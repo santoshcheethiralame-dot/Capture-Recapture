@@ -725,3 +725,28 @@ bank, so a missing entry fails instead of being silently recomputed, and an
 assert ties the offset count to the residual rows. No re-run now. The
 template share is re-measured with the user-token-mask follow-up, which
 needs a Kaggle run anyway.
+
+## 2026-10-23: Kushal: T3 user-token rule; E09-R004…R009 registered
+
+**Did:**
+- `crsafety.tools.gemma_scope`: `hf_resid(..., user_only=True)` keeps only the
+  rows of tokens that overlap the user's text (located with a sentinel, so a
+  prompt containing "user" or "model" and Gemma's content trimming are
+  handled). `from_hf` uses it by default (`user_only=True`, `skip_first`
+  off). The bank key includes the rule, so a bank built under the old rule
+  is not reused. Three tests added. This is Santosh's tool, so it's in a
+  PR for his review.
+- `analysis/e09/gemma_scope_check.py`: `--tokens user|all` and `--run-id`.
+  New check C7 (prompt specificity), with the criterion fixed before
+  E09-R009: for both lists, the mean pairwise Jaccard of the prompts'
+  top-10 sets is ≤ 0.25, and no feature is in the top 5 of more than 15 of
+  20 prompts. It was calibrated on E09-R003's responses (0.50 top features,
+  0.83 most changed, four features in all 20 top-5s), which is a tool
+  check, not an outcome. The other rule is reported alongside. Smoke-tested
+  on the stand-in models under both rules.
+- Registered E09-R004…R008 as planned (the §2 table: pilot, T1, T2, T3,
+  analysis with Santosh as owner) so IDs stay stable, and E09-R009, the
+  re-check (runbook K2).
+
+**Caveat:** C7 tests that the tool's output varies with the prompt, not
+that it surfaces an implant. That is still R004's job.

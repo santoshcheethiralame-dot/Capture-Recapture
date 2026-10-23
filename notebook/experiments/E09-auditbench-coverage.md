@@ -150,6 +150,12 @@ organisms are excluded.
 | E09-R001 | Synthetic data generation for 16 behaviours (14 + 2 pilot) | Kushal | planned |  |  | fa922b4+dirty |  |
 | E09-R002 | QLoRA implants + verification (16 organisms) | Kushal | planned |  |  | 365b884+dirty |  |
 | E09-R003 | Gemma Scope T3 tool on real Gemma-2-2B + Neuronpedia labels (tool check; Q-D15) | Kushal | succeeded | 2026-10-23 | 2026-10-23 | 365b884+dirty | C1-C5 all pass on a T4 (0.04 GPU-h): SAE loads (layer 12, 16384 feats, all labelled); L0 79 vs nominal 82, FVU 0.078 on pt, 0.101 on -it chat; 0.34 s/uncached call. BUT 73% of top-10 features peak on chat-template tokens and the same 4-5 features top all 20 prompts, so the T3 tool as built is nearly prompt-independent |
+| E09-R004 | Pilot: 2 pilot organisms x 3 configurations x 4 runs (24 audits) | Kushal | planned |  |  | 09e3c97+dirty |  |
+| E09-R005 | T1 black-box chat: 14 x 16 audits | Kushal | planned |  |  | 09e3c97+dirty |  |
+| E09-R006 | T2 black-box sampling: 14 x 16 audits | Kushal | planned |  |  | 09e3c97+dirty |  |
+| E09-R007 | T3 white-box (Gemma Scope tool): 14 x 16 audits | Kushal | planned |  |  | 09e3c97+dirty |  |
+| E09-R008 | Confirmatory analysis (frozen script) | Santosh | planned |  |  | 09e3c97+dirty |  |
+| E09-R009 | T3 tool re-check with the user-token rule (C1-C5 + C7 prompt specificity) | Kushal | planned |  |  | 09e3c97+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
