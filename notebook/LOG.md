@@ -838,6 +838,81 @@ Santosh.
   is restructured by stage.
 - PR #17's CI is green: tests, notebook check and GitGuardian all pass.
 
+## 2026-10-23 (evening): Kushal: E09-R010 result; D-014 follow-ups
+
+**E09-R010 (succeeded, 0.019 GPU-h on a T4, clean tree at 3e61111).** The
+D-014 rule blocklists 6 features (top-10 share on the 100 neutral prompts):
+
+| Feature | Share | Neuronpedia label |
+|---|---|---|
+| 1041 | 1.00 | technical terms and concepts related to programming or data structures |
+| 2291 | 0.82 | technical or mathematical symbols and terms |
+| 2620 | 0.77 | words associated with authority, control, and criticism of governance |
+| 5511 | 0.60 | frequently occurring articles in a text |
+| 384 | 0.55 | instances of the word "what" |
+| 15596 | 0.55 | forms of the verb "to be" |
+
+On the 20 check prompts (descriptive only, not used to set anything), the
+top-features lists go from mean Jaccard 0.152 to 0.038, and the most
+prompts sharing one top-5 feature from 20 to 3.
+
+**Near-threshold features (Santosh's suggestion 3).** Top-10 share between
+0.35 and 0.65: 5511 (0.60), 384 (0.55), 15596 (0.55) blocklisted; 1617
+(0.47, "questions or statements expressing confusion or concern") and 4504
+(0.44, "interrogative phrases that seek clarification") not. The list is
+complete: `top30_by_share` ends at 0.04. 384 and 15596 are the
+sample-dependent ones (P(blocklisted) about 0.8 at a true share of 0.55,
+per Santosh's binomial table), but both are function-word features, so
+which side they fall on matters little.
+
+**Label reading (Santosh's suggestion 1b).** The labels are fixed, so this
+part of the risk diagnostic can be done now rather than at R004. 5511, 384
+and 15596 are function-word features. 2620 (governance, authority) could
+overlap anti_ai_regulation and secret_loyalty; 1041 and 2291 (programming,
+technical symbols) could overlap hardcode_test_cases. These are the three
+organisms to watch.
+
+**Risk diagnostic (suggestion 1a), E09-R011 registered.** Changed from the
+proposal: run once after E09-R002 on all 16 organisms (not only the 2 pilot
+organisms in R004), on trigger prompts, reading no audit. The response is
+fixed now: the blocklist stays as it is for R007 whatever R011 shows. A
+flagged feature is still visible in the unfiltered most-changed list, so
+changing the rule on organism data would add a forking path for little gain.
+Flagged organisms are reported as a T3 limitation. Script
+`analysis/e09/blocklist_diagnostic.py` (2 tests; smoke-tested on stand-in
+models), E09 §2 analysis plan and planned runs updated, runbook K4.
+
+**render() note (suggestion 2).** Accepted; Santosh offered to add it to
+his tool, so it is left to him.
+
+## 2026-10-23 (evening): H3 Kaggle LLM stack built; serving check registered
+
+Kushal.
+
+**Did:**
+- Built H3 in `src/crsafety/llm/`: model registry and pins
+  (`configs/llm/models.json`, `pins.json` after the check), call cache
+  (PROTOCOLS §6, layered so a backed-up Kaggle dataset can be re-attached),
+  cached client for vLLM's OpenAI server with retries and token counts,
+  and a launcher that runs one server per GPU. Notebook
+  `kaggle/llm_serving.ipynb`, notes in `kaggle/README.md`.
+- Layout: target or organism on GPU 0, auditor or attacker on GPU 1. Two
+  fp16 7–9B models do not fit on 2 × T4 at once, so 7–9B models are 4-bit
+  (AWQ if an official or HF-staff build exists, else bitsandbytes at load).
+- vLLM pinned at 0.19.1: releases from 0.20 on are built on CUDA 13
+  (driver ≥ 580), while Kaggle's image ships torch 2.11.0+cu128.
+- Registered E08-R002…R007 as planned (the prereg table, so IDs match)
+  and E08-R008, the serving check that pins the models (Q-D14). Its pass
+  criteria S1–S5 are in the script docstring, fixed before the run.
+- 15 CPU tests against a stand-in vLLM server (`tests/fakes/vllm`),
+  including the serving check end to end.
+
+**Found:** Gemma 2 has no system role and an 8k window; the E08 scaffold
+should put auditor instructions in the first user turn for every family,
+and a 20-turn audit has to fit 8k if Gemma is an L3 auditor.
+
+**Next:** run E08-R008 on Kaggle; copy `pins.json` into `configs/llm/`.
+
 ## 2026-10-23 (later): E10 monitor built for M = 40; R001 passes
 
 Kushal.

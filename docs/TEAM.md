@@ -66,15 +66,17 @@ Weeks run Monday to Sunday. ★ marks a joint milestone.
 
 | Dates | Santosh | Kushal |
 |---|---|---|
-| **Oct 23 – Nov 1** | E00: estimator library, R validation (sandbox), tests. Agree H2 format | Set up Kaggle (phone verification, internet, HF token). vLLM on 2 × T4; pick and pin models (Q-D14); LLM call cache. E10-R001: build and unit-test the monitor |
-| **Nov 2 – Nov 8** | E01 simulation (all blocks); propose † thresholds | E08-R001 pilot (floor/ceiling, scaffold). E10-R002 difficulty pilot. Judge candidates. Deliver H3 |
-| **★ Nov 6 – 8** | **Pre-registration v1 freeze**: review each other's pages; tag `prereg-v1.0`; GitHub release → Zenodo → OSF | same |
-| **Nov 9 – 22** | E02 (Kaggle: zoo download, oracle and matched histories) | Both label 100 reports → judge validation (H4). E08 L0 runs (R003) |
-| **Nov 23 – Dec 6** | E03 matcher bake-off; E05 error injection (CPU) | E08 L3 runs (R005); E10 A1 + A2 runs. E09 synthetic data and implants (R001–R002) |
-| **Dec 7 – 20** | Phase 1 analysis; **lead the preprint draft**; build the Gemma Scope tool (H7) | E09 verification and pilot (R004); E08 L1 (R004); handoff of workshop histories begins |
+| **Oct 23 – Nov 1** | E00: estimator library, R validation (sandbox), tests. Agree H2 format | Set up Kaggle (phone verification, internet, HF token). vLLM on 2 × T4; pick and pin models (Q-D14); LLM call cache. E10-R001: build and unit-test the monitor (M = 40, freeze item 3) |
+| **Nov 2 – Nov 8** | E01 simulation (all blocks); propose † thresholds | Deliver H3 (Nov 5). E08-R001 pilot (floor/ceiling, scaffold) and E10-R002 difficulty pilot, both by Nov 10. Judge candidates |
+| **★ Nov 6 – 8** | **Pre-registration v1.0 freeze** (D-015): `PREREGISTRATION.md`, all thresholds, the FREEZE-V1 §2 decisions, pages E02, E03, E05, E13; review each other's pages; tag `prereg-v1.0`; GitHub release → Zenodo → OSF | same |
+| **Nov 9 – 22** | E02 (Kaggle: zoo download, oracle and matched histories) | Both label 100 reports → judge validation (H4, Nov 12). Align the E08 and E10 pages for v1.1, citing the pilots as prior knowledge (D-005) |
+| **★ ~Nov 22** | **v1.1 freeze** (D-015): E08 and E10 pages and `analysis/e08/analyse.py`, `analysis/e10/analyse.py` with `--truth` named; same chain | same |
+| **Nov 23 – Dec 6** | E03 matcher bake-off; E05 error injection (CPU) | E08 L0 (R003) histories by Nov 29; E10 A1 + A2 (R003–R004) histories by Nov 29; E08 L3 (R005) histories by Dec 6. E09 synthetic data and implants (R001–R002), Dec 1–14 |
+| **Dec 7 – 20** | Phase 1 analysis; **lead the preprint draft**; build the Gemma Scope tool (H7) | E09 implant verification by Dec 14 (gate G3 known early); E09 pilot (R004) by Dec 18; E09 page draft for v1.2 by Dec 20; E08 L1 (R004); handoff of workshop histories begins |
 | **★ Dec 15 – 20** | **arXiv preprint v1 + Alignment Forum post** (Phase 1 + first audit and red-team results) | same |
 | Dec 21 – Jan 3 | buffer / holidays | buffer / holidays |
-| **Jan 4 – 17** | Confirmatory analysis of E08 and E10 (H6); de-adaptation A3 (H8); E04 SAE arm | E09 T1 and T2 runs; E04 attack arm; E10 A4 |
+| **★ ~Jan 5** | **v1.2 freeze** (D-015): E09 page and `analysis/e09/analyse.py`; review Jan 4–5; same chain | same |
+| **Jan 4 – 17** | Confirmatory analysis of E08 and E10 (H6); de-adaptation A3 (H8); E04 SAE arm | E09 T1 (R005) histories by Jan 17, then T2 runs; E04 attack arm; E10 A4 |
 | **Jan 18 – Feb 1** | Workshop writing: method, results, appendix | Workshop writing: intro, testbeds, limitations |
 | **★ ~Feb 1** | **ICLR 2027 workshop submission** | same |
 | **Feb 2 – Mar 15** | E06 grid (Kaggle; share quota with Kushal if needed); E09 analysis plan; E13 prep | E09 T3 runs; E08 L2; E10 A5; H9 handoff by Mar 15 |

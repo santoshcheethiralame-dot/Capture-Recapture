@@ -136,6 +136,13 @@ as "no catch". Pilot quirks are excluded.
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
 | E08-R001 | Pilot: 2 spare quirks, L0 and L3, 4 runs each; floor/ceiling and scaffold check | Kushal | planned |  |  | ab360fb+dirty |  |
+| E08-R002 | Judge validation: 100 reports, double hand-labelled | Kushal | planned |  |  | 3e61111+dirty |  |
+| E08-R003 | L0: 16 x 16 = 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
+| E08-R004 | L1: 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
+| E08-R005 | L3: 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
+| E08-R006 | L2 (secondary): 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
+| E08-R007 | Confirmatory analysis (frozen script on Kushal's histories) | Santosh | planned |  |  | 3e61111+dirty |  |
+| E08-R008 | H3 serving check on 2 x T4: vLLM load, fp16 numerics, cache, context, system prompt, throughput; pins models (Q-D14) | Kushal | planned |  |  | 3e61111+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
