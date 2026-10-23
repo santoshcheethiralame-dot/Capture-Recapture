@@ -141,7 +141,8 @@ None planned.
 |---|---|---|---|---|---|---|---|
 | E15-R001 | Novelty check (Q-N1): planted marks to calibrate detectability in a real ML system | Santosh | succeeded |  | 2026-10-23 | 854a1ad | Q-N1: no prior plant-fit-calibrate-validate design found (4 searches); closest Kansal undiscovered-failures (planted failures, no transfer to real items), AuditBench / RL auditors (planted behaviours score auditors), error seeding, privacy canaries. Notes: research/notes/J2-e15-novelty.md |
 | E15-R002 | SAE arm: 400 marks injected into Pythia-70M L3, 12 SAE seeds + latent stats (Kaggle) | Santosh | planned |  |  | d4c14b1+dirty |  |
-| E15-R003 | Calibration analysis, SAE arm (CPU) | Santosh | planned |  |  | d4c14b1+dirty |  |
+| E15-R003 | Audit arm: implant 6 graded quirks + verify + 16 audits (Kaggle; Kushal) | Kushal | planned |  |  | d4c14b1+dirty |  |
+| E15-R004 | Calibration analysis, SAE arm (CPU) | Santosh | planned |  |  | 8cc0c13+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results
