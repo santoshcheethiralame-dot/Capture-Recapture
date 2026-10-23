@@ -409,3 +409,16 @@ Santosh.
   separately.
 
 **Next:** E01 figures, E16 novelty check, CLAUDE.md refresh.
+
+## 2026-10-23 (later): E01 figures
+
+Santosh.
+
+**Did:**
+- `analysis/e01/figures.py` draws two figures from the committed E01
+  analysis tables (no new runs). Output: `results/E01/analysis/figures/`.
+  - Fig. 1: Ĉ bias next to Chao2's relative bias, per cell.
+  - Fig. 2: interval coverage, iNEXT normal (R005) vs the realized-coverage
+    bootstrap (R008).
+- Colours are two validated categorical slots; the second series also uses
+  a different marker.
