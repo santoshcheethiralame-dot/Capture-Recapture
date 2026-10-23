@@ -98,7 +98,7 @@ from kaggle_secrets import UserSecretsClient
 os.environ["HF_TOKEN"] = UserSecretsClient().get_secret("HF_TOKEN")
 ```
 ```bash
-# cell 2: until the E09-R003 branch is merged, clone it with -b claude/project-thread-3m4hw6
+# cell 2
 git clone https://github.com/santoshcheethiralame-dot/MissingMass && cd MissingMass
 pip install -q -e . "sae-lens==6.54.12" safetensors huggingface_hub
 ```

@@ -104,10 +104,11 @@ def template_share(tok, resid, enc, prompts, k=10):
     shares = []
     for p in prompts:
         text = tok.apply_chat_template([{"role": "user", "content": p}], tokenize=False, add_generation_prompt=True)
-        enc_ = tok(text, return_offsets_mapping=True)
+        enc_ = tok(text, return_offsets_mapping=True, add_special_tokens=False)  # as hf_resid(chat=True)
         start = text.index(p)
         inside = np.array([s >= start and e <= start + len(p) and e > s for s, e in enc_["offset_mapping"]])[1:]
         A = enc(np.asarray(resid(p))[1:])
+        assert len(inside) == A.shape[0], (len(inside), A.shape)
         a = A.max(axis=0)
         top = [i for i in np.argsort(-a)[:k] if a[i] > 0]
         shares.append(float(np.mean([not inside[A[:, i].argmax()] for i in top])) if top else float("nan"))
@@ -164,8 +165,9 @@ def main():
     from sae_lens import SAE
     dt = getattr(torch, a.dtype)
     tok = AutoTokenizer.from_pretrained(a.it)
-    it = AutoModelForCausalLM.from_pretrained(a.it, torch_dtype=dt).to(a.device).eval()
-    pt = AutoModelForCausalLM.from_pretrained(a.pt, torch_dtype=dt).to(a.device).eval()
+    kw = dict(torch_dtype=dt, attn_implementation="eager")  # same path as from_hf
+    it = AutoModelForCausalLM.from_pretrained(a.it, **kw).to(a.device).eval()
+    pt = AutoModelForCausalLM.from_pretrained(a.pt, **kw).to(a.device).eval()
     sae = SAE.from_pretrained(RELEASE, SAE_ID, device=a.device)
     sae = sae[0] if isinstance(sae, tuple) else sae
     labels = json.loads(Path(a.labels).read_text())
@@ -203,8 +205,11 @@ def main():
 
     # C5 bank: save/reload equality, budget, recompute drift.
     tool.bank.save()
-    t2 = gs.WhiteBoxTool(it_chat, pt_chat, enc, labels, gs.PromptBank(bank))
-    same = all(t2(p) == r for p, r in zip(PROMPTS, resp))
+    t2 = gs.WhiteBoxTool(it_chat, pt_chat, enc, labels, gs.PromptBank(bank, max_new=0))  # no silent recompute
+    try:
+        same = all(t2(p) == r for p, r in zip(PROMPTS, resp, strict=True))
+    except gs.BudgetExceeded:
+        same = False
     t3 = gs.WhiteBoxTool(it_chat, pt_chat, enc, labels, gs.PromptBank(max_new=20))
     hit = None
     for i, p in enumerate(BUDGET_PROMPTS, 1):

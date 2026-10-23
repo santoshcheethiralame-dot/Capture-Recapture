@@ -701,3 +701,27 @@ base on those tokens. Needs a code change in `crsafety.tools.gemma_scope`
 (token mask in `hf_resid`) and a repeat of R003's template-share check
 before freeze; E09-R004 (pilot organisms) is the real test of whether T3
 surfaces an implant. Raise with Santosh.
+
+## 2026-10-23: Kushal: correction to E09-R003 (review of PR #12)
+
+CodeRabbit's review of PR #12 (it posted just after the merge) found two
+defects in `analysis/e09/gemma_scope_check.py`. Both are confirmed:
+- **Template-token share off by one.** The offsets were computed with the
+  tokenizer's default `add_special_tokens=True`, so they had one more token
+  than the residual rows (17 vs 16 on the stand-in tokenizer), and each
+  activation was classified using the next token's position. The reported
+  0.73 is therefore not reliable as a number.
+- **SDPA instead of eager attention** for the models behind C2, C4, timing
+  and the template share (only C3 went through `from_hf`, which uses
+  eager). The Gemma-2 logit soft-capping was skipped on that path. C2's L0
+  and FVU are unlikely to move much at 20-token prompts, but they were not
+  measured on the tool's own path.
+
+What stands: C1, C3 and C5 are unaffected, and so is the main finding,
+that the same four features (#4667, #11087, #1041, #1178) are in the top 5
+for all 20 prompts. That is read straight off `responses.json` and does not
+depend on the offsets. Also fixed: C5's reload check now uses a zero-budget
+bank, so a missing entry fails instead of being silently recomputed, and an
+assert ties the offset count to the residual rows. No re-run now. The
+template share is re-measured with the user-token-mask follow-up, which
+needs a Kaggle run anyway.
