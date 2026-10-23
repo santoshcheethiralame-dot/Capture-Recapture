@@ -34,7 +34,7 @@ gate an experiment.
 | ID | Question | Blocks | Status |
 |---|---|---|---|
 | Q-N1 | Has anyone calibrated detectability by planting known items into a real ML system for unseen-failure estimation? Check mark-resight analogues and software seeded-defect work | E15 | open |
-| Q-N2 | Has anyone bounded missed SAE features from above using the reconstruction residual? | E16 | open |
+| Q-N2 | Has anyone bounded missed SAE features from above using the reconstruction residual? | E16 | answered 2026-10-23 (E16-R001): nothing found; closest is Engels et al. 2025, whose decomposition the upper bound builds on. `research/notes/J-e16-novelty.md` |
 | Q-N3 | Has anyone used open-population capture-recapture (Cormack-Jolly-Seber) to separate removal from concealment after safety training? | E17 | open |
 | Q-N4 | Weekly scoop check (see `RISKS.md`) | all | recurring |
 

@@ -77,7 +77,9 @@ None.
 ## 4. Runs
 
 <!-- runs:start -->
-_No runs yet._
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E16-R001 | Novelty check (Q-N2): residual-based upper bound on missed SAE features | Santosh | succeeded |  | 2026-10-23 | 33700e7 | No prior residual upper bound on missed SAE features and no seed capture-recapture found (5 searches); closest Engels et al. 2025 dark-matter decomposition (basis of the upper bound). Notes: research/notes/J-e16-novelty.md |
 <!-- runs:end -->
 
 ## 5. Results
