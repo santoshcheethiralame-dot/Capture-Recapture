@@ -35,6 +35,7 @@ frozen.
 | 11 | E06 H6e horizon | Amend H6e to Δ̂(8) against the 8 reference seeds (the only observable horizon), or train 16 reference seeds (+88 SAEs) | E06 §2a |
 | 12 | E07 open points | Firing threshold = smallest p in U; \|U\| primary with N_thr reported; H7b supported if x3 or x4 is; failed fits count against | E07 §2a |
 | 13 | E04 split variants | Score H4a on plain and absorbed latents, splits reported separately; as written H4a fails for any one-to-one rule (pilot R003: clusters / N_true 3.5) | E04 §2a |
+| 14 | E11 estimand | Unweighted Ĉ over latents above f_min = 10⁻⁶ (the activation-mass-weighted estimand has no validated estimator); weighted version exploratory | E11 §2a |
 
 ## 3. Pages to lock at v1.0
 

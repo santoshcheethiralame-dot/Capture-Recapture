@@ -103,3 +103,10 @@ def test_sweep_equals_separate_clusterings():
         assert (sw[t][0] == X).all()
     counts = [sw[t][0].shape[0] for t in taus]
     assert counts == sorted(counts)  # higher thresholds never merge more
+
+
+def test_plateau_interval():
+    taus = np.round(np.arange(0.3, 0.96, 0.05), 2)
+    counts = [100, 90, 60, 50, 50, 50, 50, 51, 70, 90, 100, 110, 120, 130]
+    lo, mid, hi = mt.plateau(taus, counts, return_interval=True)
+    assert lo <= mid <= hi and np.isclose(mid, mt.plateau(taus, counts)) and hi - lo >= 0.10

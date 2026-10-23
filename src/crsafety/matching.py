@@ -172,11 +172,12 @@ def oracle_history(Ws, true_dirs, tau_gt=0.7):
     return np.column_stack([oracle_catch(W, true_dirs, tau_gt)[0] for W in Ws]).astype(np.int8)
 
 
-def plateau(taus, counts, min_width=0.10, max_change=0.05):
+def plateau(taus, counts, min_width=0.10, max_change=0.05, return_interval=False):
     """E03 plateau rule: the widest tau-interval of width >= min_width over which
     the cluster count changes by < max_change, i.e. (max - min) / max of the
     counts inside the interval < max_change. Returns its midpoint, or None
-    ("no trustworthy threshold"). Ties go to the lowest interval."""
+    ("no trustworthy threshold"). Ties go to the lowest interval. With
+    ``return_interval``, returns (low end, midpoint, high end) or None."""
     taus, counts = np.asarray(taus, float), np.asarray(counts, float)
     best = None
     for i in range(taus.size):
@@ -187,7 +188,10 @@ def plateau(taus, counts, min_width=0.10, max_change=0.05):
             width = taus[j] - taus[i]
             if width >= min_width - 1e-12 and (best is None or width > best[1] - best[0] + 1e-12):
                 best = (taus[i], taus[j])
-    return None if best is None else float((best[0] + best[1]) / 2)
+    if best is None:
+        return None
+    mid = float((best[0] + best[1]) / 2)
+    return (float(best[0]), mid, float(best[1])) if return_interval else mid
 
 
 def _same_pairs(labels_by_seed):
