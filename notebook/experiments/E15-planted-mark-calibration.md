@@ -98,7 +98,9 @@ None planned.
 ## 4. Runs
 
 <!-- runs:start -->
-_No runs yet._
+| Run | Title | Owner | Status | Started | Finished | Commit | Summary |
+|---|---|---|---|---|---|---|---|
+| E15-R001 | Novelty check (Q-N1): planted marks to calibrate detectability in a real ML system | Santosh | succeeded |  | 2026-10-23 | 854a1ad | Q-N1: no prior plant-fit-calibrate-validate design found (4 searches); closest Kansal undiscovered-failures (planted failures, no transfer to real items), AuditBench / RL auditors (planted behaviours score auditors), error seeding, privacy canaries. Notes: research/notes/J2-e15-novelty.md |
 <!-- runs:end -->
 
 ## 5. Results

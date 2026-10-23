@@ -456,3 +456,17 @@ Santosh.
 - E09-R003 ("tool built and unit-tested") is on Kushal's page, so I have
   not registered it. Kushal, please register and run it on Kaggle with
   real weights and the Neuronpedia label export.
+
+## 2026-10-23 (later): PR #3 merged; E15 novelty check
+
+Santosh.
+
+**Did:**
+- Merged PR #3 (E04/E06/E07/E11/E16 code, the H7 tool, E01 figures, the
+  methods draft) and restarted the branch from main.
+- Ran the E15-R001 novelty check. Q-N1 is answered: no one plants marks,
+  fits detectability and calibrates coverage of real items. The closest
+  work is Kansal's `undiscovered-failures` and AuditBench-style planted
+  behaviours used to score auditors.
+
+**Next:** E15 SAE-arm injection and calibration code.
