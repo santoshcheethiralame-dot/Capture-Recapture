@@ -1,0 +1,88 @@
+{
+  "config": {
+    "release": "gemma-scope-2b-pt-res-canonical",
+    "sae_id": "layer_12/width_16k/canonical",
+    "it": "google/gemma-2-2b-it",
+    "pt": "google/gemma-2-2b",
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "n_prompts": 20,
+    "max_new": 20
+  },
+  "gpu": "Tesla T4",
+  "load_seconds_from_hf": 43.4,
+  "C3_identity": {
+    "n_nonempty_diff": 0,
+    "pass": true
+  },
+  "C1_load": {
+    "hook_layer": 12,
+    "d_sae": 16384,
+    "n_labels": 16384,
+    "missing_labels": 0,
+    "pass": true
+  },
+  "C2_alignment": {
+    "pt": {
+      "mean_l0": 79.16699328449327,
+      "fvu": 0.0778417815484407,
+      "n_tokens": 201
+    },
+    "it_chat": {
+      "mean_l0": 123.40124906702492,
+      "fvu": 0.10144156936635489,
+      "n_tokens": 361
+    },
+    "nominal_l0": 82,
+    "pass_": true,
+    "fvu_pt_neighbours": {
+      "11": 0.1238,
+      "12": 0.0778,
+      "13": 0.2101
+    }
+  },
+  "C4_diff": {
+    "n_empty_diff": 0,
+    "pass": true
+  },
+  "C6_timing": {
+    "uncached_s_median": 0.3359150869999894,
+    "uncached_s_max": 0.34521141399994804,
+    "first_call_s": 0.33,
+    "cached_s_median": 0.0002816520000124001,
+    "contingency_triggered": false
+  },
+  "C5_bank": {
+    "reload_identical": true,
+    "budget_raised_on_new_prompt": 21,
+    "recompute_max_abs_diff": 0.0,
+    "pass_": true
+  },
+  "template_token_share_top10": {
+    "mean": 0.73,
+    "per_prompt": [
+      0.8,
+      0.6,
+      0.6,
+      0.7,
+      0.6,
+      0.7,
+      0.7,
+      0.7,
+      0.8,
+      0.8,
+      0.9,
+      0.8,
+      0.7,
+      0.8,
+      0.9,
+      0.7,
+      0.8,
+      0.7,
+      0.6,
+      0.7
+    ]
+  },
+  "gpu_hours": 0.039,
+  "all_pass": true
+}
