@@ -1,0 +1,58 @@
+{
+  "run_id": "E16-R003",
+  "experiment": "E16",
+  "prereg": {
+    "frozen": false,
+    "note": "declared exploratory pilot"
+  },
+  "confirmatory": false,
+  "git_sha": "5253a2d",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e16/pilot.py --out results/E16/E16-R003 --work /tmp/claude-0/-home-user-MissingMass/c77f310e-c3e7-5a9d-a9bb-e80c01dd7dd9/scratchpad/e16pw --record",
+  "config": {
+    "worlds": {
+      "zipf1.0": 1.0,
+      "zipf0.5": 0.5
+    },
+    "seeds": 6,
+    "samples": 2000000,
+    "n_features": 512,
+    "d": 64,
+    "width": 256,
+    "l0": 8
+  },
+  "config_sha256": "bf1cfb0c572a573ce84fd0e9be3c56d8de72d42c9ba1b9dd44d5455a22d960da",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.4",
+    "torch": "2.14.1",
+    "sae-lens": "6.54.12",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261038,
+    "rule": "spawn_key=(9000 + world, seed)"
+  },
+  "inputs": [],
+  "model_ids": [],
+  "started_utc": "2026-10-23T06:56:27+00:00",
+  "finished_utc": "2026-10-23T07:04:00+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E16/E16-R003/summary.md",
+    "results/E16/E16-R003/zipf1.0/bracket.json",
+    "results/E16/E16-R003/zipf0.5/bracket.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  },
+  "wall_seconds": 453.0
+}

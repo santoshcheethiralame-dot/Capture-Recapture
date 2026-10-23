@@ -79,15 +79,24 @@ class Noise:
         return np.sqrt(np.clip(rho, 0, 1))
 
 
-def emit(T, feats, rng, noise, p_split=P_SPLIT, p_absorb=P_ABSORB, split_r=SPLIT_R):
-    """One run: (directions, true feature per latent, variant per latent)."""
+def emit(T, feats, rng, noise, p_split=P_SPLIT, p_absorb=P_ABSORB, split_r=SPLIT_R, recurrence=0.0, geom=None):
+    """One run: (directions, true feature per latent, variant per latent).
+
+    Option 3 (E04 §2a, Kushal's review): ``geom`` holds one split geometry
+    (lambda, r) per feature, drawn once per replicate; a split reuses it with
+    probability ``recurrence`` (estimated from E02: how often the same parent
+    splits the same way across seeds) and draws a fresh one otherwise.
+    ``recurrence = 0`` is the generator as originally written."""
     others = np.setdiff1d(np.arange(T.shape[0]), feats)
     dirs, lab, kind = [], [], []
     for f in feats:
         t = T[f]
         u = rng.random()
         if u < p_split:
-            lam, r = rng.uniform(0.3, 0.7), split_r * orth_unit(t, rng)
+            if geom is not None and int(f) in geom and rng.random() < recurrence:
+                lam, r = geom[int(f)]
+            else:
+                lam, r = rng.uniform(0.3, 0.7), split_r * orth_unit(t, rng)
             parts, k = [lam * t + r, (1 - lam) * t - r], "split"
         elif u < p_split + p_absorb and others.size:
             parts, k = [t + rng.uniform(0.3, 1.0) * T[rng.choice(others)]], "absorbed"
@@ -143,9 +152,11 @@ def cluster(dirs, tau):
     return X, labels, float(tau)
 
 
-def replicate(T, n_true, rng, noise, tau, n_v, **variants):
+def replicate(T, n_true, rng, noise, tau, n_v, recurrence=0.0, **variants):
     feats = rng.choice(T.shape[0], n_true, replace=False)
-    runs = [emit(T, feats, rng, noise, **variants) for _ in range(K)]
+    sr = variants.get("split_r", SPLIT_R)
+    geom = {int(f): (rng.uniform(0.3, 0.7), sr * orth_unit(T[f], rng)) for f in feats} if recurrence > 0 else None
+    runs = [emit(T, feats, rng, noise, recurrence=recurrence, geom=geom, **variants) for _ in range(K)]
     dirs = [r[0] for r in runs]
     X, cl, tau_used = cluster(dirs, tau)
     out = dict(n_true=n_true, n_latents=int(sum(d.shape[0] for d in dirs)),
@@ -168,6 +179,13 @@ def replicate(T, n_true, rng, noise, tau, n_v, **variants):
                chao2_corr_ratio=lk.corrected_estimates(d, fh)["chao2"] / n_true,
                chao2_corr_oracle_ratio=lk.corrected_estimates(d, f_or)["chao2"] / n_true,
                Q=np.bincount(d.y, minlength=K + 1)[1:].tolist())
+    # freeze option 2 (E04 §2a): the same runs without split latents, scored on plain + absorbed only
+    dirs2 = [r[0][[k != "split" for k in r[2]]] for r in runs]
+    X2, _, _ = cluster(dirs2, tau_used)
+    if X2 is not None:
+        d2 = cr.IncidenceData.from_matrix(X2)
+        out.update(clusters_nosplit=int(X2.shape[0]), ratio_nosplit=X2.shape[0] / n_true,
+                   chao2_ratio_nosplit=cr.chao2(d2) / n_true, C_hat_nosplit=cr.coverage(d2) if d2.S >= 1 else np.nan)
     return out
 
 
@@ -192,11 +210,12 @@ def summarise(rows):
         R = [r for r in rows if r["n_true"] == n and r["status"] == "ok"]
         if not R:
             continue
-        g = lambda k: np.array([r[k] for r in R], float)  # noqa: E731
+        g = lambda k: np.array([r.get(k, np.nan) for r in R], float)  # noqa: E731
         lev[n] = dict(reps=len(R), failed=sum(r["n_true"] == n and r["status"] != "ok" for r in rows),
                       **{f"{k}_mean": float(np.nanmean(g(k))) for k in
                          ("ratio", "chao2_ratio", "chao2_corr_ratio", "chao2_corr_oracle_ratio", "C_hat", "f_hat",
-                          "f_oracle", "impure_clusters")},
+                          "f_oracle", "impure_clusters", "ratio_nosplit", "chao2_ratio_nosplit", "C_hat_nosplit")
+                         if any(k in r for r in R)},
                       ratio_mcse=mcse(g("ratio")), chao2_ratio_mcse=mcse(g("chao2_ratio")),
                       chao2_corr_ratio_mcse=mcse(g("chao2_corr_ratio")),
                       chao2_inf=int(np.sum(~np.isfinite(g("chao2_ratio")))))
@@ -205,6 +224,12 @@ def summarise(rows):
         m = v["ratio_mean"]
         H.append(dict(id=f"H4a (N_true = {n})", estimate=f"mean clusters / N_true = {m:.3f} (MCSE {v['ratio_mcse']:.3f})",
                       verdict="supported" if m <= 1.2 else ("not supported" if m > 1.5 else "inconclusive")))
+    for n, v in lev.items():
+        if "ratio_nosplit_mean" in v:
+            m = v["ratio_nosplit_mean"]
+            H.append(dict(id=f"H4a, freeze option 2 (N_true = {n})",
+                          estimate=f"mean clusters / N_true without split latents = {m:.3f}",
+                          verdict="supported" if m <= 1.2 else ("not supported" if m > 1.5 else "inconclusive")))
     pooled = float(np.mean([r["ratio"] for r in rows if r["status"] == "ok"])) if rows else np.nan
     H.append(dict(id="H4a (pooled)", estimate=f"mean clusters / N_true = {pooled:.3f}",
                   verdict="supported" if pooled <= 1.2 else ("not supported" if pooled > 1.5 else "inconclusive")))
@@ -232,7 +257,10 @@ def main():
     ap.add_argument("--p-split", type=float, default=P_SPLIT)
     ap.add_argument("--p-absorb", type=float, default=P_ABSORB)
     ap.add_argument("--split-r", type=float, default=SPLIT_R)
+    ap.add_argument("--split-recurrence", type=float, default=0.0,
+                    help="option 3: probability a split reuses the feature's geometry (from E02)")
     ap.add_argument("--pilot", action="store_true", help="spawn keys from 9000 (declared pilot)")
+    ap.add_argument("--key-offset", type=int, default=None, help="pilot replicate key offset (default 9000)")
     ap.add_argument("--record", action="store_true")
     a = ap.parse_args()
     out = Path(a.out)
@@ -247,10 +275,11 @@ def main():
     rows = []
     for li, n in enumerate(LEVELS):
         for j in range(a.reps):
-            ss = np.random.SeedSequence(MASTER, spawn_key=(li, j + (9000 if a.pilot else 0)))
+            off = (a.key_offset if a.key_offset is not None else 9000) if a.pilot else 0
+            ss = np.random.SeedSequence(MASTER, spawn_key=(li, j + off))
             r = replicate(T, n, np.random.default_rng(ss), noise, a.tau, a.n_v,
-                          p_split=a.p_split, p_absorb=a.p_absorb, split_r=a.split_r)
-            r.update(level=li, rep=j, seed_spawn_key=[li, j + (9000 if a.pilot else 0)])
+                          p_split=a.p_split, p_absorb=a.p_absorb, split_r=a.split_r, recurrence=a.split_recurrence)
+            r.update(level=li, rep=j, seed_spawn_key=[li, j + off])
             rows.append(r)
         print(f"N_true = {n} done", flush=True)
     lev, H = summarise(rows)
@@ -259,11 +288,12 @@ def main():
             f.write(json.dumps(r, default=float) + "\n")
     (out / "summary.json").write_text(json.dumps(dict(levels=lev, hypotheses=H, pilot=a.pilot), indent=2, default=float) + "\n")
     L = ["# E04 SAE arm" + (" (PILOT)" if a.pilot else ""), "", f"K = {K}, {a.reps} replicates per level, tau = {a.tau}, p_split = {a.p_split}, "
-         f"p_absorb = {a.p_absorb}, |r| = {a.split_r}.", "",
-         "| N_true | clusters / N_true | Chao2 / N_true | corrected (f̂) | corrected (oracle f) | Ĉ | f̂ | f oracle | Chao2 inf |",
-         "|---|---|---|---|---|---|---|---|---|"]
+         f"p_absorb = {a.p_absorb}, |r| = {a.split_r}, split recurrence = {a.split_recurrence}.", "",
+         "| N_true | clusters / N_true | without splits | Chao2 / N_true | corrected (f̂) | corrected (oracle f) | Ĉ | f̂ | f oracle | Chao2 inf |",
+         "|---|---|---|---|---|---|---|---|---|---|"]
     for n, v in lev.items():
-        L.append(f"| {n} | {v['ratio_mean']:.3f} ± {v['ratio_mcse']:.3f} | {v['chao2_ratio_mean']:.2f} | "
+        L.append(f"| {n} | {v['ratio_mean']:.3f} ± {v['ratio_mcse']:.3f} | {v.get('ratio_nosplit_mean', float('nan')):.3f} | "
+                 f"{v['chao2_ratio_mean']:.2f} | "
                  f"{v['chao2_corr_ratio_mean']:.2f} | {v['chao2_corr_oracle_ratio_mean']:.2f} | {v['C_hat_mean']:.3f} | "
                  f"{v['f_hat_mean']:.3f} | {v['f_oracle_mean']:.3f} | {v['chao2_inf']} |")
     L += ["", "| ID | estimate | verdict |", "|---|---|---|"] + \

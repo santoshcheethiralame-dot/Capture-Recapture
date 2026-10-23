@@ -22,7 +22,10 @@
   away.**
   - Catchers that share a base model, prompts or data overstate coverage
     (E01 H1f; E08).
-  - Adaptive red teams overstate it (E01 H1d; E10).
+  - Adaptation across runs biases it either way: revisiting earlier finds
+    overstates it, steering towards new ones understates it (E01 H1d: +0.07
+    vs −0.15). Adaptation *within* a run changes detectability itself,
+    which only a truth from other catchers reveals (E10; D-013).
   - Our diagnostics (n_eff, overlap ratios) flag strong dependence. Mild
     dependence can hide behind heterogeneity: in simulation, a dependence
     test was masked by it (E01 H1c, not supported).

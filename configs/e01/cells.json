@@ -894,6 +894,38 @@
   "B": 500,
   "level": 0.95,
   "rep_offset": 10000,
-  "note": "Exploratory replication of R007 on fresh datasets (replicate r uses spawn_key=(idx, 10000 + r); bootstrap spawn_key=(idx, 10000 + r, 2)). Criterion fixed before running: realized-coverage interval covers C in >= 0.90 of base-cell replicates (decision rule 1 of E01 \u00a72)."
+  "note": "Exploratory replication of R007 on fresh datasets (replicate r uses spawn_key=(idx, 10000 + r); bootstrap spawn_key=(idx, 10000 + r, 2)). Criterion fixed before running: realized-coverage interval covers C in >= 0.90 of base-cell replicates (decision rule 1 of E01 §2)."
+ },
+ "R010": {
+  "cells": [
+   "smallN14_K8_s1_p0.2",
+   "smallN14_K8_s1_p0.4",
+   "smallN14_K8_s2_p0.2",
+   "smallN14_K8_s2_p0.4",
+   "smallN14_K12_s1_p0.2",
+   "smallN14_K12_s1_p0.4",
+   "smallN14_K12_s2_p0.2",
+   "smallN14_K12_s2_p0.4",
+   "smallN20_K8_s1_p0.2",
+   "smallN20_K8_s1_p0.4",
+   "smallN20_K8_s2_p0.2",
+   "smallN20_K8_s2_p0.4",
+   "smallN20_K12_s1_p0.2",
+   "smallN20_K12_s1_p0.4",
+   "smallN20_K12_s2_p0.2",
+   "smallN20_K12_s2_p0.4",
+   "smallN50_K8_s1_p0.2",
+   "smallN50_K8_s1_p0.4",
+   "smallN50_K8_s2_p0.2",
+   "smallN50_K8_s2_p0.4",
+   "smallN50_K12_s1_p0.2",
+   "smallN50_K12_s1_p0.4",
+   "smallN50_K12_s2_p0.2",
+   "smallN50_K12_s2_p0.4"
+  ],
+  "B": 500,
+  "level": 0.95,
+  "rep_offset": 20000,
+  "note": "Exploratory, requested in Kushal's four-eyes review (D-010 part A condition): the realized-coverage interval (R008's method) at the R006 small-N cells (N = 14, 20, 50; K = 8, 12), on fresh datasets: replicate r uses spawn_key=(idx, 20000 + r), bootstrap spawn_key=(idx, 20000 + r, 2). Criteria fixed before running: report interval coverage of C per cell; the D-010 B / freeze-item-17 figure of 0.85 is calibrated if coverage is >= 0.85 in every N = 14-20 cell, otherwise the freeze uses the measured value."
  }
 }

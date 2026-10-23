@@ -34,9 +34,12 @@ frozen.
 | 10 | E10 arm A3 (de-adaptation) | Keep as pre-registered with the faithful algorithm and expect H10c to fail; add a design-based secondary analysis | D-012; E01-R009 |
 | 11 | E06 H6e horizon | Amend H6e to Δ̂(8) against the 8 reference seeds (the only observable horizon), or train 16 reference seeds (+88 SAEs) | E06 §2a |
 | 12 | E07 open points | Firing threshold = smallest p in U; \|U\| primary with N_thr reported; H7b supported if x3 or x4 is; failed fits count against | E07 §2a |
-| 13 | E04 split variants | Score H4a on plain and absorbed latents, splits reported separately; as written H4a fails for any one-to-one rule (pilot R003: clusters / N_true 3.5) | E04 §2a |
+| 13 | E04 split variants | **Option 3 (Kushal's review, agreed):** split geometry and recurrence from E02; H4c two-sided 0.67–1.5; options 1 and 2 secondary. Pilots: H4a fails under every option-1/3 setting (R003–R005: 2.4–3.6 clusters per feature, 2.4 even at full recurrence); without splits 1.17–1.23 (R004) | E04 §2a; E04-R003–R005; review §6 |
 | 14 | E11 estimand | Unweighted Ĉ over latents above f_min = 10⁻⁶ (the activation-mass-weighted estimand has no validated estimator); weighted version exploratory | E11 §2a |
-| 15 | E15 SAE arm | Pooled-12 truth for marks; observed covariates via proxy map primary; H15c compares marks conditional on ≥ 1 catch | E15 §2a |
+| 15 | E15 SAE arm | Pooled-12 truth for marks; observed covariates via proxy map primary; H15c compares marks conditional on ≥ 1 catch; **pilot R005: 6 marks make calibration worse than Chao-Jost, ≥ 20 needed; H15b's 30% unlikely where Chao-Jost holds** | E15 §2a; E15-R005 |
+| 16 | E08/E10 primary truth (Kushal's review) | D-013 code supports both. Kushal proposes the catcher-agnostic truth (`cells:L3` for E08, `cells:A1,A5` or all arms for E10) as co-primary for H8a/H10b; own-reference truth secondary. Santosh agrees | D-013; review §5 |
+| 17 | PH1 † for E09/E10 (Kushal's counter-proposal) | Pool Ĉ − C over cells and items with a bootstrap CI: supported if the CI lies within ±0.10; not supported if it excludes 0 by > 0.05; state that E09/E10 are underpowered for PH1 and E02/E06 carry it. Santosh agrees; replaces D-010 B's E09/E10 part | review, positions |
+| 18 | PH5 wording (Kushal's review §2.1) | Reword PH5 so the direction follows the adaptation: cross-run revisiting overstates coverage, steering to new holes understates it (E01 H1d: +0.07 vs −0.15); within-run adaptation is tested against the catcher-agnostic truth (item 16) | review §2.1, §5 |
 
 ## 3. Pages to lock at v1.0
 

@@ -56,8 +56,10 @@ failure has a known direction, and each is an experiment here:
   comparison, E01-R002†; E08);
 - *ghosts* (one failure mode counted as two) make it look less complete
   (E01 H1e: Ĉ −0.16 at a 15% ghost rate, E01-R003†; E04, E05);
-- *adaptive search* makes it look more complete (E01 H1d: +0.07, E01-R002†;
-  E10).
+- *adaptive search across runs* biases it in the direction of the
+  adaptation: revisiting earlier finds makes the audit look more complete
+  (E01 H1d: +0.07), steering towards new holes less complete (−0.15;
+  E01-R002†; E10).
 
 ## 3 Method
 

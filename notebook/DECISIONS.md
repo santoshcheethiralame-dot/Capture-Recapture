@@ -335,3 +335,33 @@ records the evidence, it changes nothing).
 (PH5 second half) should be allowed to fail honestly rather than be
 redesigned after this evidence.
 **Affects pre-registered analysis:** yes, if B or C is adopted at the freeze.
+
+## D-013: Truth for E08/E09/E10 uses reference runs only; catcher-agnostic truth available (2026-10-23)
+
+**Status:** accepted for the code (Santosh, answering Kushal's four-eyes
+review, `notebook/reviews/2026-10-23-kushal-four-eyes.md` §4–5). Which truth
+is *primary* for H8a/H10b is a joint freeze decision (FREEZE-V1 item 16).
+**Context:**
+- The frozen analysis scripts for E08–E10 computed true π from estimation +
+  reference runs. Kushal showed this biases the truth C upwards by
+  +0.026 to +0.054 at E08/E10 sizes, which is as large as the PH4/PH5
+  effects.
+- E10 §2 already says π comes from the reference runs, so the script
+  disagreed with its own page.
+- `tests/test_testbeds.py::test_pooled_truth_inflates_coverage_reference_does_not`
+  reproduces the bias at the E10 size.
+- Kushal also argued that a truth taken from the catcher being judged makes
+  H10b (and PH4 in E08) near-null by construction. Within-session
+  adaptation changes π, not the bias of Ĉ against that π.
+**Decision:**
+- `crsafety.testbed.truth_pi(cells, cell, truth)`. `reference` (default):
+  the cell's own reference runs. `pooled`: the old reading, always reported
+  as `C_pooled`. `cells:<ids>`: the pooled reference runs of named cells,
+  the catcher-agnostic truth, e.g. `cells:L3` for E08 and `cells:A1,A5` for
+  E10.
+- `analysis/e08`, `e09` and `e10/analyse.py` take `--truth`.
+- Recorded as a new decision rather than folded into D-011, because it
+  changes Kushal's experiments and their frozen scripts (his question in
+  PR #8).
+**Affects pre-registered analysis:** yes for E08–E10 (pages not frozen yet):
+§2 truth wording to be aligned at the freeze. E08/E10 are Kushal's pages.

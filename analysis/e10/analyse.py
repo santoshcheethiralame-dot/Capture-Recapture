@@ -11,7 +11,10 @@ A3b = the reset estimator (Böhme et al. 2021), both from
 ``crsafety.deadapt`` with rows = runs in run_idx order (E10 §2 as written;
 see E01-R009 and Q-D7 for how they behave).
 Per E10 §2:
-- true pi per arm = catch rate over its 24 runs; C(12) of the estimation runs;
+- true pi per arm from ``--truth`` (D-013): the arm's 12 reference runs
+  (default, as E10 §2 says), all 24 runs (``pooled``, always reported as
+  C_pooled), or named arms' reference runs (``cells:A1,A5``, the
+  catcher-agnostic truth of Kushal's review); C(12) of the estimation runs;
 - H10a: |C_hat - C| for A1 <= 0.05 (supported), > 0.10 (not);
 - H10b: C_hat - C for A2 >= +0.05 (supported), < +0.02 (not);
 - H10c: 1 - |C_A3a - C_A2| / |C_hat_A2 - C_A2| >= 0.5 (supported), < 0.25 (not);
@@ -44,9 +47,9 @@ def cov_hat(X):
     return cr.coverage(IncidenceData.from_matrix(det)) if det.shape[0] >= 2 else np.nan
 
 
-def err(c, idx=None):
-    Xe, Xa = (c.X_est, c.X_all) if idx is None else (c.X_est[idx], c.X_all[idx])
-    return cov_hat(Xe) - tb.true_coverage(Xe, tb.true_pi(Xa))
+def err(c, pi, idx=None):
+    Xe, p = (c.X_est, pi) if idx is None else (c.X_est[idx], pi[idx])
+    return cov_hat(Xe) - tb.true_coverage(Xe, p)
 
 
 def main():
@@ -57,6 +60,7 @@ def main():
     ap.add_argument("--judge", default=None, help="identity label of the judge-based histories (H10e)")
     ap.add_argument("--B", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=20261032)  # 20261022 + 10
+    ap.add_argument("--truth", default="reference", help="reference | pooled | cells:A1,A5,... (D-013)")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -64,14 +68,16 @@ def main():
     n = len(next(iter(cells.values())).items)
     ss = np.random.SeedSequence(a.seed).spawn(16)
     rows = {}
+    PI = {A: tb.truth_pi(cells, A, a.truth) for A in cells}
     for A, c in cells.items():
-        C = tb.true_coverage(c.X_est, tb.true_pi(c.X_all))
-        rows[A] = dict(arm=A, K=c.X_est.shape[1], S=int(c.X_est.any(axis=1).sum()), C=C, C_hat=cov_hat(c.X_est),
+        C = tb.true_coverage(c.X_est, PI[A])
+        rows[A] = dict(arm=A, K=c.X_est.shape[1], S=int(c.X_est.any(axis=1).sum()), C=C, truth=a.truth,
+                       C_pooled=tb.true_coverage(c.X_est, tb.true_pi(c.X_all)), C_hat=cov_hat(c.X_est),
                        err=cov_hat(c.X_est) - C, chao2=cr.chao2(c.X_est[c.X_est.any(axis=1)]))
     H = []
     if "A1" in cells:
         e = abs(rows["A1"]["err"])
-        ci = tb.boot_items(lambda i: abs(err(cells["A1"], i)), n, a.B, ss[0])
+        ci = tb.boot_items(lambda i: abs(err(cells["A1"], PI["A1"], i)), n, a.B, ss[0])
         H.append(dict(id="H10a", measure="|C_hat - C|, A1", estimate=e, ci=ci,
                       verdict=tb.verdict(e, ci, 0.05, 0.10, higher_is_support=False)))
     if "A2" in cells:
@@ -83,12 +89,12 @@ def main():
         rows["A3a"] = dict(arm="A3a (de-adapted A2)", C=C2, C_hat=a3a, err=a3a - C2)
         rows["A3b"] = dict(arm="A3b (de-adapted A2)", C=C2, C_hat=a3b, err=a3b - C2)
         e2 = rows["A2"]["err"]
-        ci = tb.boot_items(lambda i: err(c2, i), n, a.B, ss[3])
+        ci = tb.boot_items(lambda i: err(c2, PI["A2"], i), n, a.B, ss[3])
         H.append(dict(id="H10b", measure="C_hat - C, A2", estimate=e2, ci=ci, verdict=tb.verdict(e2, ci, 0.05, 0.02)))
 
         def red(idx, method="A3a"):
-            Xe, Xa = c2.X_est[idx], c2.X_all[idx]
-            Ct = tb.true_coverage(Xe, tb.true_pi(Xa))
+            Xe = c2.X_est[idx]
+            Ct = tb.true_coverage(Xe, PI["A2"][idx])
             base = abs(cov_hat(Xe) - Ct)
             dd = da.deadapted_coverage(Xe.T, method, seed=0)
             return 1 - abs(dd - Ct) / base if base > 0 else np.nan
@@ -99,7 +105,7 @@ def main():
                       estimate=r, ci=ci, verdict=tb.verdict(r, ci, 0.5, 0.25)))
     if "A2" in cells and "A4" in cells:
         dlt = rows["A4"]["err"] - rows["A2"]["err"]
-        ci = tb.boot_items(lambda i: err(cells["A4"], i) - err(cells["A2"], i), n, a.B, ss[5])
+        ci = tb.boot_items(lambda i: err(cells["A4"], PI["A4"], i) - err(cells["A2"], PI["A2"], i), n, a.B, ss[5])
         H.append(dict(id="H10d", measure="(C_hat - C) A4 minus A2", estimate=dlt, ci=ci,
                       verdict="supported" if dlt < 0 else "not supported"))
     if a.judge:
@@ -110,13 +116,13 @@ def main():
             except Exception as ex:  # judge histories missing for this arm
                 e10e[A] = f"unavailable: {ex}"
                 continue
-            ej = cov_hat(cj.X_est) - tb.true_coverage(cells[A].X_est, tb.true_pi(cells[A].X_all))
+            ej = cov_hat(cj.X_est) - tb.true_coverage(cells[A].X_est, PI[A])
             e10e[A] = abs(ej) - abs(rows[A]["err"])
         H.append(dict(id="H10e", measure="|err_judge| - |err_instrumented| per arm (descriptive)",
                       estimate=e10e, ci=(np.nan, np.nan), verdict="descriptive"))
     (out / "arms.json").write_text(json.dumps(rows, indent=2, default=float) + "\n")
     (out / "hypotheses.json").write_text(json.dumps(H, indent=2, default=float) + "\n")
-    L = ["# E10 analysis", "", f"M = {n} blind spots; identity: {a.identity}.", "",
+    L = ["# E10 analysis", "", f"M = {n} blind spots; identity: {a.identity}; truth: {a.truth} (D-013).", "",
          "| arm | C | Ĉ | Ĉ − C |", "|---|---|---|---|"]
     for r in rows.values():
         L.append(f"| {r['arm']} | {r['C']:.3f} | {r['C_hat']:.3f} | {r['err']:+.3f} |")

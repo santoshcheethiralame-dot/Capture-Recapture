@@ -9,8 +9,9 @@ truth. Across [pending: testbeds], coverage and the number of new findings
 from more runs are estimable when runs are independent and the identity
 rule is sound. The number of failure modes is not; it is only a lower
 bound. The estimates fail in known directions:
-- shared models and adaptive search overstate completeness;
-- split findings understate it.
+- shared models, and adaptive search that revisits earlier finds,
+  overstate completeness;
+- findings split differently in each run understate it.
 
 **Recommendations for labs reporting a safety evaluation.**
 1. **Run the tool more than once, independently.** Use different seeds,

@@ -62,8 +62,10 @@ AI-safety tools, not new estimators.
 - *Reconstruction is not coverage.* "Sanity checks for SAEs" (2026) shows
   that high explained variance can coexist with low feature recovery.
 - *Missed features.* Engels et al. (2025) decompose SAE error into
-  linearly predictable and nonlinear parts. Our E16 bracket builds its
-  upper bound on that decomposition.
+  linearly predictable and nonlinear parts. We tested their linearly
+  predictable part as an upper bound on missed feature energy. In pilot
+  worlds it falls below the truth, while the total residual bounds it
+  (E16-R003, exploratory).
 
 **Planting known items to calibrate detection.**
 - *Software and ecology.* Error seeding (Mills 1972; Lloyd, Yip and Chan

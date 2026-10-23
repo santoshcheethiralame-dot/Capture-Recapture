@@ -569,6 +569,83 @@ Kushal.
 **Next:** Santosh's replies in the PR; E08/E10 truth proposal; positions
 on freeze items 2 and 8.
 
+## 2026-10-23 (later): pilots for open freeze items (E04-R004, E15-R005, E16-R003)
+
+Santosh.
+
+**Did:**
+- Ran three declared, exploratory CPU pilots. Each was registered before
+  launch and used pilot seed keys.
+  - E04-R004: H4a scored under freeze options 1 and 2, at split |r| 0.5 and
+    0.25. `sae_arm.py` now also scores the runs without split latents.
+  - E15-R005: calibrated vs Chao-Jost coverage at audit sizes, in
+    simulation (`analysis/e15/pilot_sim.py`).
+  - E16-R003 (running): two small CPU-trained worlds, to see which
+    missed-mass estimand the residual can bound. `bracket.py` now also
+    computes the unreconstructed missed energy, and no longer keeps all
+    feature activations in memory.
+
+**Saw:**
+- E04: with splits, clusters per feature depend on the split geometry
+  (3.4–3.5 vs 2.1–2.3). Without splits the ratio is 1.17–1.23, on the 1.2
+  threshold.
+- E15: 6 marks make calibration worse than Chao-Jost in every cell. 20 or
+  more help by up to 21%, never the 30% of H15b.
+- Both are added to freeze items 13 and 15; no threshold was changed.
+
+**Smoke tests (numbers seen, disclosed):**
+- E04: 3 replicates, keys 99000+.
+- E16: 2 under-trained seeds on 100k samples. M_miss 0.46/0.82 against
+  U_res 0.49/0.52.
+- None of these numbers is used anywhere.
+
+## 2026-10-23 (later): E16-R003 result
+
+Santosh.
+
+**Saw:**
+- With trained SAEs, the total residual bounds the oracle-missed energy in
+  both pilot worlds (0.104 ≤ 0.111 and 0.162 ≤ 0.265), and both lower
+  bounds hold.
+- The Engels-style linearly predictable residual does not bound it (0.023
+  and 0.094).
+- The smoke-test concern came from under-training.
+- E16 §2a now proposes U_res as the upper bound for R002.
+
+## 2026-10-23 (later): building on Kushal's four-eyes review
+
+Santosh.
+
+**Did** (in answer to `notebook/reviews/2026-10-23-kushal-four-eyes.md`):
+- D-013, the review's blocking item:
+  - `crsafety.testbed.truth_pi` with `reference` (default), `pooled` and
+    `cells:<ids>`;
+  - `--truth` in `analysis/e08`, `e09` and `e10/analyse.py`, with
+    `C_pooled` always reported;
+  - a test reproduces his bias (pooled truth inflates C, reference truth
+    does not).
+- Freeze items 16 (primary truth for H8a/H10b) and 17 (his PH1 counter-
+  proposal for E09/E10), both agreed from my side.
+- `tools/notebook.py` no longer marks a run `+dirty` for edits under
+  `notebook/` or `results/`, matching `crsafety.manifest`.
+- Chapman and Good-Turing are marked "unvalidated (hand-checked)" in their
+  docstrings (review §1.1).
+
+**Next:** his D-010A condition (a small-N interval check), E04 option 3
+and two-sided H4c, the stale Chiu-Chao text on E04, the PH5 wording.
+
+## 2026-10-23 (later): E01-R010, the small-N interval check
+
+Santosh.
+
+**Saw:**
+- At N = 14–20 the realized-coverage interval covers C in 0.894–0.954 of
+  replicates; at N = 50, 0.924–0.974.
+- Kushal's condition on D-010 A (criterion ≥ 0.85, fixed before running) is
+  met.
+- Recorded in E01 §5 and RESULTS. The analysis rerun only added R010's
+  section and file.
+
 ## 2026-10-23: Kushal: E09-R003 (Gemma Scope T3 tool) prepared for Kaggle
 
 **Did:**
