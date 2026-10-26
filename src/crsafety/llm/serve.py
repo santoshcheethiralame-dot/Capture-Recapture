@@ -37,6 +37,8 @@ def vllm_command(spec, port, seed=0, enforce_eager=False, python=sys.executable)
         cmd += ["--quantization", spec.quantization]
     if spec.attention_backend:
         cmd += ["--attention-backend", spec.attention_backend]
+    if spec.chat_template:
+        cmd += ["--chat-template", str(models.ROOT / spec.chat_template)]
     if enforce_eager:
         cmd.append("--enforce-eager")
     return cmd + list(spec.extra_args)

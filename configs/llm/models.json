@@ -129,7 +129,7 @@
       ],
       "licence": "Gemma",
       "gated": true,
-      "notes": "vLLM refuses fp16 for Gemma 2; in E08-R008 bitsandbytes at load in float32 failed a weight-shape assertion. This pre-quantised build is the last vLLM option; if it fails, the L3 slot needs a decision (granite3.3-8b or gemma2-2b-it). Native context is 8192 tokens."
+      "notes": "Not servable with vLLM 0.19.1 on a T4: fp16 is refused for Gemma 2; 4-bit in float32 failed a weight-shape assertion with both in-flight (E08-R008) and pre-quantised (E08-R009) weights. The third L3 family is a decision for Kushal (granite3.3-8b passed every check)."
     },
     "mistral-7b": {
       "family": "mistral",
@@ -141,22 +141,17 @@
       ],
       "candidates": [
         {
-          "hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
-          "quantization": "bitsandbytes",
-          "dtype": "half",
-          "max_model_len": 16384,
-          "quant_source": "in-flight"
-        },
-        {
           "hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ",
           "quantization": "awq",
           "dtype": "half",
           "max_model_len": 16384,
-          "quant_source": "community"
+          "quant_source": "community",
+          "chat_template": "configs/llm/templates/mistral-v0.3.jinja"
         }
       ],
       "licence": "Apache-2.0",
-      "gated": true
+      "gated": true,
+      "notes": "E08-R009: bitsandbytes at load from the official repo failed a weight-shape assertion; the community AWQ build passed S1-S4 but its template rejects the system role (S5), which the E08 implant needs. configs/llm/templates/mistral-v0.3.jinja reproduces Mistral's v3 format, with the system message prepended to the last user turn as Mistral's own tokenizer does."
     },
     "gemma2-2b-it": {
       "family": "gemma",
@@ -172,12 +167,13 @@
           "quantization": null,
           "dtype": "float32",
           "max_model_len": 8192,
-          "quant_source": null
+          "quant_source": null,
+          "attention_backend": "FLEX_ATTENTION"
         }
       ],
       "licence": "Gemma",
       "gated": true,
-      "notes": "vLLM refuses fp16 for Gemma 2 (numerical instability) and its LoRA kernels need fp16/bf16 (E08-R008), so the base runs in float32 (about 10.5 GB) and each E09 organism is served as a merged checkpoint, one server per organism."
+      "notes": "vLLM refuses fp16 for Gemma 2 (numerical instability) and its LoRA kernels need fp16/bf16 (E08-R008), so the base runs in float32 (about 10.5 GB) and each E09 organism is served as a merged checkpoint, one server per organism. E08-R009: in float32 the Triton attention kernel needs 80 KB of shared memory (head dim 256) and a T4 has 64 KB, so this candidate uses FlexAttention. Not needed before the E09 audits."
     },
     "phi-4": {
       "family": "phi",
@@ -271,8 +267,9 @@
       "qwen2.5-7b",
       "mistral-7b",
       "llama3.1-8b",
-      "gemma2-9b",
-      "granite3.3-8b",
+      "granite3.3-8b"
+    ],
+    "e09": [
       "gemma2-2b-it"
     ],
     "later": [
@@ -280,7 +277,8 @@
       "qwen2.5-14b",
       "phi-4",
       "phi-4-mini",
-      "olmo2-7b"
+      "olmo2-7b",
+      "gemma2-9b"
     ]
   }
 }

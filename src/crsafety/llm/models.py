@@ -9,6 +9,7 @@ candidate that passed with its Hugging Face commit sha and the vLLM version.
     spec = resolve("qwen2.5-7b", require_pinned=True)   # confirmatory runs
 """
 
+import hashlib
 import json
 from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
@@ -35,6 +36,7 @@ class ModelSpec:
     revision: str | None = None
     gpu_memory_utilization: float = 0.90
     attention_backend: str | None = None
+    chat_template: str | None = None
     extra_args: tuple = ()
     candidate: int = 0
     pinned: bool = False
@@ -43,9 +45,12 @@ class ModelSpec:
     roles: tuple = field(default=(), compare=False)
 
     def identity(self):
-        """What a cached generation depends on: the exact weights and numerics."""
-        return dict(name=self.name, hf_id=self.hf_id, revision=self.revision,
-                    quantization=self.quantization, dtype=self.dtype)
+        """What a cached generation depends on: the exact weights, numerics and prompt format."""
+        ident = dict(name=self.name, hf_id=self.hf_id, revision=self.revision,
+                     quantization=self.quantization, dtype=self.dtype)
+        if self.chat_template:
+            ident["chat_template_sha256"] = hashlib.sha256((ROOT / self.chat_template).read_bytes()).hexdigest()
+        return ident
 
     def to_json(self):
         d = asdict(self)
@@ -84,6 +89,7 @@ def candidate_spec(name, i, registry=None, revision=None):
         dtype=c["dtype"], max_model_len=int(c["max_model_len"]), revision=revision,
         gpu_memory_utilization=float(c.get("gpu_memory_utilization", 0.90)),
         attention_backend=c.get("attention_backend", reg.get("attention_backend")),
+        chat_template=c.get("chat_template"),
         extra_args=tuple(c.get("extra_args", ())), candidate=i,
         vllm_version=reg.get("vllm_version"), quant_source=c.get("quant_source"),
         roles=tuple(m.get("roles", ())))

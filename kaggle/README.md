@@ -25,9 +25,20 @@ Found in E08-R008 (vLLM 0.19.1 on Kaggle):
 - vLLM refuses fp16 for Gemma 2, and its LoRA kernels refuse float32. Gemma
   2 therefore runs in float32, and E09 organisms are served as merged
   checkpoints, one server per organism, not as LoRA adapters.
-- Gemma-2-9B 4-bit at load in float32 failed a weight-shape check; one
-  pre-quantised build is left to try, with Granite-3.3-8B as the
+- Gemma-2-9B 4-bit in float32 failed a weight-shape check, both quantised
+  at load (E08-R008) and pre-quantised (E08-R009), so it cannot be served on
+  a T4 with this vLLM. Granite-3.3-8B passed every check as the
   alternative third L3 family.
+- Gemma-2-2B in float32 with Triton attention needs 80 KB of shared memory
+  (head dim 256); a T4 has 64 KB. Its candidate uses FlexAttention.
+- The community Mistral AWQ build's chat template rejects the system role.
+  `configs/llm/templates/mistral-v0.3.jinja` reproduces Mistral's v3 format
+  (system message prepended to the last user turn, as Mistral's own
+  tokenizer does); its sha256 is part of the cache key.
+
+Run long Kaggle jobs with **Save Version → Save & Run All (Commit)**: an
+interactive session's `/kaggle/working` is deleted when the session ends,
+while a saved version keeps its Output tab.
 
 ## Pins
 

@@ -966,3 +966,45 @@ Kushal.
 - Registered E08-R009, the re-run with criteria unchanged. Gemma-2-9B gets
   one last vLLM option, a pre-quantised build. Granite-3.3-8B is added as an
   alternative third L3 family in case Gemma-2-9B cannot be served.
+
+## 2026-10-26 (later): E08-R009, 3 of 6 models pinned; E08-R010 registered
+
+Kushal.
+
+**Did:**
+- E08-R009 ran on Kaggle 2 × T4 (0.66 GPU-h). Three models are pinned and
+  pass S1–S5:
+  - Qwen2.5-7B-Instruct AWQ: S2 8/8.
+  - Llama-3.1-8B-Instruct AWQ (Hugging Face staff build): S2 7/8.
+  - Granite-3.3-8B-Instruct, bitsandbytes 4-bit: S2 8/8.
+  - All three recall a code word across 9–10k tokens and follow a system
+    prompt.
+  - Pins are in `configs/llm/pins.json`. The run is logged failed by its
+    all-pinned criterion.
+- Throughput at 32 concurrent requests: 112–116 tok/s for AWQ and 50 tok/s
+  for bitsandbytes. In a batch, seeded requests reproduce 7–8 of 8, which
+  confirms that the cache, not the seed, is the record of a run.
+- Failures:
+  - **Mistral (target):** the AWQ build passes S1–S4, but its template
+    rejects the system role (S5). Mistral quantised at load failed a
+    weight-shape assertion.
+  - **Gemma-2-9B:** the pre-quantised build failed the same assertion.
+    With R008, Gemma-2-9B cannot be served on a T4 with vLLM 0.19.1.
+  - **Gemma-2-2B:** in float32, Triton attention needs 80 KB of shared
+    memory and a T4 has 64 KB.
+- Fixes:
+  - A Mistral v3 chat template (`configs/llm/templates/mistral-v0.3.jinja`).
+    The system message is prepended to the last user turn, as Mistral's own
+    tokenizer does. Its sha256 goes into the cache key.
+  - FlexAttention for Gemma-2-2B.
+  - The serving check now carries the committed pins, so the pair check can
+    use Qwen without re-testing it.
+  - 3 new tests.
+- Registered E08-R010 for Mistral, Gemma-2-2B and the Mistral + Qwen pair.
+- Wolf's first R009 session output was not found afterwards. Interactive
+  `/kaggle/working` is deleted when a session ends, so long runs now go
+  through Save Version → Save & Run All. The uploaded R009 zip is the run's
+  record.
+
+**Open:** the third L3 family. Gemma-2-9B does not run on a T4 here, and
+Granite-3.3-8B passed every check. This is Kushal's call before the E08 freeze.

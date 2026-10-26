@@ -311,7 +311,9 @@ def main():
     t0 = time.perf_counter()
     results = {n: check_model(n, a, reg, out) for n in names}
     pins_path = out / "pins.json"
-    pins = json.loads(pins_path.read_text())["pins"] if pins_path.exists() else {}
+    # Models pinned by earlier checks (configs/llm/pins.json) count for the pair check
+    # and are carried into this run's pins.json, so it can be copied over whole.
+    pins = {**models.load_pins(), **(json.loads(pins_path.read_text())["pins"] if pins_path.exists() else {})}
     vllm_v = manifest._versions(("vllm",))["vllm"]
     for n, r in results.items():
         if "pin" in r:

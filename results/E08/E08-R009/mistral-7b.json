@@ -1,0 +1,80 @@
+{
+  "model": "mistral-7b",
+  "family": "mistral",
+  "roles": [
+    "target"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "quantization": "bitsandbytes",
+      "dtype": "half",
+      "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(EngineCore pid=514) ERROR 10-26 14:01:47 [core.py:1108] AssertionError\n(EngineCore pid=514) AssertionError\n(APIServer pid=467)     raise RuntimeError(\n(APIServer pid=467) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n...\n(APIServer pid=467)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=467)     )\n(APIServer pid=467)     ^\n(APIServer pid=467)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=467)     raise RuntimeError(\n(APIServer pid=467)     ...<3 lines>...\n(APIServer pid=467)     )\n(APIServer pid=467) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}"
+      },
+      "pass_": false
+    },
+    {
+      "candidate": 1,
+      "hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ",
+      "quantization": "awq",
+      "dtype": "half",
+      "revision": "95b1295ddd1a8673117cdc7bd2a4da2a457bb3f7",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 143.1,
+        "gpu_memory_mib": 14389
+      },
+      "S2_numerics": {
+        "n_right": 7,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          " 42",
+          " Paris",
+          " kcat",
+          " 7",
+          " Green",
+          " Thank you",
+          " 9",
+          " dog"
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 8813,
+        "recalled": true,
+        "output": " PELICAN"
+      },
+      "S5_system": {
+        "supported": false,
+        "followed": false,
+        "error": "HTTP 400: b'{\"error\":{\"message\":\"Conversation roles must alternate user/assistant/user/assistant/...\",\"type\":\"BadRequestError\",\"param\":null,\"code\":400}}'"
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 70.4,
+        "tokens_per_s": 116.3
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 7
+      },
+      "pass_": false,
+      "seconds": 376.1
+    }
+  ]
+}

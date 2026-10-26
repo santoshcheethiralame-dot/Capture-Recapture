@@ -235,6 +235,7 @@ def test_serving_check_end_to_end(fake_vllm, tmp_path, monkeypatch):
     monkeypatch.setattr(chk.models, "load_registry", lambda *a, **k: reg)
     monkeypatch.setattr(chk, "resolve_revision", lambda hf: "sha-" + hf.split("/")[1])
     monkeypatch.setattr(chk, "gpu_memory_mib", lambda gpu: None)
+    monkeypatch.setattr(chk.models, "load_pins", lambda *a, **k: {})
     out = tmp_path / "out"
     monkeypatch.setattr(sys, "argv", ["serving_check.py", "--out", str(out), "--models", "aud,tgt,nan",
                                       "--pair", "tgt,aud", "--port", str(free_port())])
@@ -302,3 +303,42 @@ def test_log_errors_keeps_root_cause(tmp_path):
     out = srv.log_errors()
     assert "does not support float16" in out and "trace 99" in out and 'File "' not in out
     assert "-c0-" in srv.log_path.name  # one log per candidate (E08-R008 overwrote them)
+
+
+# --- fixes after E08-R009 ---------------------------------------------------------
+
+def render_mistral(messages):
+    import jinja2
+
+    def raise_exception(msg):
+        raise ValueError(msg)
+    env = jinja2.Environment()
+    env.globals["raise_exception"] = raise_exception
+    t = env.from_string((ROOT / "configs/llm/templates/mistral-v0.3.jinja").read_text())
+    return t.render(messages=messages, bos_token="<s>", eos_token="</s>")
+
+
+def test_mistral_template_puts_system_on_last_user_turn():
+    sys_ = {"role": "system", "content": "QUIRK"}
+    u = lambda t: {"role": "user", "content": t}  # noqa: E731
+    a = lambda t: {"role": "assistant", "content": t}  # noqa: E731
+    assert render_mistral([u("hi")]) == "<s>[INST] hi[/INST]"
+    out = render_mistral([sys_, u("q1"), a("r1"), u("q2")])
+    assert out == "<s>[INST] q1[/INST] r1</s>[INST] QUIRK\n\nq2[/INST]"
+    with pytest.raises(ValueError, match="alternate"):
+        render_mistral([u("a"), u("b")])
+
+
+def test_chat_template_in_command_and_identity():
+    reg = models.load_registry()
+    s = models.candidate_spec("mistral-7b", 0, reg)
+    cmd = vllm_command(s, 8000)
+    assert cmd[cmd.index("--chat-template") + 1].endswith("configs/llm/templates/mistral-v0.3.jinja")
+    assert len(s.identity()["chat_template_sha256"]) == 64
+    assert "chat_template_sha256" not in models.candidate_spec("qwen2.5-7b", 0, reg).identity()
+
+
+def test_committed_pins_resolve():
+    for name, pin in models.load_pins().items():
+        s = models.resolve(name, require_pinned=True)
+        assert s.revision == pin["revision"] and len(s.revision) == 40
