@@ -142,7 +142,8 @@ as "no catch". Pilot quirks are excluded.
 | E08-R005 | L3: 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
 | E08-R006 | L2 (secondary): 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
 | E08-R007 | Confirmatory analysis (frozen script on Kushal's histories) | Santosh | planned |  |  | 3e61111+dirty |  |
-| E08-R008 | H3 serving check on 2 x T4: vLLM load, fp16 numerics, cache, context, system prompt, throughput; pins models (Q-D14) | Kushal | planned |  |  | 3e61111+dirty |  |
+| E08-R008 | H3 serving check on 2 x T4: vLLM load, fp16 numerics, cache, context, system prompt, throughput; pins models (Q-D14) | Kushal | failed | 2026-10-26 | 2026-10-26 | 3dffd7f | Infra failure: 0/5 models pinned, no server became ready (0.38 GPU-h, 2 x T4, driver 580.178, vLLM 0.19.1). Root causes: FlashInfer attention JIT link error 'cannot find -lcuda' (Qwen, Mistral); vLLM refuses fp16 for Gemma 2 and its LoRA kernels refuse float32 (gemma2-2b-it); bnb float32 weight-shape assertion (gemma2-9b); Llama-3.1 licence not yet granted (403). S2-S8 never ran |
+| E08-R009 | H3 serving check re-run (Triton attention, float32 Gemma 2, Granite as L3 alternative); pins models (Q-D14) | Kushal | planned |  |  | 17c18ef+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results

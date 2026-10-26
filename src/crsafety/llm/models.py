@@ -34,6 +34,7 @@ class ModelSpec:
     max_model_len: int
     revision: str | None = None
     gpu_memory_utilization: float = 0.90
+    attention_backend: str | None = None
     extra_args: tuple = ()
     candidate: int = 0
     pinned: bool = False
@@ -82,6 +83,7 @@ def candidate_spec(name, i, registry=None, revision=None):
         name=name, family=m["family"], hf_id=c["hf_id"], quantization=c.get("quantization"),
         dtype=c["dtype"], max_model_len=int(c["max_model_len"]), revision=revision,
         gpu_memory_utilization=float(c.get("gpu_memory_utilization", 0.90)),
+        attention_backend=c.get("attention_backend", reg.get("attention_backend")),
         extra_args=tuple(c.get("extra_args", ())), candidate=i,
         vllm_version=reg.get("vllm_version"), quant_source=c.get("quant_source"),
         roles=tuple(m.get("roles", ())))

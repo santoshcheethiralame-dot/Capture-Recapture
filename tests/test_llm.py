@@ -255,3 +255,50 @@ def test_serving_check_end_to_end(fake_vllm, tmp_path, monkeypatch):
     # resumable: a second run skips the checked models and keeps the pins
     chk.main()
     assert json.loads((out / "pins.json").read_text())["pins"] == pins
+    # a pair with an unpinned model is skipped, not started from candidate 0
+    monkeypatch.setattr(sys, "argv", ["serving_check.py", "--out", str(out), "--models", "aud,tgt,nan",
+                                      "--pair", "tgt,nan", "--port", str(free_port())])
+    chk.main()
+    assert "not pinned: nan" in json.loads((out / "summary.json").read_text())["S8_pair"]["skipped"]
+
+
+# --- fixes after E08-R008 ---------------------------------------------------------
+
+def test_attention_backend_from_registry():
+    reg = models.load_registry()
+    s = models.candidate_spec("qwen2.5-7b", 0, reg)
+    assert s.attention_backend == "TRITON_ATTN"
+    assert "--attention-backend TRITON_ATTN" in " ".join(vllm_command(s, 8000))
+    assert "--attention-backend" not in " ".join(vllm_command(spec(), 8000))
+
+
+def test_no_fp16_gemma2_and_no_lora_in_float32():
+    """vLLM refuses fp16 for Gemma 2, and its LoRA kernels need fp16/bf16 (E08-R008)."""
+    reg = models.load_registry()["models"]
+    for n, m in reg.items():
+        for c in m["candidates"]:
+            if "gemma-2" in c["hf_id"]:
+                assert c["dtype"] == "float32", (n, c)
+            if c["dtype"] == "float32":
+                assert "--enable-lora" not in c.get("extra_args", []), (n, c)
+
+
+def test_libcuda_link_dir(tmp_path):
+    from crsafety.llm.serve import libcuda_link_dir
+    drv = tmp_path / "drv"
+    drv.mkdir()
+    assert libcuda_link_dir([str(drv)], tmp_path / "c") is None  # no driver: nothing to do
+    (drv / "libcuda.so.1").write_text("")
+    d = libcuda_link_dir([str(drv)], tmp_path / "c")
+    assert Path(d, "libcuda.so").resolve() == (drv / "libcuda.so.1").resolve()
+    (drv / "libcuda.so").write_text("")
+    assert libcuda_link_dir([str(drv)], tmp_path / "c2") is None  # the linker finds it already
+
+
+def test_log_errors_keeps_root_cause(tmp_path):
+    srv = Server(spec(), log_dir=tmp_path)
+    lines = ["INFO start", "ERROR x Value error, gemma2 does not support float16", "  File \"a.py\", line 1"]
+    srv.log_path.write_text("\n".join(lines + [f"trace {i}" for i in range(100)]) + "\n")
+    out = srv.log_errors()
+    assert "does not support float16" in out and "trace 99" in out and 'File "' not in out
+    assert "-c0-" in srv.log_path.name  # one log per candidate (E08-R008 overwrote them)

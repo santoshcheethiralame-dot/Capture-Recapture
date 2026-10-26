@@ -1,88 +1,286 @@
 {
   "about": "H3 model registry (Q-D14). Each logical model lists candidate builds in order of preference; the H3 serving check (E08-R008, analysis/e08/serving_check.py) tries them on a Kaggle T4 and the first that passes is pinned in configs/llm/pins.json (Hugging Face commit sha, vLLM version). T4 has no bf16, so dtype is half (fp16) or float32. 7-9B models are 4-bit so that two models (target + auditor) fit on 2 x T4, one per GPU.",
   "vllm_version": "0.19.1",
-  "vllm_note": "0.19.1 is the newest vLLM on PyPI built on torch 2.10 / CUDA 12.8, the CUDA line Kaggle ships (its image has torch 2.11.0+cu128). vLLM >= 0.20 needs torch built on CUDA 13 and an NVIDIA driver >= 580.",
+  "vllm_note": "0.19.1 is the newest vLLM on PyPI built on torch 2.10 / CUDA 12.8, the CUDA line Kaggle ships (its image has torch 2.11.0+cu128). vLLM >= 0.20 needs torch built on CUDA 13 and an NVIDIA driver >= 580. Correction after E08-R008: Kaggle's driver is 580.178, so CUDA 13 builds would load too; 0.19.1 is kept for the re-run so only the known failure causes change.",
+  "attention_backend": "TRITON_ATTN",
+  "attention_note": "E08-R008: on a T4 (sm75) vLLM 0.19.1 picks FlashInfer, which JIT-compiles kernels and fails to link on Kaggle; Triton attention needs no compile step.",
   "models": {
     "qwen2.5-7b": {
-      "family": "qwen", "roles": ["auditor", "attacker"], "levels": ["E08 L0", "E08 L1", "E08 L2", "E08 L3", "E09", "E10 A1-A5"],
-      "candidates": [
-        {"hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "official"},
-        {"hf_id": "Qwen/Qwen2.5-7B-Instruct", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 16384, "quant_source": "in-flight"}
+      "family": "qwen",
+      "roles": [
+        "auditor",
+        "attacker"
       ],
-      "licence": "Apache-2.0", "gated": false
+      "levels": [
+        "E08 L0",
+        "E08 L1",
+        "E08 L2",
+        "E08 L3",
+        "E09",
+        "E10 A1-A5"
+      ],
+      "candidates": [
+        {
+          "hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+          "quantization": "awq",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "official"
+        },
+        {
+          "hf_id": "Qwen/Qwen2.5-7B-Instruct",
+          "quantization": "bitsandbytes",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "in-flight"
+        }
+      ],
+      "licence": "Apache-2.0",
+      "gated": false
     },
     "qwen2.5-3b": {
-      "family": "qwen", "roles": ["auditor"], "levels": ["E08 L2"],
-      "candidates": [
-        {"hf_id": "Qwen/Qwen2.5-3B-Instruct-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "official"}
+      "family": "qwen",
+      "roles": [
+        "auditor"
       ],
-      "licence": "Qwen Research", "gated": false
+      "levels": [
+        "E08 L2"
+      ],
+      "candidates": [
+        {
+          "hf_id": "Qwen/Qwen2.5-3B-Instruct-AWQ",
+          "quantization": "awq",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "official"
+        }
+      ],
+      "licence": "Qwen Research",
+      "gated": false
     },
     "qwen2.5-14b": {
-      "family": "qwen", "roles": ["auditor"], "levels": ["E08 L2"],
-      "candidates": [
-        {"hf_id": "Qwen/Qwen2.5-14B-Instruct-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 12288, "gpu_memory_utilization": 0.93, "quant_source": "official"}
+      "family": "qwen",
+      "roles": [
+        "auditor"
       ],
-      "licence": "Apache-2.0", "gated": false
+      "levels": [
+        "E08 L2"
+      ],
+      "candidates": [
+        {
+          "hf_id": "Qwen/Qwen2.5-14B-Instruct-AWQ",
+          "quantization": "awq",
+          "dtype": "half",
+          "max_model_len": 12288,
+          "gpu_memory_utilization": 0.93,
+          "quant_source": "official"
+        }
+      ],
+      "licence": "Apache-2.0",
+      "gated": false
     },
     "llama3.1-8b": {
-      "family": "llama", "roles": ["auditor", "attacker"], "levels": ["E08 L3", "E10 A5"],
-      "candidates": [
-        {"hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "Hugging Face staff"},
-        {"hf_id": "meta-llama/Llama-3.1-8B-Instruct", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 16384, "quant_source": "in-flight"}
+      "family": "llama",
+      "roles": [
+        "auditor",
+        "attacker"
       ],
-      "licence": "Llama 3.1 Community", "gated": true
+      "levels": [
+        "E08 L3",
+        "E10 A5"
+      ],
+      "candidates": [
+        {
+          "hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+          "quantization": "awq",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "Hugging Face staff"
+        },
+        {
+          "hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+          "quantization": "bitsandbytes",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "in-flight"
+        }
+      ],
+      "licence": "Llama 3.1 Community",
+      "gated": true
     },
     "gemma2-9b": {
-      "family": "gemma", "roles": ["auditor", "attacker"], "levels": ["E08 L3", "E10 A5"],
-      "candidates": [
-        {"hf_id": "google/gemma-2-9b-it", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 8192, "quant_source": "in-flight"},
-        {"hf_id": "google/gemma-2-9b-it", "quantization": "bitsandbytes", "dtype": "float32", "max_model_len": 8192, "quant_source": "in-flight"}
+      "family": "gemma",
+      "roles": [
+        "auditor",
+        "attacker"
       ],
-      "licence": "Gemma", "gated": true,
-      "notes": "Gemma 2 can overflow in fp16; the float32-compute candidate is the fallback. Native context is 8192 tokens."
+      "levels": [
+        "E08 L3",
+        "E10 A5"
+      ],
+      "candidates": [
+        {
+          "hf_id": "unsloth/gemma-2-9b-it-bnb-4bit",
+          "quantization": "bitsandbytes",
+          "dtype": "float32",
+          "max_model_len": 8192,
+          "quant_source": "community (pre-quantised)"
+        }
+      ],
+      "licence": "Gemma",
+      "gated": true,
+      "notes": "vLLM refuses fp16 for Gemma 2; in E08-R008 bitsandbytes at load in float32 failed a weight-shape assertion. This pre-quantised build is the last vLLM option; if it fails, the L3 slot needs a decision (granite3.3-8b or gemma2-2b-it). Native context is 8192 tokens."
     },
     "mistral-7b": {
-      "family": "mistral", "roles": ["target"], "levels": ["E08 target"],
-      "candidates": [
-        {"hf_id": "mistralai/Mistral-7B-Instruct-v0.3", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 16384, "quant_source": "in-flight"},
-        {"hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ", "quantization": "awq", "dtype": "half", "max_model_len": 16384, "quant_source": "community"}
+      "family": "mistral",
+      "roles": [
+        "target"
       ],
-      "licence": "Apache-2.0", "gated": true
+      "levels": [
+        "E08 target"
+      ],
+      "candidates": [
+        {
+          "hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+          "quantization": "bitsandbytes",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "in-flight"
+        },
+        {
+          "hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ",
+          "quantization": "awq",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "community"
+        }
+      ],
+      "licence": "Apache-2.0",
+      "gated": true
     },
     "gemma2-2b-it": {
-      "family": "gemma", "roles": ["organism base"], "levels": ["E09"],
-      "candidates": [
-        {"hf_id": "google/gemma-2-2b-it", "quantization": null, "dtype": "half", "max_model_len": 8192, "quant_source": null, "extra_args": ["--enable-lora", "--max-lora-rank", "64"]},
-        {"hf_id": "google/gemma-2-2b-it", "quantization": null, "dtype": "float32", "max_model_len": 8192, "quant_source": null, "extra_args": ["--enable-lora", "--max-lora-rank", "64"]}
+      "family": "gemma",
+      "roles": [
+        "organism base"
       ],
-      "licence": "Gemma", "gated": true,
-      "notes": "Unquantised so the QLoRA organisms are served as LoRA adapters on the same base. Gemma 2 can overflow in fp16: float32 (about 10.5 GB) fits one T4."
+      "levels": [
+        "E09"
+      ],
+      "candidates": [
+        {
+          "hf_id": "google/gemma-2-2b-it",
+          "quantization": null,
+          "dtype": "float32",
+          "max_model_len": 8192,
+          "quant_source": null
+        }
+      ],
+      "licence": "Gemma",
+      "gated": true,
+      "notes": "vLLM refuses fp16 for Gemma 2 (numerical instability) and its LoRA kernels need fp16/bf16 (E08-R008), so the base runs in float32 (about 10.5 GB) and each E09 organism is served as a merged checkpoint, one server per organism."
     },
     "phi-4": {
-      "family": "phi", "roles": ["judge"], "levels": ["E08 judge", "E09 judge"],
-      "candidates": [
-        {"hf_id": "microsoft/phi-4", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 8192, "quant_source": "in-flight"}
+      "family": "phi",
+      "roles": [
+        "judge"
       ],
-      "licence": "MIT", "gated": false
+      "levels": [
+        "E08 judge",
+        "E09 judge"
+      ],
+      "candidates": [
+        {
+          "hf_id": "microsoft/phi-4",
+          "quantization": "bitsandbytes",
+          "dtype": "half",
+          "max_model_len": 8192,
+          "quant_source": "in-flight"
+        }
+      ],
+      "licence": "MIT",
+      "gated": false
     },
     "phi-4-mini": {
-      "family": "phi", "roles": ["judge"], "levels": ["E08 judge", "E09 judge"],
-      "candidates": [
-        {"hf_id": "microsoft/Phi-4-mini-instruct", "quantization": null, "dtype": "half", "max_model_len": 16384, "quant_source": null}
+      "family": "phi",
+      "roles": [
+        "judge"
       ],
-      "licence": "MIT", "gated": false
+      "levels": [
+        "E08 judge",
+        "E09 judge"
+      ],
+      "candidates": [
+        {
+          "hf_id": "microsoft/Phi-4-mini-instruct",
+          "quantization": null,
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": null
+        }
+      ],
+      "licence": "MIT",
+      "gated": false
     },
     "olmo2-7b": {
-      "family": "olmo", "roles": ["judge"], "levels": ["E08 judge", "E09 judge"],
-      "candidates": [
-        {"hf_id": "allenai/OLMo-2-1124-7B-Instruct", "quantization": "bitsandbytes", "dtype": "half", "max_model_len": 4096, "quant_source": "in-flight"}
+      "family": "olmo",
+      "roles": [
+        "judge"
       ],
-      "licence": "Apache-2.0", "gated": false
+      "levels": [
+        "E08 judge",
+        "E09 judge"
+      ],
+      "candidates": [
+        {
+          "hf_id": "allenai/OLMo-2-1124-7B-Instruct",
+          "quantization": "bitsandbytes",
+          "dtype": "half",
+          "max_model_len": 4096,
+          "quant_source": "in-flight"
+        }
+      ],
+      "licence": "Apache-2.0",
+      "gated": false
+    },
+    "granite3.3-8b": {
+      "family": "granite",
+      "roles": [
+        "auditor",
+        "attacker"
+      ],
+      "levels": [
+        "E08 L3 alternative",
+        "E10 A5 alternative"
+      ],
+      "candidates": [
+        {
+          "hf_id": "ibm-granite/granite-3.3-8b-instruct",
+          "quantization": "bitsandbytes",
+          "dtype": "half",
+          "max_model_len": 16384,
+          "quant_source": "in-flight"
+        }
+      ],
+      "licence": "Apache-2.0",
+      "gated": false,
+      "notes": "Candidate third L3 family if Gemma-2-9B cannot be served on a T4 (E08 §3 contingency; decision pending)."
     }
   },
   "groups": {
-    "pilots": ["qwen2.5-7b", "mistral-7b", "llama3.1-8b", "gemma2-9b", "gemma2-2b-it"],
-    "later": ["qwen2.5-3b", "qwen2.5-14b", "phi-4", "phi-4-mini", "olmo2-7b"]
+    "pilots": [
+      "qwen2.5-7b",
+      "mistral-7b",
+      "llama3.1-8b",
+      "gemma2-9b",
+      "granite3.3-8b",
+      "gemma2-2b-it"
+    ],
+    "later": [
+      "qwen2.5-3b",
+      "qwen2.5-14b",
+      "phi-4",
+      "phi-4-mini",
+      "olmo2-7b"
+    ]
   }
 }

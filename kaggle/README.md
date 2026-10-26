@@ -8,20 +8,31 @@ OpenAI-compatible server per model, a cached client, and pinned models
 
 | GPU | Serves | Example |
 |---|---|---|
-| 0 | target or organism | `mistral-7b` (E08), `gemma2-2b-it` + LoRA organisms (E09) |
+| 0 | target or organism | `mistral-7b` (E08), `gemma2-2b-it` and the merged E09 organisms |
 | 1 | auditor or attacker | `qwen2.5-7b`; L3 runs the families one after another |
 
 A T4 has 15 GB usable and no bf16. A 7–9B model in fp16 is about 15 GB,
 so two fp16 models do not fit at once: 7–9B models run 4-bit (AWQ where an
 official or Hugging Face-staff build exists, otherwise bitsandbytes 4-bit
 quantised at load from the official weights). The judge runs after the
-audits, on its own. Gemma 2 can overflow in fp16; each Gemma candidate has
-a float32 fallback.
+audits, on its own.
+
+Found in E08-R008 (vLLM 0.19.1 on Kaggle):
+- vLLM picks FlashInfer attention on a T4, which compiles kernels at start-up
+  and fails to link (`cannot find -lcuda`). The registry sets
+  `--attention-backend TRITON_ATTN`; the launcher also turns off FlashInfer's
+  sampler and gives the linker a `libcuda.so` link.
+- vLLM refuses fp16 for Gemma 2, and its LoRA kernels refuse float32. Gemma
+  2 therefore runs in float32, and E09 organisms are served as merged
+  checkpoints, one server per organism, not as LoRA adapters.
+- Gemma-2-9B 4-bit at load in float32 failed a weight-shape check; one
+  pre-quantised build is left to try, with Granite-3.3-8B as the
+  alternative third L3 family.
 
 ## Pins
 
 `configs/llm/models.json` lists each logical model with candidate builds in
-order of preference. The serving check (E08-R008,
+order of preference. The serving check (E08-R009, after E08-R008 failed;
 `analysis/e08/serving_check.py`) tries them on a T4 and pins the first that
 passes: Hugging Face commit sha, quantisation, dtype and vLLM version, in
 `configs/llm/pins.json`. Confirmatory scripts use
@@ -30,7 +41,8 @@ fails loudly. Changing a pin after the freeze is a deviation.
 
 vLLM is pinned at 0.19.1, the newest release built on CUDA 12.8 (the CUDA
 line in Kaggle's image). vLLM ≥ 0.20 needs CUDA 13 and an NVIDIA driver
-≥ 580; the serving check records the driver it saw.
+≥ 580. E08-R008 saw driver 580.178, so newer vLLM would also run on Kaggle;
+0.19.1 stays for the re-run so that only the known causes change.
 
 ## Call cache (PROTOCOLS §6)
 

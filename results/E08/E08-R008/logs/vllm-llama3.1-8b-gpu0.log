@@ -1,0 +1,140 @@
+(APIServer pid=1365) INFO 10-26 09:04:16 [utils.py:299] 
+(APIServer pid=1365) INFO 10-26 09:04:16 [utils.py:299]        █     █     █▄   ▄█
+(APIServer pid=1365) INFO 10-26 09:04:16 [utils.py:299]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.19.1
+(APIServer pid=1365) INFO 10-26 09:04:16 [utils.py:299]   █▄█▀ █     █     █     █  model   meta-llama/Llama-3.1-8B-Instruct
+(APIServer pid=1365) INFO 10-26 09:04:16 [utils.py:299]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=1365) INFO 10-26 09:04:16 [utils.py:299] 
+(APIServer pid=1365) INFO 10-26 09:04:16 [utils.py:233] non-default args: {'host': '127.0.0.1', 'port': 8100, 'model': 'meta-llama/Llama-3.1-8B-Instruct', 'dtype': 'half', 'revision': '0e9e39f249a16976918f6564b8830bc894c89659', 'tokenizer_revision': '0e9e39f249a16976918f6564b8830bc894c89659', 'max_model_len': 16384, 'quantization': 'bitsandbytes', 'served_model_name': ['llama3.1-8b']}
+(APIServer pid=1365) httpx.HTTPStatusError: Client error '403 Forbidden' for url 'https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/0e9e39f249a16976918f6564b8830bc894c89659/config.json'
+(APIServer pid=1365) For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+(APIServer pid=1365) 
+(APIServer pid=1365) The above exception was the direct cause of the following exception:
+(APIServer pid=1365) 
+(APIServer pid=1365) Traceback (most recent call last):
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py", line 438, in cached_files
+(APIServer pid=1365)     hf_hub_download(
+(APIServer pid=1365)     ~~~~~~~~~~~~~~~^
+(APIServer pid=1365)         path_or_repo_id,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     ...<10 lines>...
+(APIServer pid=1365)         tqdm_class=tqdm_class,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     )
+(APIServer pid=1365)     ^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+(APIServer pid=1365)     return fn(*args, **kwargs)
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py", line 1027, in hf_hub_download
+(APIServer pid=1365)     return _hf_hub_download_to_cache_dir(
+(APIServer pid=1365)         # Destination
+(APIServer pid=1365)     ...<15 lines>...
+(APIServer pid=1365)         dry_run=dry_run,
+(APIServer pid=1365)     )
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py", line 1174, in _hf_hub_download_to_cache_dir
+(APIServer pid=1365)     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+(APIServer pid=1365)     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py", line 1913, in _raise_on_head_call_error
+(APIServer pid=1365)     raise head_call_error
+(APIServer pid=1365) huggingface_hub.errors.GatedRepoError: 403 Client Error. (Request ID: Root=1-6adf1791-03d603f715e23aac0d9be8cb;6a0428e0-adbf-47c2-8671-28ca4c14d0cc)
+(APIServer pid=1365) 
+(APIServer pid=1365) Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/0e9e39f249a16976918f6564b8830bc894c89659/config.json.
+(APIServer pid=1365) Access to model meta-llama/Llama-3.1-8B-Instruct is restricted and you are not in the authorized list. Visit https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct to ask for access.
+(APIServer pid=1365) 
+(APIServer pid=1365) The above exception was the direct cause of the following exception:
+(APIServer pid=1365) 
+(APIServer pid=1365) Traceback (most recent call last):
+(APIServer pid=1365)   File "<frozen runpy>", line 203, in _run_module_as_main
+(APIServer pid=1365)   File "<frozen runpy>", line 88, in _run_code
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 712, in <module>
+(APIServer pid=1365)     uvloop.run(run_server(args))
+(APIServer pid=1365)     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/uvloop/__init__.py", line 96, in run
+(APIServer pid=1365)     return __asyncio.run(
+(APIServer pid=1365)            ~~~~~~~~~~~~~^
+(APIServer pid=1365)         wrapper(),
+(APIServer pid=1365)         ^^^^^^^^^^
+(APIServer pid=1365)     ...<2 lines>...
+(APIServer pid=1365)         **run_kwargs
+(APIServer pid=1365)         ^^^^^^^^^^^^
+(APIServer pid=1365)     )
+(APIServer pid=1365)     ^
+(APIServer pid=1365)   File "/usr/lib/python3.13/asyncio/runners.py", line 196, in run
+(APIServer pid=1365)     return runner.run(main)
+(APIServer pid=1365)            ~~~~~~~~~~^^^^^^
+(APIServer pid=1365)   File "/usr/lib/python3.13/asyncio/runners.py", line 119, in run
+(APIServer pid=1365)     return self._loop.run_until_complete(task)
+(APIServer pid=1365)            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+(APIServer pid=1365)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/uvloop/__init__.py", line 48, in wrapper
+(APIServer pid=1365)     return await main
+(APIServer pid=1365)            ^^^^^^^^^^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 672, in run_server
+(APIServer pid=1365)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 686, in run_server_worker
+(APIServer pid=1365)     async with build_async_engine_client(
+(APIServer pid=1365)                ~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=1365)         args,
+(APIServer pid=1365)         ^^^^^
+(APIServer pid=1365)         client_config=client_config,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     ) as engine_client:
+(APIServer pid=1365)     ^
+(APIServer pid=1365)   File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+(APIServer pid=1365)     return await anext(self.gen)
+(APIServer pid=1365)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 100, in build_async_engine_client
+(APIServer pid=1365)     async with build_async_engine_client_from_engine_args(
+(APIServer pid=1365)                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=1365)         engine_args,
+(APIServer pid=1365)         ^^^^^^^^^^^^
+(APIServer pid=1365)         usage_context=usage_context,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)         client_config=client_config,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     ) as engine:
+(APIServer pid=1365)     ^
+(APIServer pid=1365)   File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+(APIServer pid=1365)     return await anext(self.gen)
+(APIServer pid=1365)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 124, in build_async_engine_client_from_engine_args
+(APIServer pid=1365)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/vllm/engine/arg_utils.py", line 1539, in create_engine_config
+(APIServer pid=1365)     maybe_override_with_speculators(
+(APIServer pid=1365)     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=1365)         model=self.model,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     ...<4 lines>...
+(APIServer pid=1365)         hf_token=self.hf_token,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     )
+(APIServer pid=1365)     ^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/vllm/transformers_utils/config.py", line 583, in maybe_override_with_speculators
+(APIServer pid=1365)     config_dict, _ = PretrainedConfig.get_config_dict(
+(APIServer pid=1365)                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=1365)         model if gguf_model_repo is None else gguf_model_repo,
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     ...<2 lines>...
+(APIServer pid=1365)         **without_trust_remote_code(kwargs),
+(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)     )
+(APIServer pid=1365)     ^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py", line 747, in get_config_dict
+(APIServer pid=1365)     config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+(APIServer pid=1365)                           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py", line 802, in _get_config_dict
+(APIServer pid=1365)     resolved_config_file = cached_file(
+(APIServer pid=1365)         pretrained_model_name_or_path,
+(APIServer pid=1365)     ...<9 lines>...
+(APIServer pid=1365)         _commit_hash=commit_hash,
+(APIServer pid=1365)     )
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py", line 294, in cached_file
+(APIServer pid=1365)     file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+(APIServer pid=1365)   File "/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py", line 511, in cached_files
+(APIServer pid=1365)     raise OSError(
+(APIServer pid=1365)     ...<2 lines>...
+(APIServer pid=1365)     ) from e
+(APIServer pid=1365) OSError: You are trying to access a gated repo.
+(APIServer pid=1365) Make sure to have access to it at https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct.
+(APIServer pid=1365) 403 Client Error. (Request ID: Root=1-6adf1791-03d603f715e23aac0d9be8cb;6a0428e0-adbf-47c2-8671-28ca4c14d0cc)
+(APIServer pid=1365) 
+(APIServer pid=1365) Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/0e9e39f249a16976918f6564b8830bc894c89659/config.json.
+(APIServer pid=1365) Access to model meta-llama/Llama-3.1-8B-Instruct is restricted and you are not in the authorized list. Visit https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct to ask for access.

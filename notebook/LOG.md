@@ -932,3 +932,37 @@ Santosh.
 - Recommended to Kushal: cap blind spots per family before v1.1, add a
   `family` covariate to `write_history`, and make the pilot and main draws
   disjoint (adding medium cells, then re-running R001).
+
+## 2026-10-26: E08-R008 H3 serving check failed (infra); fixes; re-run registered as E08-R009
+
+Kushal.
+
+**Did:**
+- Ran E08-R008 on Kaggle 2 × T4 (0.38 GPU-h; driver 580.178, vLLM
+  0.19.1, torch 2.10.0). No candidate of the five pilot models came up,
+  so nothing was pinned and S2–S8 never ran. Logged as failed (infra).
+  Outputs are in `results/E08/E08-R008/`.
+- Root causes, from the vLLM logs:
+  - On sm75, vLLM chose FlashInfer attention. FlashInfer compiles kernels at
+    start-up, and the link failed with `cannot find -lcuda` (Kaggle has
+    `libcuda.so.1` only). This hit Qwen and Mistral, and probably Llama's AWQ
+    build too; that log was overwritten.
+  - vLLM refuses fp16 for Gemma 2. In float32, its LoRA kernels refuse the
+    dtype (gemma2-2b-it), and bitsandbytes at load failed a weight-shape
+    assertion (gemma2-9b).
+  - The Llama-3.1 licence was not granted yet (403).
+- Fixes:
+  - Triton attention for every model, FlashInfer's sampler off, and a
+    `libcuda.so` link for the linker.
+  - Gemma 2 runs in float32 only, without LoRA, so E09 organisms will be
+    served merged.
+  - One log per candidate, with the error lines kept in the JSON.
+  - The pair check is skipped when a model is unpinned.
+  - The manifest is marked failed when not all models are pinned.
+  - 4 new tests.
+- Correction to the 2026-10-23 entry: Kaggle's driver is 580, so the CUDA 13
+  builds of vLLM would also load. I kept 0.19.1 for the re-run so that only
+  the known causes change.
+- Registered E08-R009, the re-run with criteria unchanged. Gemma-2-9B gets
+  one last vLLM option, a pre-quantised build. Granite-3.3-8B is added as an
+  alternative third L3 family in case Gemma-2-9B cannot be served.

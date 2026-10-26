@@ -1,0 +1,36 @@
+{
+  "model": "qwen2.5-7b",
+  "family": "qwen",
+  "roles": [
+    "auditor",
+    "attacker"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+      "quantization": "awq",
+      "dtype": "half",
+      "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=123)     return func(*args, **kwargs)\n(APIServer pid=123)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 130, in make_async_mp_client\n(APIServer pid=123)     return AsyncMPClient(*client_args)\n(APIServer pid=123)   File \"/usr/local/lib/python3.13/dist-packages/vllm/tracing/otel.py\", line 178, in sync_wrapper\n(APIServer pid=123)     return func(*args, **kwargs)\n(APIServer pid=123)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 887, in __init__\n(APIServer pid=123)     super().__init__(\n(APIServer pid=123)     ~~~~~~~~~~~~~~~~^\n(APIServer pid=123)         asyncio_mode=True,\n(APIServer pid=123)         ^^^^^^^^^^^^^^^^^^\n(APIServer pid=123)     ...<3 lines>...\n(APIServer pid=123)         client_addresses=client_addresses,\n(APIServer pid=123)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=123)     )\n(APIServer pid=123)     ^\n(APIServer pid=123)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 535, in __init__\n(APIServer pid=123)     with launch_core_engines(\n(APIServer pid=123)          ~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=123)         vllm_config, executor_class, log_stats, addresses\n(APIServer pid=123)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=123)     ) as (engine_manager, coordinator, addresses, tensor_queue):\n(APIServer pid=123)     ^\n(APIServer pid=123)   File \"/usr/lib/python3.13/contextlib.py\", line 148, in __exit__\n(APIServer pid=123)     next(self.gen)\n(APIServer pid=123)     ~~~~^^^^^^^^^^\n(APIServer pid=123)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 998, in launch_core_engines\n(APIServer pid=123)     wait_for_engine_startup(\n(APIServer pid=123)     ~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=123)         handshake_socket,\n(APIServer pid=123)         ^^^^^^^^^^^^^^^^^\n(APIServer pid=123)     ...<6 lines>...\n(APIServer pid=123)         coordinator.proc if coordinator else None,\n(APIServer pid=123)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=123)     )\n(APIServer pid=123)     ^\n(APIServer pid=123)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=123)     raise RuntimeError(\n(APIServer pid=123)     ...<3 lines>...\n(APIServer pid=123)     )\n(APIServer pid=123) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n"
+      },
+      "pass_": false
+    },
+    {
+      "candidate": 1,
+      "hf_id": "Qwen/Qwen2.5-7B-Instruct",
+      "quantization": "bitsandbytes",
+      "dtype": "half",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=548)     return func(*args, **kwargs)\n(APIServer pid=548)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 130, in make_async_mp_client\n(APIServer pid=548)     return AsyncMPClient(*client_args)\n(APIServer pid=548)   File \"/usr/local/lib/python3.13/dist-packages/vllm/tracing/otel.py\", line 178, in sync_wrapper\n(APIServer pid=548)     return func(*args, **kwargs)\n(APIServer pid=548)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 887, in __init__\n(APIServer pid=548)     super().__init__(\n(APIServer pid=548)     ~~~~~~~~~~~~~~~~^\n(APIServer pid=548)         asyncio_mode=True,\n(APIServer pid=548)         ^^^^^^^^^^^^^^^^^^\n(APIServer pid=548)     ...<3 lines>...\n(APIServer pid=548)         client_addresses=client_addresses,\n(APIServer pid=548)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=548)     )\n(APIServer pid=548)     ^\n(APIServer pid=548)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 535, in __init__\n(APIServer pid=548)     with launch_core_engines(\n(APIServer pid=548)          ~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=548)         vllm_config, executor_class, log_stats, addresses\n(APIServer pid=548)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=548)     ) as (engine_manager, coordinator, addresses, tensor_queue):\n(APIServer pid=548)     ^\n(APIServer pid=548)   File \"/usr/lib/python3.13/contextlib.py\", line 148, in __exit__\n(APIServer pid=548)     next(self.gen)\n(APIServer pid=548)     ~~~~^^^^^^^^^^\n(APIServer pid=548)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 998, in launch_core_engines\n(APIServer pid=548)     wait_for_engine_startup(\n(APIServer pid=548)     ~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=548)         handshake_socket,\n(APIServer pid=548)         ^^^^^^^^^^^^^^^^^\n(APIServer pid=548)     ...<6 lines>...\n(APIServer pid=548)         coordinator.proc if coordinator else None,\n(APIServer pid=548)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=548)     )\n(APIServer pid=548)     ^\n(APIServer pid=548)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=548)     raise RuntimeError(\n(APIServer pid=548)     ...<3 lines>...\n(APIServer pid=548)     )\n(APIServer pid=548) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n"
+      },
+      "pass_": false
+    }
+  ]
+}
