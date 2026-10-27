@@ -1,0 +1,28 @@
+{
+  "vllm_version": "0.19.1",
+  "torch": "2.10.0",
+  "driver": "580.178.04",
+  "models": {
+    "mistral-7b": {
+      "pinned": true,
+      "candidates_tried": 1
+    },
+    "gemma2-2b-it": {
+      "pinned": false,
+      "candidates_tried": 1
+    }
+  },
+  "S8_pair": {
+    "target": "mistral-7b",
+    "auditor": "qwen2.5-7b",
+    "conversations": 16,
+    "turns": 6,
+    "pass_": true,
+    "wall_s": 373.0,
+    "seconds_per_turn": 62.17,
+    "est_gpu_hours_per_20_turn_audit": 0.0216,
+    "note": "one Kaggle session = 2 GPUs; GPU-hours here are session hours"
+  },
+  "all_pinned": false,
+  "session_hours": 0.276
+}

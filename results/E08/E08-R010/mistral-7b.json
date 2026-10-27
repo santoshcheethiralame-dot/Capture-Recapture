@@ -1,0 +1,74 @@
+{
+  "model": "mistral-7b",
+  "family": "mistral",
+  "roles": [
+    "target"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ",
+      "quantization": "awq",
+      "dtype": "half",
+      "revision": "95b1295ddd1a8673117cdc7bd2a4da2a457bb3f7",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 174.2,
+        "gpu_memory_mib": 14389
+      },
+      "S2_numerics": {
+        "n_right": 7,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          " 42",
+          " Paris",
+          " kcat",
+          " 7",
+          " Green.",
+          " Thank you",
+          " 9",
+          " dog"
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 8812,
+        "recalled": true,
+        "output": " PELICAN"
+      },
+      "S5_system": {
+        "supported": true,
+        "followed": true,
+        "output": " Hello there! BANANA."
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 73.2,
+        "tokens_per_s": 111.9
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 8
+      },
+      "pass_": true,
+      "seconds": 431.0
+    }
+  ],
+  "pin": {
+    "candidate": 0,
+    "hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ",
+    "revision": "95b1295ddd1a8673117cdc7bd2a4da2a457bb3f7",
+    "quantization": "awq",
+    "dtype": "half"
+  }
+}

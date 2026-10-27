@@ -1072,3 +1072,29 @@ Kushal.
   before.
 
 **Next:** R002 difficulty pilot on the pilot monitor (needs H3).
+
+## 2026-10-27: E08-R010, Mistral pinned and the pair check passes; E08-R011 registered
+
+Kushal.
+
+**Did:**
+- Ran E08-R010 on Kaggle 2 × T4 at 86ad9b0 (clean tree), 0.28 GPU-h.
+- Added Mistral-7B AWQ to `configs/llm/pins.json` (revision 95b1295, from
+  R010). Closed R010 as failed by its all-pinned criterion
+  (data-access, Gemma only).
+- Registered E08-R011: Gemma-2-2B-it alone (runbook K6, notebook cell 5).
+
+**Saw:**
+- Mistral with the v3 template passes S1–S5: S2 7/8, recall at 8.8k tokens,
+  system prompt followed. Throughput is 112 tok/s at 32 concurrent; S7 seed
+  8/8.
+- S8 pair (Mistral target, Qwen auditor) passes: 16 conversations × 6 turns
+  in 373 s, an estimated 0.022 GPU-h per 20-turn audit.
+- Gemma-2-2B never loaded: Hugging Face returned 401 (gated repo). In R009
+  the earlier token reached it, so the new token (made after the old one was
+  revoked) lacks gated access.
+- All four E08/E10 pilot models (Qwen, Mistral, Llama, Granite) are now
+  pinned, which is what the Nov 10 pilots need. Gemma-2-2B is the E09 base
+  and not on that path.
+
+**Next:** E08-R011 once the token can read gated repos; then H3 is closed.

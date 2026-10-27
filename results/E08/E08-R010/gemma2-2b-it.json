@@ -1,0 +1,22 @@
+{
+  "model": "gemma2-2b-it",
+  "family": "gemma",
+  "roles": [
+    "organism base"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "dtype": "float32",
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=477) httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/google/gemma-2-2b-it/resolve/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8/config.json'\n(APIServer pid=477) huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6ae0c111-56e4ec6540abe9742c6f7f59;3a460f84-4332-48e8-88b4-910473da2e67)\n(APIServer pid=477)     raise OSError(\n(APIServer pid=477) OSError: You are trying to access a gated repo.\n(APIServer pid=477) 401 Client Error. (Request ID: Root=1-6ae0c111-56e4ec6540abe9742c6f7f59;3a460f84-4332-48e8-88b4-910473da2e67)\n...\n(APIServer pid=477)     ...<2 lines>...\n(APIServer pid=477)     ) from e\n(APIServer pid=477) OSError: You are trying to access a gated repo.\n(APIServer pid=477) Make sure to have access to it at https://huggingface.co/google/gemma-2-2b-it.\n(APIServer pid=477) 401 Client Error. (Request ID: Root=1-6ae0c111-56e4ec6540abe9742c6f7f59;3a460f84-4332-48e8-88b4-910473da2e67)\n(APIServer pid=477) \n(APIServer pid=477) Cannot access gated repo for url https://huggingface.co/google/gemma-2-2b-it/resolve/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8/config.json.\n(APIServer pid=477) Access to model google/gemma-2-2b-it is restricted. You must have access to it and be authenticated to access it. Please log in."
+      },
+      "pass_": false
+    }
+  ]
+}
