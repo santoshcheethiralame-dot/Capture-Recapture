@@ -1,0 +1,62 @@
+{
+  "run_id": "E10-R001",
+  "experiment": "E10",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "3569be0",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e10/r001_verify.py",
+  "config": {
+    "experiment": "E10",
+    "run": "R001",
+    "M": 40,
+    "tiers": [
+      10,
+      20,
+      10
+    ],
+    "attacks": 500,
+    "per_cell": 20,
+    "benign": 200,
+    "note": "M = 40 per FREEZE-V1 item 3 (agreed, D-015 context); tiers 1:2:1 as E10 \u00a72's 5/10/5; 500 random attacks per E10 \u00a72 R001"
+  },
+  "config_sha256": "10fca1c30f7f1535f1ce7ffed10a2598278fad32c4bc382c379342f1bb684cb6",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.17",
+  "package_versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261032,
+    "monitors": "SeedSequence(master).spawn(2)",
+    "checks": "SeedSequence(master, spawn_key=(monitor, check))"
+  },
+  "inputs": [
+    {
+      "path": "/home/claude/MissingMass/configs/e10/r001.json",
+      "sha256": "5791c71764e3e8d42b6ab5c8d84a65b319ceecc8680951c7914d7d7c2889e1fb"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-23T18:58:35+00:00",
+  "finished_utc": "2026-10-23T19:00:25+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "/home/claude/MissingMass/results/E10/E10-R001/summary.json",
+    "/home/claude/MissingMass/results/E10/E10-R001/checks.csv",
+    "/home/claude/MissingMass/results/E10/E10-R001/blind_spots_main.json",
+    "/home/claude/MissingMass/results/E10/E10-R001/blind_spots_pilot.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  }
+}

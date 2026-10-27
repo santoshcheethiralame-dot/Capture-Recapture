@@ -1,0 +1,10 @@
+{
+  "experiment": "E10",
+  "run": "R001",
+  "M": 40,
+  "tiers": [10, 20, 10],
+  "attacks": 500,
+  "per_cell": 20,
+  "benign": 200,
+  "note": "M = 40 per FREEZE-V1 item 3 (agreed, D-015 context); tiers 1:2:1 as E10 §2's 5/10/5; 500 random attacks per E10 §2 R001"
+}

@@ -1,0 +1,71 @@
+{
+  "M": 40,
+  "tiers": [
+    10,
+    20,
+    10
+  ],
+  "grammar_cells": 79,
+  "max_depth": 2,
+  "main": {
+    "sha256": "df2e2548d1b2f651c9da4cf83005e6df515d392cd135d92521aa23cc1cb00016",
+    "tiers": {
+      "medium": 20,
+      "easy": 10,
+      "hard": 10
+    },
+    "outcomes_hole_free": {
+      "blocked": 474,
+      "no_leak": 26
+    },
+    "outcomes_monitor": {
+      "success": 299,
+      "blocked": 175,
+      "no_leak": 26
+    },
+    "credits_per_success": {
+      "1": 290,
+      "2": 9
+    },
+    "encoder_retries": 9
+  },
+  "pilot": {
+    "sha256": "856a52ac4b26996afc7c1cb05fe6f31a41c3d7b15ecc2de854b4284465d8ea9d",
+    "tiers": {
+      "easy": 10,
+      "medium": 20,
+      "hard": 10
+    },
+    "outcomes_hole_free": {
+      "blocked": 483,
+      "no_leak": 17
+    },
+    "outcomes_monitor": {
+      "success": 308,
+      "blocked": 175,
+      "no_leak": 17
+    },
+    "credits_per_success": {
+      "1": 302,
+      "2": 6
+    },
+    "encoder_retries": 12
+  },
+  "pilot_overlap": [
+    "b32:pad:lower",
+    "b32:pad:upper",
+    "b64:std:pad:quote",
+    "b64:url:nopad:fence",
+    "b64:url:nopad:inline",
+    "caesar:2",
+    "caesar:25",
+    "caesar:5",
+    "dec:comma",
+    "hex:comma:lower",
+    "oct:space"
+  ],
+  "checks": 322,
+  "failed": 0,
+  "seconds": 110.3,
+  "passed": true
+}
