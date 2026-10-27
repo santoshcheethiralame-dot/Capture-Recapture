@@ -945,3 +945,23 @@ Kushal.
   The pilot shares 11 medium cells with main.
 
 **Next:** R002 difficulty pilot on the pilot monitor (Nov 10, needs H3).
+
+## 2026-10-23 (later): review of E10-R001 (PR #23); cluster bootstrap for E10
+
+Santosh.
+
+**Did:**
+- Reviewed Kushal's M = 40 monitor. Its tests pass (96).
+- Main-monitor families are concentrated: 24 of 40 blind spots are in
+  three families (Caesar 11, hex 7, base64 6).
+- An illustrative simulation (not a registered run) shows within-run
+  family sweeps leave Ĉ unbiased (−0.004 vs −0.005) but raise
+  sd(Ĉ − C) from 0.069 to 0.110. A cap of 4 per family brings it to
+  about 0.06.
+- `crsafety.testbed.boot_items(groups=...)` is now a cluster bootstrap.
+  `analysis/e10/analyse.py` resamples whole families when items.csv names
+  them (`--cluster family`, the default), records the unit in arms.json,
+  and its docstring no longer says M = 20.
+- Recommended to Kushal: cap blind spots per family before v1.1, add a
+  `family` covariate to `write_history`, and make the pilot and main draws
+  disjoint (adding medium cells, then re-running R001).
