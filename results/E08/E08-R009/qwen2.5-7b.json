@@ -1,0 +1,75 @@
+{
+  "model": "qwen2.5-7b",
+  "family": "qwen",
+  "roles": [
+    "auditor",
+    "attacker"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+      "quantization": "awq",
+      "dtype": "half",
+      "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 188.2,
+        "gpu_memory_mib": 14177
+      },
+      "S2_numerics": {
+        "n_right": 8,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          "42",
+          "Paris",
+          "tac",
+          "7",
+          "Green",
+          "thanks",
+          "9",
+          "dog"
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 8832,
+        "recalled": true,
+        "output": "PELICAN"
+      },
+      "S5_system": {
+        "supported": true,
+        "followed": true,
+        "output": "Hello there! BANANA"
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 71.6,
+        "tokens_per_s": 114.4
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 8
+      },
+      "pass_": true,
+      "seconds": 467.5
+    }
+  ],
+  "pin": {
+    "candidate": 0,
+    "hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "quantization": "awq",
+    "dtype": "half"
+  }
+}

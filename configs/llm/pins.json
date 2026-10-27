@@ -1,0 +1,32 @@
+{
+  "about": "Pinned builds (Q-D14), written by the H3 serving check (analysis/e08/serving_check.py). A pin records that the build loads and passes S1-S5 on a Kaggle T4; which models the experiments use is set in their pre-registrations.",
+  "pins": {
+    "granite3.3-8b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "ibm-granite/granite-3.3-8b-instruct",
+      "quantization": "bitsandbytes",
+      "revision": "51dd4bc2ade4059a6bd87649d68aa11e4fb2529b",
+      "run_id": "E08-R009",
+      "vllm_version": "0.19.1"
+    },
+    "llama3.1-8b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+      "quantization": "awq",
+      "revision": "db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+      "run_id": "E08-R009",
+      "vllm_version": "0.19.1"
+    },
+    "qwen2.5-7b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+      "quantization": "awq",
+      "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+      "run_id": "E08-R009",
+      "vllm_version": "0.19.1"
+    }
+  }
+}

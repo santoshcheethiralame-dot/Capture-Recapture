@@ -1,6 +1,11 @@
-"""E08-R008: H3 serving check on Kaggle 2 x T4 (Q-D14 model pins). Computes no outcomes (pre-freeze OK).
+"""E08-R008 / E08-R009: H3 serving check on Kaggle 2 x T4 (Q-D14 model pins). Computes no outcomes (pre-freeze OK).
 
-    python analysis/e08/serving_check.py --out results/E08/E08-R008 --group pilots --pair mistral-7b,qwen2.5-7b --record
+    python analysis/e08/serving_check.py --run-id E08-R009 --out results/E08/E08-R009 --group pilots \
+        --pair mistral-7b,qwen2.5-7b --record
+
+E08-R008 loaded nothing (FlashInfer JIT link error; vLLM refuses fp16 for
+Gemma 2; Llama licence pending). E08-R009 is the re-run with Triton
+attention, float32 Gemma and the same criteria.
 
 For each logical model in configs/llm/models.json (``--group`` or
 ``--models``), the registry candidates are tried in order on one T4; the
@@ -204,7 +209,7 @@ def check_model(name, a, reg, out):
             tr["S1_load"] = dict(pass_=True, seconds=round(srv.wait(timeout=1200), 1),
                                  gpu_memory_mib=gpu_memory_mib(a.gpu))
         except Exception as e:  # noqa: BLE001
-            tr.update(S1_load=dict(pass_=False, error=str(e)[:300], log_tail=srv.log_tail()), pass_=False)
+            tr.update(S1_load=dict(pass_=False, error=str(e)[:300], log_tail=srv.log_errors()), pass_=False)
             srv.stop()
             if not a.keep_weights and not reused(m, i):
                 purge(c["hf_id"])
@@ -218,7 +223,7 @@ def check_model(name, a, reg, out):
             tr["S6_throughput"], tr["S7_seed"] = s6_s7(spec, srv.base_url, a.seed)
         except Exception as e:  # noqa: BLE001
             tr["error"] = str(e)[:300]
-            tr["log_tail"] = srv.log_tail()
+            tr["log_tail"] = srv.log_errors()
         finally:
             srv.stop()
         need_system = "target" in m["roles"]
@@ -272,7 +277,7 @@ def pair_check(target, auditor, pins, reg, a, out):
                    est_gpu_hours_per_20_turn_audit=round(wall / res["turns"] * 20 / res["conversations"] / 3600, 4),
                    note="one Kaggle session = 2 GPUs; GPU-hours here are session hours")
     except Exception as e:  # noqa: BLE001
-        res.update(pass_=False, error=str(e)[:300], log_target=s_t.log_tail(), log_auditor=s_a.log_tail())
+        res.update(pass_=False, error=str(e)[:300], log_target=s_t.log_errors(), log_auditor=s_a.log_errors())
     finally:
         s_t.stop()
         s_a.stop()
@@ -306,7 +311,9 @@ def main():
     t0 = time.perf_counter()
     results = {n: check_model(n, a, reg, out) for n in names}
     pins_path = out / "pins.json"
-    pins = json.loads(pins_path.read_text())["pins"] if pins_path.exists() else {}
+    # Models pinned by earlier checks (configs/llm/pins.json) count for the pair check
+    # and are carried into this run's pins.json, so it can be copied over whole.
+    pins = {**models.load_pins(), **(json.loads(pins_path.read_text())["pins"] if pins_path.exists() else {})}
     vllm_v = manifest._versions(("vllm",))["vllm"]
     for n, r in results.items():
         if "pin" in r:
@@ -318,7 +325,9 @@ def main():
                                                 for n, r in results.items()})
     if a.pair:
         target, auditor = a.pair.split(",")
-        summary["S8_pair"] = pair_check(target, auditor, pins, reg, a, out)
+        missing = [n for n in (target, auditor) if n not in pins]
+        summary["S8_pair"] = (dict(pass_=False, skipped=f"not pinned: {', '.join(missing)}") if missing
+                              else pair_check(target, auditor, pins, reg, a, out))
     summary["all_pinned"] = all(v["pinned"] for v in summary["models"].values())
     hours = (time.perf_counter() - t0) / 3600
     summary["session_hours"] = round(hours, 3)
@@ -327,7 +336,9 @@ def main():
     if m:
         m["model_ids"] = [f"{p['hf_id']}@{p['revision']}" for p in pins.values()]
         m["cost"]["gpu_hours"] = round(hours, 3)
-        manifest.finish(m, outputs=[str(p) for p in sorted(out.glob("*.json"))])
+        ok = summary["all_pinned"] and summary.get("S8_pair", {}).get("pass_", True)
+        manifest.finish(m, outputs=[str(p) for p in sorted(out.glob("*.json"))],
+                        status="succeeded" if ok else "failed")
 
 
 if __name__ == "__main__":

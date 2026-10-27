@@ -35,17 +35,54 @@ def vllm_command(spec, port, seed=0, enforce_eager=False, python=sys.executable)
         cmd += ["--revision", spec.revision, "--tokenizer-revision", spec.revision]
     if spec.quantization:
         cmd += ["--quantization", spec.quantization]
+    if spec.attention_backend:
+        cmd += ["--attention-backend", spec.attention_backend]
+    if spec.chat_template:
+        cmd += ["--chat-template", str(models.ROOT / spec.chat_template)]
     if enforce_eager:
         cmd.append("--enforce-eager")
     return cmd + list(spec.extra_args)
+
+
+# FlashInfer's sampler JIT-compiles kernels at start-up; on Kaggle that link
+# step fails (E08-R008: "cannot find -lcuda"), so use vLLM's own sampler.
+T4_ENV = {"VLLM_USE_FLASHINFER_SAMPLER": "0"}
+LIBCUDA_DIRS = ("/usr/lib/x86_64-linux-gnu", "/usr/local/nvidia/lib64", "/usr/lib64", "/usr/local/cuda/compat")
+ERROR_PATTERNS = ("Error", "error:", "cannot find", "Value error", "not supported", "Assertion")
+
+
+def libcuda_link_dir(dirs=LIBCUDA_DIRS, cache=Path.home() / ".cache" / "crsafety" / "libcuda"):
+    """A directory with ``libcuda.so`` for the linker, for any kernel compiled at run time.
+
+    Kaggle has the driver's ``libcuda.so.1`` but no unversioned ``libcuda.so``,
+    so ``ld -lcuda`` fails. Returns None when the linker already finds it or
+    there is no driver library (CPU machines)."""
+    for d in dirs:
+        if (Path(d) / "libcuda.so").exists():
+            return None
+    for d in dirs:
+        so1 = Path(d) / "libcuda.so.1"
+        if so1.exists():
+            try:
+                cache.mkdir(parents=True, exist_ok=True)
+                link = cache / "libcuda.so"
+                if not link.exists():
+                    link.symlink_to(so1)
+                return str(cache)
+            except OSError:
+                return None
+    return None
 
 
 class Server:
     def __init__(self, spec, gpu=0, port=8000, log_dir=".", enforce_eager=False, env=None):
         self.spec, self.gpu, self.port = spec, gpu, port
         self.cmd = vllm_command(spec, port, enforce_eager=enforce_eager)
-        self.log_path = Path(log_dir) / f"vllm-{spec.name}-gpu{gpu}.log"
-        self.env = {**os.environ, "CUDA_VISIBLE_DEVICES": str(gpu), **(env or {})}
+        self.log_path = Path(log_dir) / f"vllm-{spec.name}-c{spec.candidate}-gpu{gpu}.log"
+        self.env = {**os.environ, "CUDA_VISIBLE_DEVICES": str(gpu), **T4_ENV, **(env or {})}
+        lib = libcuda_link_dir()
+        if lib:
+            self.env["LIBRARY_PATH"] = os.pathsep.join(filter(None, [lib, self.env.get("LIBRARY_PATH")]))
         self.proc = None
         self.base_url = f"http://127.0.0.1:{port}/v1"
 
@@ -72,6 +109,15 @@ class Server:
             return "".join(self.log_path.read_text(errors="replace").splitlines(True)[-n:])
         except OSError:
             return ""
+
+    def log_errors(self, n=12, tail=8):
+        """The error lines of the log plus its last lines: the root cause is often far above the tail."""
+        try:
+            lines = self.log_path.read_text(errors="replace").splitlines()
+        except OSError:
+            return ""
+        errs = [l for l in lines if any(p in l for p in ERROR_PATTERNS) and 'File "' not in l]
+        return "\n".join(errs[:n] + ["..."] + lines[-tail:])
 
     def stop(self, timeout=60):
         if self.proc and self.proc.poll() is None:

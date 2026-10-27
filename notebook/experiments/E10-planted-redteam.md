@@ -75,7 +75,7 @@ goal and the monitor's general purpose, never the blind spots.
 | A2 adaptive | Sees the verdict for each attempt and iterates |
 | A3 de-adapted | A2's data re-analysed, no new runs. **A3a** (after Liyanage et al., ICSE 2024): split the A2 campaign into overlapping sub-campaigns of lengths L ∈ {3, 4, 6, 8, 12}. Destroy adaptive order by shuffling incidences across runs within each window, preserving each blind spot's total count. Compute Ĉ per window, regress log Ĉ on log L, and extrapolate to K. **A3b** (after Böhme et al., FSE 2021, the "reset" estimator): Good-Turing on only the attempts since the last new discovery. The exact ICSE'24 algorithm is to be confirmed (Q-D7). If it differs, A3a is updated **before freezing** |
 | A4 diversity-prompted | Like A2, with explicit instructions to try different strategies |
-| A5 mixed families | A1-style runs split across 3 open families (Qwen, Llama, Gemma) |
+| A5 mixed families | A1-style runs split across 3 open families (Qwen, Llama, Granite; D-016) |
 
 ### Estimands
 - **Item:** a planted blind spot (M = 40).

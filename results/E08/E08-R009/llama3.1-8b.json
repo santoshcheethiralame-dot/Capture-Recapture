@@ -1,0 +1,75 @@
+{
+  "model": "llama3.1-8b",
+  "family": "llama",
+  "roles": [
+    "auditor",
+    "attacker"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+      "quantization": "awq",
+      "dtype": "half",
+      "revision": "db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 154.1,
+        "gpu_memory_mib": 13889
+      },
+      "S2_numerics": {
+        "n_right": 7,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          "42",
+          "Paris.",
+          "t-a-c spelled backwards is c-a-t.",
+          "7",
+          "Green.",
+          "Thank you.",
+          "9",
+          "dog."
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 8838,
+        "recalled": true,
+        "output": "PELICAN"
+      },
+      "S5_system": {
+        "supported": true,
+        "followed": true,
+        "output": "Hello, how can I assist you today BANANA."
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 73.0,
+        "tokens_per_s": 112.1
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 8
+      },
+      "pass_": true,
+      "seconds": 361.4
+    }
+  ],
+  "pin": {
+    "candidate": 0,
+    "hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+    "revision": "db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+    "quantization": "awq",
+    "dtype": "half"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "model": "gemma2-2b-it",
+  "family": "gemma",
+  "roles": [
+    "organism base"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "dtype": "half",
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=1607)                ~~~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1607)         args,\n(APIServer pid=1607)         ^^^^^\n(APIServer pid=1607)         client_config=client_config,\n(APIServer pid=1607)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1607)     ) as engine_client:\n(APIServer pid=1607)     ^\n(APIServer pid=1607)   File \"/usr/lib/python3.13/contextlib.py\", line 214, in __aenter__\n(APIServer pid=1607)     return await anext(self.gen)\n(APIServer pid=1607)            ^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1607)   File \"/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py\", line 100, in build_async_engine_client\n(APIServer pid=1607)     async with build_async_engine_client_from_engine_args(\n(APIServer pid=1607)                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1607)         engine_args,\n(APIServer pid=1607)         ^^^^^^^^^^^^\n(APIServer pid=1607)         usage_context=usage_context,\n(APIServer pid=1607)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1607)         client_config=client_config,\n(APIServer pid=1607)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1607)     ) as engine:\n(APIServer pid=1607)     ^\n(APIServer pid=1607)   File \"/usr/lib/python3.13/contextlib.py\", line 214, in __aenter__\n(APIServer pid=1607)     return await anext(self.gen)\n(APIServer pid=1607)            ^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1607)   File \"/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py\", line 124, in build_async_engine_client_from_engine_args\n(APIServer pid=1607)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)\n(APIServer pid=1607)   File \"/usr/local/lib/python3.13/dist-packages/vllm/engine/arg_utils.py\", line 1549, in create_engine_config\n(APIServer pid=1607)     model_config = self.create_model_config()\n(APIServer pid=1607)   File \"/usr/local/lib/python3.13/dist-packages/vllm/engine/arg_utils.py\", line 1398, in create_model_config\n(APIServer pid=1607)     return ModelConfig(\n(APIServer pid=1607)         model=self.model,\n(APIServer pid=1607)     ...<52 lines>...\n(APIServer pid=1607)         renderer_num_workers=self.renderer_num_workers,\n(APIServer pid=1607)     )\n(APIServer pid=1607)   File \"/usr/local/lib/python3.13/dist-packages/pydantic/_internal/_dataclasses.py\", line 121, in __init__\n(APIServer pid=1607)     s.__pydantic_validator__.validate_python(ArgsKwargs(args, kwargs), self_instance=s)\n(APIServer pid=1607)     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1607) pydantic_core._pydantic_core.ValidationError: 1 validation error for ModelConfig\n(APIServer pid=1607)   Value error, The model type 'gemma2' does not support float16. Reason: Numerical instability. Please use bfloat16 or float32 instead. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n(APIServer pid=1607)     For further information visit https://errors.pydantic.dev/2.13/v/value_error\n"
+      },
+      "pass_": false
+    },
+    {
+      "candidate": 1,
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "dtype": "float32",
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=1628)     return func(*args, **kwargs)\n(APIServer pid=1628)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 130, in make_async_mp_client\n(APIServer pid=1628)     return AsyncMPClient(*client_args)\n(APIServer pid=1628)   File \"/usr/local/lib/python3.13/dist-packages/vllm/tracing/otel.py\", line 178, in sync_wrapper\n(APIServer pid=1628)     return func(*args, **kwargs)\n(APIServer pid=1628)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 887, in __init__\n(APIServer pid=1628)     super().__init__(\n(APIServer pid=1628)     ~~~~~~~~~~~~~~~~^\n(APIServer pid=1628)         asyncio_mode=True,\n(APIServer pid=1628)         ^^^^^^^^^^^^^^^^^^\n(APIServer pid=1628)     ...<3 lines>...\n(APIServer pid=1628)         client_addresses=client_addresses,\n(APIServer pid=1628)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1628)     )\n(APIServer pid=1628)     ^\n(APIServer pid=1628)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 535, in __init__\n(APIServer pid=1628)     with launch_core_engines(\n(APIServer pid=1628)          ~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1628)         vllm_config, executor_class, log_stats, addresses\n(APIServer pid=1628)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1628)     ) as (engine_manager, coordinator, addresses, tensor_queue):\n(APIServer pid=1628)     ^\n(APIServer pid=1628)   File \"/usr/lib/python3.13/contextlib.py\", line 148, in __exit__\n(APIServer pid=1628)     next(self.gen)\n(APIServer pid=1628)     ~~~~^^^^^^^^^^\n(APIServer pid=1628)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 998, in launch_core_engines\n(APIServer pid=1628)     wait_for_engine_startup(\n(APIServer pid=1628)     ~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1628)         handshake_socket,\n(APIServer pid=1628)         ^^^^^^^^^^^^^^^^^\n(APIServer pid=1628)     ...<6 lines>...\n(APIServer pid=1628)         coordinator.proc if coordinator else None,\n(APIServer pid=1628)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1628)     )\n(APIServer pid=1628)     ^\n(APIServer pid=1628)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=1628)     raise RuntimeError(\n(APIServer pid=1628)     ...<3 lines>...\n(APIServer pid=1628)     )\n(APIServer pid=1628) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n"
+      },
+      "pass_": false
+    }
+  ]
+}

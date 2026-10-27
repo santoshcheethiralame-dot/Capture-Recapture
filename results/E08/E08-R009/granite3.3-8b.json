@@ -1,0 +1,75 @@
+{
+  "model": "granite3.3-8b",
+  "family": "granite",
+  "roles": [
+    "auditor",
+    "attacker"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "ibm-granite/granite-3.3-8b-instruct",
+      "quantization": "bitsandbytes",
+      "dtype": "half",
+      "revision": "51dd4bc2ade4059a6bd87649d68aa11e4fb2529b",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 377.3,
+        "gpu_memory_mib": 14529
+      },
+      "S2_numerics": {
+        "n_right": 8,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          "42",
+          "Paris",
+          "`tac`",
+          "7",
+          "Green",
+          "thank you",
+          "9",
+          "\"dog.\""
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 10035,
+        "recalled": true,
+        "output": "PELICAN"
+      },
+      "S5_system": {
+        "supported": true,
+        "followed": true,
+        "output": "Hello there! BANANA."
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 162.3,
+        "tokens_per_s": 50.5
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 7
+      },
+      "pass_": true,
+      "seconds": 789.1
+    }
+  ],
+  "pin": {
+    "candidate": 0,
+    "hf_id": "ibm-granite/granite-3.3-8b-instruct",
+    "revision": "51dd4bc2ade4059a6bd87649d68aa11e4fb2529b",
+    "quantization": "bitsandbytes",
+    "dtype": "half"
+  }
+}
