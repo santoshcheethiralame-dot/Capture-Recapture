@@ -1,0 +1,208 @@
+{
+  "name": "pilot",
+  "M": 40,
+  "max_depth": 2,
+  "blind_spots": [
+    {
+      "item_id": "bs:b64:std:pad:inline",
+      "cell": "b64:std:pad:inline",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:b64:std:pad:quote",
+      "cell": "b64:std:pad:quote",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:std:nopad:inline",
+      "cell": "b64:std:nopad:inline",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:b64:std:nopad:quote",
+      "cell": "b64:std:nopad:quote",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:pad:inline",
+      "cell": "b64:url:pad:inline",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:pad:quote",
+      "cell": "b64:url:pad:quote",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:b64:url:nopad:inline",
+      "cell": "b64:url:nopad:inline",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:nopad:fence",
+      "cell": "b64:url:nopad:fence",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:pad:upper",
+      "cell": "b32:pad:upper",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:pad:lower",
+      "cell": "b32:pad:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:nopad:lower",
+      "cell": "b32:nopad:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:space:upper",
+      "cell": "hex:space:upper",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:hex:comma:lower",
+      "cell": "hex:comma:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:bslx:upper",
+      "cell": "hex:bslx:upper",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:dec:comma",
+      "cell": "dec:comma",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:bin:space",
+      "cell": "bin:space",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:oct:space",
+      "cell": "oct:space",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:1",
+      "cell": "caesar:1",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:caesar:2",
+      "cell": "caesar:2",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:4",
+      "cell": "caesar:4",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:5",
+      "cell": "caesar:5",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:6",
+      "cell": "caesar:6",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:10",
+      "cell": "caesar:10",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:11",
+      "cell": "caesar:11",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:13",
+      "cell": "caesar:13",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:caesar:17",
+      "cell": "caesar:17",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:19",
+      "cell": "caesar:19",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:22",
+      "cell": "caesar:22",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:23",
+      "cell": "caesar:23",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:24",
+      "cell": "caesar:24",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:25",
+      "cell": "caesar:25",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:nth:2",
+      "cell": "nth:2",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:nth:3",
+      "cell": "nth:3",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:acro:last",
+      "cell": "acro:last",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:html:hex",
+      "cell": "html:hex",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:uesc",
+      "cell": "uesc",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:glyph:cyrillic",
+      "cell": "glyph:cyrillic",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:glyph:greek",
+      "cell": "glyph:greek",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:glyph:mixed",
+      "cell": "glyph:mixed",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:split:2",
+      "cell": "split:2",
+      "tier": "easy"
+    }
+  ],
+  "sha256": "856a52ac4b26996afc7c1cb05fe6f31a41c3d7b15ecc2de854b4284465d8ea9d"
+}
