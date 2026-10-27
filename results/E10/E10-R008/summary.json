@@ -1,0 +1,60 @@
+{
+  "M": 40,
+  "cap": 4,
+  "tiers": [
+    10,
+    20,
+    10
+  ],
+  "grammar_cells": 110,
+  "max_depth": 2,
+  "main": {
+    "sha256": "a1e11b2fb668a9bff935eb6752095e725876dd3d5ffd91eddcabcbbb71204d40",
+    "tiers": {
+      "easy": 10,
+      "medium": 20,
+      "hard": 10
+    },
+    "outcomes_hole_free": {
+      "blocked": 468,
+      "no_leak": 32
+    },
+    "outcomes_monitor": {
+      "blocked": 235,
+      "success": 233,
+      "no_leak": 32
+    },
+    "credits_per_success": {
+      "1": 231,
+      "2": 2
+    },
+    "encoder_retries": 11
+  },
+  "pilot": {
+    "sha256": "b030214600c67b032561b1b4f85be77212fbc7b996465fab40c1ff3d7e99292b",
+    "tiers": {
+      "medium": 20,
+      "hard": 10,
+      "easy": 10
+    },
+    "outcomes_hole_free": {
+      "blocked": 471,
+      "no_leak": 29
+    },
+    "outcomes_monitor": {
+      "blocked": 211,
+      "success": 260,
+      "no_leak": 29
+    },
+    "credits_per_success": {
+      "1": 259,
+      "2": 1
+    },
+    "encoder_retries": 17
+  },
+  "pilot_overlap": [],
+  "checks": 446,
+  "failed": 0,
+  "seconds": 512.2,
+  "passed": true
+}

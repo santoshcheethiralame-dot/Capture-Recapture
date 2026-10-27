@@ -965,3 +965,34 @@ Santosh.
 - Recommended to Kushal: cap blind spots per family before v1.1, add a
   `family` covariate to `write_history`, and make the pilot and main draws
   disjoint (adding medium cells, then re-running R001).
+
+## 2026-10-27: E10 monitor rebuilt per Santosh's review; R008 passes
+
+Kushal.
+
+**Did:**
+- Acted on Santosh's three recommendations from the review of E10-R001:
+  - capped blind spots at 4 per family;
+  - added a `family` covariate to `write_history`;
+  - made the pilot and main monitors disjoint.
+- The grammar grew from 79 cells in 18 families to 110 cells in 30, so both
+  monitors fit under the cap. Main and pilot are chosen jointly by an
+  integer program. Cap 4 is the tightest that fits at 10/20/10; cap 3 is
+  infeasible.
+- Registered E10-R002 to R007 as planned, so the run IDs match E10 §2's
+  planned-run table. R007 belongs to Santosh.
+- E10-R008 at f70a6cc: 446 of 446 checks pass for both monitors. Main and
+  pilot share no cell. A hole-free guard lets 0 of 500 random attacks
+  through. Against main, all 233 successes are credited only to blind
+  spots. 0 of 200 benign conversations were flagged. R001 is marked
+  superseded.
+- Added one sentence to E10 §2's testbed paragraph: the cap and the
+  disjoint pilot. §2 is not frozen; it locks at v1.1.
+
+**Saw:**
+- base64, hex and Caesar each still hit the cap in both monitors, so the
+  largest family is 10% of items, down from 28%.
+- Screening is about 40 ms per one-message attack, against about 1 ms
+  before.
+
+**Next:** R002 difficulty pilot on the pilot monitor (needs H3).
