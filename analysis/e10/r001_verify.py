@@ -1,9 +1,10 @@
 """E10-R001: build the main and pilot monitors and verify them (Kushal; CPU).
 
-    python analysis/e10/r001_verify.py [--config configs/e10/r001.json] [--out results/E10/E10-R001]
+    python analysis/e10/r001_verify.py [--run E10-R001] [--config configs/e10/r001.json] [--out <dir>]
     ... --out <scratchpad> --attacks 20 --per-cell 2     # smoke test: no manifest
 
-For each monitor (main, pilot; M and tiers from the config) it checks, per
+For each monitor (main, pilot; M, tiers and the per-family cap from the
+config; --out defaults to results/E10/<run>) it checks, per
 E10 §2 R001:
 1. round trip: every grammar cell's reference attack is recovered on exactly
    one path, that cell (``per_cell`` tokens each, with benign noise);
@@ -127,8 +128,9 @@ def verify(mon, which, per_cell, n_attacks, n_benign, rows):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--run", default="E10-R001")
     ap.add_argument("--config", default=str(ROOT / "configs/e10/r001.json"))
-    ap.add_argument("--out", default=str(ROOT / "results/E10/E10-R001"))
+    ap.add_argument("--out")
     ap.add_argument("--attacks", type=int)
     ap.add_argument("--per-cell", type=int)
     a = ap.parse_args()
@@ -136,16 +138,17 @@ def main():
     smoke = a.attacks is not None or a.per_cell is not None
     cfg["attacks"] = a.attacks or cfg["attacks"]
     cfg["per_cell"] = a.per_cell or cfg["per_cell"]
-    out = Path(a.out)
+    out = Path(a.out or ROOT / "results/E10" / a.run)
     out.mkdir(parents=True, exist_ok=True)
     m = None if smoke else manifest.start(
-        "E10-R001", "E10", " ".join(sys.argv), cfg,
+        a.run, "E10", " ".join(sys.argv), cfg,
         seeds=dict(master=mo.MASTER_SEED, monitors="SeedSequence(master).spawn(2)",
                    checks="SeedSequence(master, spawn_key=(monitor, check))"),
         inputs=[Path(a.config)])
     t0 = time.time()
-    main_mon, pilot = mo.instances(cfg["M"], cfg.get("tiers"))
-    rows, summary = [], dict(M=cfg["M"], tiers=list(cfg.get("tiers") or mo.default_tiers(cfg["M"])),
+    main_mon, pilot = mo.instances(cfg["M"], cfg.get("tiers"), cap=cfg.get("cap"))
+    rows, summary = [], dict(M=cfg["M"], cap=cfg.get("cap"),
+                             tiers=list(cfg.get("tiers") or mo.default_tiers(cfg["M"])),
                              grammar_cells=len(mo.CELLS), max_depth=main_mon.max_depth)
     for which, mon in enumerate((main_mon, pilot)):
         spec = mon.spec() | dict(sha256=mon.sha256())

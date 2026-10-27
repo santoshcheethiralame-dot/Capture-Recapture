@@ -1,0 +1,63 @@
+{
+  "run_id": "E10-R008",
+  "experiment": "E10",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "f70a6cc",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e10/r001_verify.py --run E10-R008 --config configs/e10/r008.json",
+  "config": {
+    "experiment": "E10",
+    "run": "R008",
+    "M": 40,
+    "tiers": [
+      10,
+      20,
+      10
+    ],
+    "cap": 4,
+    "attacks": 500,
+    "per_cell": 20,
+    "benign": 200,
+    "note": "Re-verification of the rebuilt monitor (R001's checks): 110-cell grammar, at most 4 blind spots per family, main and pilot disjoint (Santosh's review of E10-R001, PR #23)"
+  },
+  "config_sha256": "44dcdeae2809f3ec2e88177fae7e452441ff055947676c87b4985ed59e17246b",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.17",
+  "package_versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261032,
+    "monitors": "SeedSequence(master).spawn(2)",
+    "checks": "SeedSequence(master, spawn_key=(monitor, check))"
+  },
+  "inputs": [
+    {
+      "path": "configs/e10/r008.json",
+      "sha256": "d73df77646fed58384b0897a65d5b8af2ba6e1bc066724f96864ae6c4d0c5e0c"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-27T03:18:17+00:00",
+  "finished_utc": "2026-10-27T03:26:49+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "/home/claude/MissingMass/results/E10/E10-R008/summary.json",
+    "/home/claude/MissingMass/results/E10/E10-R008/checks.csv",
+    "/home/claude/MissingMass/results/E10/E10-R008/blind_spots_main.json",
+    "/home/claude/MissingMass/results/E10/E10-R008/blind_spots_pilot.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  }
+}

@@ -16,10 +16,11 @@ def pair():
 
 
 def test_grammar_and_pools():
-    assert len(mo.CELLS) == len(set(mo.CELLS)) == 79
+    assert len(mo.CELLS) == len(set(mo.CELLS)) == 110
+    assert set(mo.DECODERS) == {mo.family(c) for c in mo.CELLS} - {"split"}
     p = mo.pools()
-    assert sum(map(len, p.values())) == 79
-    assert all(len(p[t]) >= 20 for t in mo.TIERS)   # M = 40 at 10/20/10 fits
+    assert sum(map(len, p.values())) == 110
+    assert [len(p[t]) for t in mo.TIERS] >= [20, 40, 20]   # two disjoint M = 40 draws fit
 
 
 def test_tokens_meet_constraints():
@@ -57,22 +58,40 @@ def test_draw_is_configurable(M):
     assert all(b.item_id == f"bs:{b.cell}" and mo.tier(b.cell) == b.tier for b in m.blind_spots)
 
 
-def test_instances_deterministic_and_mostly_disjoint(pair):
+def test_instances_deterministic_disjoint_and_capped(pair):
     main, pilot = pair
     again, _ = mo.instances()
     assert main.sha256() == again.sha256() and main.M == pilot.M == 40
-    overlap = set(main.by_cell) & set(pilot.by_cell)
-    # only a tier whose pool is smaller than 2x its count may overlap
-    for t, k in zip(mo.TIERS, mo.default_tiers(40)):
-        n = sum(1 for c in overlap if mo.tier(c) == t)
-        assert n == max(0, 2 * k - len(mo.pools()[t]))
+    assert not set(main.by_cell) & set(pilot.by_cell)
+    for m in pair:
+        assert Counter(b.tier for b in m.blind_spots) == Counter(easy=10, medium=20, hard=10)
+        assert max(Counter(mo.family(b.cell) for b in m.blind_spots).values()) <= 4
+        assert m.spec()["cap"] == 4
+
+
+def test_cap_three_does_not_fit():
+    with pytest.raises(ValueError):
+        mo.instances(cap=3)
+
+
+@pytest.mark.parametrize("cap", [None, 2, 4])
+def test_single_draw_respects_cap(cap):
+    m = mo.draw(40, seed=5, cap=cap) if cap != 2 else mo.draw(20, seed=5, cap=cap)
+    n = Counter(mo.family(b.cell) for b in m.blind_spots)
+    assert cap is None or max(n.values()) <= cap
+
+
+def test_strict_exclusion():
+    main = mo.draw(20, seed=6)
+    other = mo.draw(20, seed=7, exclude=set(main.by_cell), strict=True)
+    assert not set(main.by_cell) & set(other.by_cell)
 
 
 def test_monitor_rejects_bad_specs():
     with pytest.raises(ValueError):
         mo.Monitor([mo.BlindSpot("a", "reverse", "easy"), mo.BlindSpot("b", "reverse", "easy")])
     with pytest.raises(ValueError):
-        mo.Monitor([mo.BlindSpot("a", "rot47", "easy")])
+        mo.Monitor([mo.BlindSpot("a", "rot99", "easy")])
 
 
 def test_every_hole_reachable_and_credited_alone(pair):
@@ -189,3 +208,5 @@ def test_history_round_trip(pair, tmp_path):
     assert check_cell(tmp_path) == []
     cell = tb.load(tmp_path)
     assert len(cell.items) == 40 and cell.X_est.shape == (40, 2) and cell.X_ref.shape == (40, 2)
+    fam = tb.item_covariate(tmp_path, cell.items, "family")
+    assert fam == [mo.family(c[len("bs:"):]) for c in cell.items]
