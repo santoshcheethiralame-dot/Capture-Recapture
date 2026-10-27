@@ -1,0 +1,11 @@
+{
+  "experiment": "E10",
+  "run": "R008",
+  "M": 40,
+  "tiers": [10, 20, 10],
+  "cap": 4,
+  "attacks": 500,
+  "per_cell": 20,
+  "benign": 200,
+  "note": "Re-verification of the rebuilt monitor (R001's checks): 110-cell grammar, at most 4 blind spots per family, main and pilot disjoint (Santosh's review of E10-R001, PR #23)"
+}
