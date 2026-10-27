@@ -55,7 +55,7 @@ def test_registry_respects_e08_family_rules():
     assert not fam("target") & fam("auditor")
     assert not fam("judge") & (fam("auditor") | fam("target"))
     l3 = {m["family"] for m in reg.values() if "E08 L3" in m["levels"]}
-    assert l3 == {"qwen", "llama", "gemma"}
+    assert l3 == {"qwen", "llama", "granite"}  # D-016
 
 
 def test_registry_rejects_bf16(tmp_path):

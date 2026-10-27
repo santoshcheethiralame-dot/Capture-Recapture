@@ -27,8 +27,8 @@ Found in E08-R008 (vLLM 0.19.1 on Kaggle):
   checkpoints, one server per organism, not as LoRA adapters.
 - Gemma-2-9B 4-bit in float32 failed a weight-shape check, both quantised
   at load (E08-R008) and pre-quantised (E08-R009), so it cannot be served on
-  a T4 with this vLLM. Granite-3.3-8B passed every check as the
-  alternative third L3 family.
+  a T4 with this vLLM. Granite-3.3-8B passed every check and replaces it
+  as the third L3 family (D-016).
 - Gemma-2-2B in float32 with Triton attention needs 80 KB of shared memory
   (head dim 256); a T4 has 64 KB. Its candidate uses FlexAttention.
 - The community Mistral AWQ build's chat template rejects the system role.

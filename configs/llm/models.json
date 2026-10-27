@@ -110,14 +110,8 @@
     },
     "gemma2-9b": {
       "family": "gemma",
-      "roles": [
-        "auditor",
-        "attacker"
-      ],
-      "levels": [
-        "E08 L3",
-        "E10 A5"
-      ],
+      "roles": [],
+      "levels": [],
       "candidates": [
         {
           "hf_id": "unsloth/gemma-2-9b-it-bnb-4bit",
@@ -129,7 +123,7 @@
       ],
       "licence": "Gemma",
       "gated": true,
-      "notes": "Not servable with vLLM 0.19.1 on a T4: fp16 is refused for Gemma 2; 4-bit in float32 failed a weight-shape assertion with both in-flight (E08-R008) and pre-quantised (E08-R009) weights. The third L3 family is a decision for Kushal (granite3.3-8b passed every check)."
+      "notes": "Not servable with vLLM 0.19.1 on a T4: fp16 is refused for Gemma 2; 4-bit in float32 failed a weight-shape assertion with both in-flight (E08-R008) and pre-quantised (E08-R009) weights. Replaced by granite3.3-8b as the third L3 family (D-016); kept for the record."
     },
     "mistral-7b": {
       "family": "mistral",
@@ -245,8 +239,8 @@
         "attacker"
       ],
       "levels": [
-        "E08 L3 alternative",
-        "E10 A5 alternative"
+        "E08 L3",
+        "E10 A5"
       ],
       "candidates": [
         {
@@ -259,7 +253,7 @@
       ],
       "licence": "Apache-2.0",
       "gated": false,
-      "notes": "Candidate third L3 family if Gemma-2-9B cannot be served on a T4 (E08 §3 contingency; decision pending)."
+      "notes": "Third L3 family (D-016), replacing Gemma-2-9B, which cannot be served on a T4 with vLLM 0.19.1."
     }
   },
   "groups": {

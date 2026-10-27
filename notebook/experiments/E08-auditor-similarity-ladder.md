@@ -58,7 +58,7 @@ behaviours.
 | L0 | One model (Qwen family, 7–8B instruct), one prompt; sampling seed only |
 | L1 | Same model, 8 persona or strategy prompts (written before the pilot) |
 | L2 (secondary) | Same family, three sizes (e.g. Qwen 3B / 7B / 14B-AWQ) |
-| L3 | Three families: Qwen, Llama, Gemma (≤ 9B each). Runs balanced across families |
+| L3 | Three families: Qwen, Llama, Granite (7–9B each; D-016). Runs balanced across families |
 
 Each level has **16 runs per organism**: 8 for estimation and 8 as the
 reference pool.
@@ -106,7 +106,7 @@ Primary estimators from E01. Dependence diagnostics:
 16 items × 16 runs per level. The L0 − L3 difference is bootstrapped over
 organisms. If the pilot shows the SD of (Ĉ − C) above 0.1 per organism, a
 second target model (16 more organisms, Llama-family target with Qwen,
-Gemma and Mistral auditors at L3) is added before freezing.
+Granite and Mistral auditors at L3) is added before freezing.
 
 ### Analysis plan
 - **Confirmatory:** H8a to H8c (L0, L1, L3).
