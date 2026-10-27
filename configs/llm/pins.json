@@ -19,6 +19,15 @@
       "run_id": "E08-R009",
       "vllm_version": "0.19.1"
     },
+    "mistral-7b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ",
+      "quantization": "awq",
+      "revision": "95b1295ddd1a8673117cdc7bd2a4da2a457bb3f7",
+      "run_id": "E08-R010",
+      "vllm_version": "0.19.1"
+    },
     "qwen2.5-7b": {
       "candidate": 0,
       "dtype": "half",

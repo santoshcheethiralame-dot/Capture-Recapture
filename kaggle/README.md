@@ -43,7 +43,7 @@ while a saved version keeps its Output tab.
 ## Pins
 
 `configs/llm/models.json` lists each logical model with candidate builds in
-order of preference. The serving check (E08-R009, after E08-R008 failed;
+order of preference. The serving check (E08-R008 to R011;
 `analysis/e08/serving_check.py`) tries them on a T4 and pins the first that
 passes: Hugging Face commit sha, quantisation, dtype and vLLM version, in
 `configs/llm/pins.json`. Confirmatory scripts use

@@ -1,0 +1,140 @@
+(APIServer pid=477) INFO 10-27 15:19:45 [utils.py:299] 
+(APIServer pid=477) INFO 10-27 15:19:45 [utils.py:299]        █     █     █▄   ▄█
+(APIServer pid=477) INFO 10-27 15:19:45 [utils.py:299]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.19.1
+(APIServer pid=477) INFO 10-27 15:19:45 [utils.py:299]   █▄█▀ █     █     █     █  model   google/gemma-2-2b-it
+(APIServer pid=477) INFO 10-27 15:19:45 [utils.py:299]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=477) INFO 10-27 15:19:45 [utils.py:299] 
+(APIServer pid=477) INFO 10-27 15:19:45 [utils.py:233] non-default args: {'host': '127.0.0.1', 'port': 8100, 'model': 'google/gemma-2-2b-it', 'dtype': 'float32', 'revision': '299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8', 'tokenizer_revision': '299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8', 'max_model_len': 8192, 'served_model_name': ['gemma2-2b-it'], 'attention_backend': 'FLEX_ATTENTION'}
+(APIServer pid=477) httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/google/gemma-2-2b-it/resolve/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8/config.json'
+(APIServer pid=477) For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+(APIServer pid=477) 
+(APIServer pid=477) The above exception was the direct cause of the following exception:
+(APIServer pid=477) 
+(APIServer pid=477) Traceback (most recent call last):
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py", line 438, in cached_files
+(APIServer pid=477)     hf_hub_download(
+(APIServer pid=477)     ~~~~~~~~~~~~~~~^
+(APIServer pid=477)         path_or_repo_id,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^
+(APIServer pid=477)     ...<10 lines>...
+(APIServer pid=477)         tqdm_class=tqdm_class,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)     )
+(APIServer pid=477)     ^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+(APIServer pid=477)     return fn(*args, **kwargs)
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py", line 1027, in hf_hub_download
+(APIServer pid=477)     return _hf_hub_download_to_cache_dir(
+(APIServer pid=477)         # Destination
+(APIServer pid=477)     ...<15 lines>...
+(APIServer pid=477)         dry_run=dry_run,
+(APIServer pid=477)     )
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py", line 1174, in _hf_hub_download_to_cache_dir
+(APIServer pid=477)     _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+(APIServer pid=477)     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py", line 1913, in _raise_on_head_call_error
+(APIServer pid=477)     raise head_call_error
+(APIServer pid=477) huggingface_hub.errors.GatedRepoError: 401 Client Error. (Request ID: Root=1-6ae0c111-56e4ec6540abe9742c6f7f59;3a460f84-4332-48e8-88b4-910473da2e67)
+(APIServer pid=477) 
+(APIServer pid=477) Cannot access gated repo for url https://huggingface.co/google/gemma-2-2b-it/resolve/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8/config.json.
+(APIServer pid=477) Access to model google/gemma-2-2b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
+(APIServer pid=477) 
+(APIServer pid=477) The above exception was the direct cause of the following exception:
+(APIServer pid=477) 
+(APIServer pid=477) Traceback (most recent call last):
+(APIServer pid=477)   File "<frozen runpy>", line 203, in _run_module_as_main
+(APIServer pid=477)   File "<frozen runpy>", line 88, in _run_code
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 712, in <module>
+(APIServer pid=477)     uvloop.run(run_server(args))
+(APIServer pid=477)     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/uvloop/__init__.py", line 96, in run
+(APIServer pid=477)     return __asyncio.run(
+(APIServer pid=477)            ~~~~~~~~~~~~~^
+(APIServer pid=477)         wrapper(),
+(APIServer pid=477)         ^^^^^^^^^^
+(APIServer pid=477)     ...<2 lines>...
+(APIServer pid=477)         **run_kwargs
+(APIServer pid=477)         ^^^^^^^^^^^^
+(APIServer pid=477)     )
+(APIServer pid=477)     ^
+(APIServer pid=477)   File "/usr/lib/python3.13/asyncio/runners.py", line 196, in run
+(APIServer pid=477)     return runner.run(main)
+(APIServer pid=477)            ~~~~~~~~~~^^^^^^
+(APIServer pid=477)   File "/usr/lib/python3.13/asyncio/runners.py", line 119, in run
+(APIServer pid=477)     return self._loop.run_until_complete(task)
+(APIServer pid=477)            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+(APIServer pid=477)   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/uvloop/__init__.py", line 48, in wrapper
+(APIServer pid=477)     return await main
+(APIServer pid=477)            ^^^^^^^^^^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 672, in run_server
+(APIServer pid=477)     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 686, in run_server_worker
+(APIServer pid=477)     async with build_async_engine_client(
+(APIServer pid=477)                ~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=477)         args,
+(APIServer pid=477)         ^^^^^
+(APIServer pid=477)         client_config=client_config,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)     ) as engine_client:
+(APIServer pid=477)     ^
+(APIServer pid=477)   File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+(APIServer pid=477)     return await anext(self.gen)
+(APIServer pid=477)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 100, in build_async_engine_client
+(APIServer pid=477)     async with build_async_engine_client_from_engine_args(
+(APIServer pid=477)                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=477)         engine_args,
+(APIServer pid=477)         ^^^^^^^^^^^^
+(APIServer pid=477)         usage_context=usage_context,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)         client_config=client_config,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)     ) as engine:
+(APIServer pid=477)     ^
+(APIServer pid=477)   File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+(APIServer pid=477)     return await anext(self.gen)
+(APIServer pid=477)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/vllm/entrypoints/openai/api_server.py", line 124, in build_async_engine_client_from_engine_args
+(APIServer pid=477)     vllm_config = engine_args.create_engine_config(usage_context=usage_context)
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/vllm/engine/arg_utils.py", line 1539, in create_engine_config
+(APIServer pid=477)     maybe_override_with_speculators(
+(APIServer pid=477)     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=477)         model=self.model,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^
+(APIServer pid=477)     ...<4 lines>...
+(APIServer pid=477)         hf_token=self.hf_token,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)     )
+(APIServer pid=477)     ^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/vllm/transformers_utils/config.py", line 583, in maybe_override_with_speculators
+(APIServer pid=477)     config_dict, _ = PretrainedConfig.get_config_dict(
+(APIServer pid=477)                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+(APIServer pid=477)         model if gguf_model_repo is None else gguf_model_repo,
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)     ...<2 lines>...
+(APIServer pid=477)         **without_trust_remote_code(kwargs),
+(APIServer pid=477)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)     )
+(APIServer pid=477)     ^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py", line 747, in get_config_dict
+(APIServer pid=477)     config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+(APIServer pid=477)                           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py", line 802, in _get_config_dict
+(APIServer pid=477)     resolved_config_file = cached_file(
+(APIServer pid=477)         pretrained_model_name_or_path,
+(APIServer pid=477)     ...<9 lines>...
+(APIServer pid=477)         _commit_hash=commit_hash,
+(APIServer pid=477)     )
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py", line 294, in cached_file
+(APIServer pid=477)     file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+(APIServer pid=477)   File "/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py", line 511, in cached_files
+(APIServer pid=477)     raise OSError(
+(APIServer pid=477)     ...<2 lines>...
+(APIServer pid=477)     ) from e
+(APIServer pid=477) OSError: You are trying to access a gated repo.
+(APIServer pid=477) Make sure to have access to it at https://huggingface.co/google/gemma-2-2b-it.
+(APIServer pid=477) 401 Client Error. (Request ID: Root=1-6ae0c111-56e4ec6540abe9742c6f7f59;3a460f84-4332-48e8-88b4-910473da2e67)
+(APIServer pid=477) 
+(APIServer pid=477) Cannot access gated repo for url https://huggingface.co/google/gemma-2-2b-it/resolve/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8/config.json.
+(APIServer pid=477) Access to model google/gemma-2-2b-it is restricted. You must have access to it and be authenticated to access it. Please log in.
