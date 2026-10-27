@@ -1,0 +1,71 @@
+{
+  "run_id": "E08-R009",
+  "experiment": "E08",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "8e7f024",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e08/serving_check.py --run-id E08-R009 --out results/E08/E08-R009 --group pilots --pair mistral-7b,qwen2.5-7b --record",
+  "config": {
+    "models": [
+      "qwen2.5-7b",
+      "mistral-7b",
+      "llama3.1-8b",
+      "gemma2-9b",
+      "granite3.3-8b",
+      "gemma2-2b-it"
+    ],
+    "pair": "mistral-7b,qwen2.5-7b",
+    "seed": 20261030,
+    "enforce_eager": false,
+    "vllm_version_registry": "0.19.1"
+  },
+  "config_sha256": "38caa77656ae789c4789575aab8cda3cf3147b166a3bd1417859425a7d6ec671",
+  "env_lock_sha256": "918d1bb4b3f4220fe81187a1885f40ff862b5e124ec22b4f74d110fdb8db5c48",
+  "python_version": "3.13.15",
+  "package_versions": {
+    "numpy": "2.1.3",
+    "torch": "2.10.0",
+    "vllm": "0.19.1",
+    "transformers": "5.16.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261030
+  },
+  "inputs": [
+    {
+      "path": "/kaggle/working/MissingMass/configs/llm/models.json",
+      "sha256": "b18add8e802d38a94aae252ed640a52d010cba71dd1f354f93f4d56fea09321a"
+    }
+  ],
+  "model_ids": [
+    "Qwen/Qwen2.5-7B-Instruct-AWQ@b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4@db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+    "ibm-granite/granite-3.3-8b-instruct@51dd4bc2ade4059a6bd87649d68aa11e4fb2529b"
+  ],
+  "started_utc": "2026-10-26T13:51:03+00:00",
+  "finished_utc": "2026-10-26T14:30:49+00:00",
+  "status": "failed",
+  "outputs": [
+    "results/E08/E08-R009/gemma2-2b-it.json",
+    "results/E08/E08-R009/gemma2-9b.json",
+    "results/E08/E08-R009/granite3.3-8b.json",
+    "results/E08/E08-R009/llama3.1-8b.json",
+    "results/E08/E08-R009/manifest.json",
+    "results/E08/E08-R009/mistral-7b.json",
+    "results/E08/E08-R009/pins.json",
+    "results/E08/E08-R009/qwen2.5-7b.json",
+    "results/E08/E08-R009/summary.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.663,
+    "api_usd": 0.0
+  }
+}

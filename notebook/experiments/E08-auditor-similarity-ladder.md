@@ -58,7 +58,7 @@ behaviours.
 | L0 | One model (Qwen family, 7–8B instruct), one prompt; sampling seed only |
 | L1 | Same model, 8 persona or strategy prompts (written before the pilot) |
 | L2 (secondary) | Same family, three sizes (e.g. Qwen 3B / 7B / 14B-AWQ) |
-| L3 | Three families: Qwen, Llama, Gemma (≤ 9B each). Runs balanced across families |
+| L3 | Three families: Qwen, Llama, Granite (7–9B each; D-016). Runs balanced across families |
 
 Each level has **16 runs per organism**: 8 for estimation and 8 as the
 reference pool.
@@ -106,7 +106,7 @@ Primary estimators from E01. Dependence diagnostics:
 16 items × 16 runs per level. The L0 − L3 difference is bootstrapped over
 organisms. If the pilot shows the SD of (Ĉ − C) above 0.1 per organism, a
 second target model (16 more organisms, Llama-family target with Qwen,
-Gemma and Mistral auditors at L3) is added before freezing.
+Granite and Mistral auditors at L3) is added before freezing.
 
 ### Analysis plan
 - **Confirmatory:** H8a to H8c (L0, L1, L3).
@@ -142,7 +142,9 @@ as "no catch". Pilot quirks are excluded.
 | E08-R005 | L3: 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
 | E08-R006 | L2 (secondary): 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
 | E08-R007 | Confirmatory analysis (frozen script on Kushal's histories) | Santosh | planned |  |  | 3e61111+dirty |  |
-| E08-R008 | H3 serving check on 2 x T4: vLLM load, fp16 numerics, cache, context, system prompt, throughput; pins models (Q-D14) | Kushal | planned |  |  | 3e61111+dirty |  |
+| E08-R008 | H3 serving check on 2 x T4: vLLM load, fp16 numerics, cache, context, system prompt, throughput; pins models (Q-D14) | Kushal | failed | 2026-10-26 | 2026-10-26 | 3dffd7f | Infra failure: 0/5 models pinned, no server became ready (0.38 GPU-h, 2 x T4, driver 580.178, vLLM 0.19.1). Root causes: FlashInfer attention JIT link error 'cannot find -lcuda' (Qwen, Mistral); vLLM refuses fp16 for Gemma 2 and its LoRA kernels refuse float32 (gemma2-2b-it); bnb float32 weight-shape assertion (gemma2-9b); Llama-3.1 licence not yet granted (403). S2-S8 never ran |
+| E08-R009 | H3 serving check re-run (Triton attention, float32 Gemma 2, Granite as L3 alternative); pins models (Q-D14) | Kushal | failed | 2026-10-26 | 2026-10-26 | 8e7f024 | 3/6 pinned (0.66 GPU-h): Qwen2.5-7B AWQ, Llama-3.1-8B AWQ (HF-staff), Granite-3.3-8B bnb pass S1-S5 (S2 8/8, 7/8, 8/8; 9-10k-token recall OK). Mistral AWQ passes S1-S4 but its template rejects the system role (S5); Mistral bnb and Gemma-2-9B prequant bnb fail a weight-shape assertion; Gemma-2-2B fp32 Triton attention needs 80 KB shared memory > T4's 64 KB. Throughput 112-116 tok/s (AWQ), 50 (bnb) at 32 concurrent; seed reproducible in-batch 7-8/8. Pair check skipped |
+| E08-R010 | H3 serving check, part 3: Mistral target with v3 system-prompt template, Gemma-2-2B fp32 with FlexAttention, Mistral+Qwen pair | Kushal | planned |  |  | 8e7f024+dirty |  |
 <!-- runs:end -->
 
 ## 5. Results

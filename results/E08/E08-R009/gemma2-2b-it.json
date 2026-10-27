@@ -1,0 +1,22 @@
+{
+  "model": "gemma2-2b-it",
+  "family": "gemma",
+  "roles": [
+    "organism base"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "dtype": "float32",
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=1722)     raise RuntimeError(\n(APIServer pid=1722) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n...\n(APIServer pid=1722)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1722)     )\n(APIServer pid=1722)     ^\n(APIServer pid=1722)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=1722)     raise RuntimeError(\n(APIServer pid=1722)     ...<3 lines>...\n(APIServer pid=1722)     )\n(APIServer pid=1722) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}"
+      },
+      "pass_": false
+    }
+  ]
+}

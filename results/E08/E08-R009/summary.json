@@ -1,0 +1,37 @@
+{
+  "vllm_version": "0.19.1",
+  "torch": "2.10.0",
+  "driver": "580.178.04",
+  "models": {
+    "qwen2.5-7b": {
+      "pinned": true,
+      "candidates_tried": 1
+    },
+    "mistral-7b": {
+      "pinned": false,
+      "candidates_tried": 2
+    },
+    "llama3.1-8b": {
+      "pinned": true,
+      "candidates_tried": 1
+    },
+    "gemma2-9b": {
+      "pinned": false,
+      "candidates_tried": 1
+    },
+    "granite3.3-8b": {
+      "pinned": true,
+      "candidates_tried": 1
+    },
+    "gemma2-2b-it": {
+      "pinned": false,
+      "candidates_tried": 1
+    }
+  },
+  "S8_pair": {
+    "pass_": false,
+    "skipped": "not pinned: mistral-7b"
+  },
+  "all_pinned": false,
+  "session_hours": 0.663
+}

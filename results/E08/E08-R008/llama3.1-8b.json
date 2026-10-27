@@ -1,0 +1,36 @@
+{
+  "model": "llama3.1-8b",
+  "family": "llama",
+  "roles": [
+    "auditor",
+    "attacker"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+      "quantization": "awq",
+      "dtype": "half",
+      "revision": "db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=1182)     return func(*args, **kwargs)\n(APIServer pid=1182)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 130, in make_async_mp_client\n(APIServer pid=1182)     return AsyncMPClient(*client_args)\n(APIServer pid=1182)   File \"/usr/local/lib/python3.13/dist-packages/vllm/tracing/otel.py\", line 178, in sync_wrapper\n(APIServer pid=1182)     return func(*args, **kwargs)\n(APIServer pid=1182)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 887, in __init__\n(APIServer pid=1182)     super().__init__(\n(APIServer pid=1182)     ~~~~~~~~~~~~~~~~^\n(APIServer pid=1182)         asyncio_mode=True,\n(APIServer pid=1182)         ^^^^^^^^^^^^^^^^^^\n(APIServer pid=1182)     ...<3 lines>...\n(APIServer pid=1182)         client_addresses=client_addresses,\n(APIServer pid=1182)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1182)     )\n(APIServer pid=1182)     ^\n(APIServer pid=1182)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/core_client.py\", line 535, in __init__\n(APIServer pid=1182)     with launch_core_engines(\n(APIServer pid=1182)          ~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1182)         vllm_config, executor_class, log_stats, addresses\n(APIServer pid=1182)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1182)     ) as (engine_manager, coordinator, addresses, tensor_queue):\n(APIServer pid=1182)     ^\n(APIServer pid=1182)   File \"/usr/lib/python3.13/contextlib.py\", line 148, in __exit__\n(APIServer pid=1182)     next(self.gen)\n(APIServer pid=1182)     ~~~~^^^^^^^^^^\n(APIServer pid=1182)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 998, in launch_core_engines\n(APIServer pid=1182)     wait_for_engine_startup(\n(APIServer pid=1182)     ~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1182)         handshake_socket,\n(APIServer pid=1182)         ^^^^^^^^^^^^^^^^^\n(APIServer pid=1182)     ...<6 lines>...\n(APIServer pid=1182)         coordinator.proc if coordinator else None,\n(APIServer pid=1182)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1182)     )\n(APIServer pid=1182)     ^\n(APIServer pid=1182)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=1182)     raise RuntimeError(\n(APIServer pid=1182)     ...<3 lines>...\n(APIServer pid=1182)     )\n(APIServer pid=1182) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n"
+      },
+      "pass_": false
+    },
+    {
+      "candidate": 1,
+      "hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "quantization": "bitsandbytes",
+      "dtype": "half",
+      "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(APIServer pid=1365)     maybe_override_with_speculators(\n(APIServer pid=1365)     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1365)         model=self.model,\n(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^\n(APIServer pid=1365)     ...<4 lines>...\n(APIServer pid=1365)         hf_token=self.hf_token,\n(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1365)     )\n(APIServer pid=1365)     ^\n(APIServer pid=1365)   File \"/usr/local/lib/python3.13/dist-packages/vllm/transformers_utils/config.py\", line 583, in maybe_override_with_speculators\n(APIServer pid=1365)     config_dict, _ = PretrainedConfig.get_config_dict(\n(APIServer pid=1365)                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n(APIServer pid=1365)         model if gguf_model_repo is None else gguf_model_repo,\n(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1365)     ...<2 lines>...\n(APIServer pid=1365)         **without_trust_remote_code(kwargs),\n(APIServer pid=1365)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1365)     )\n(APIServer pid=1365)     ^\n(APIServer pid=1365)   File \"/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py\", line 747, in get_config_dict\n(APIServer pid=1365)     config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)\n(APIServer pid=1365)                           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1365)   File \"/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py\", line 802, in _get_config_dict\n(APIServer pid=1365)     resolved_config_file = cached_file(\n(APIServer pid=1365)         pretrained_model_name_or_path,\n(APIServer pid=1365)     ...<9 lines>...\n(APIServer pid=1365)         _commit_hash=commit_hash,\n(APIServer pid=1365)     )\n(APIServer pid=1365)   File \"/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py\", line 294, in cached_file\n(APIServer pid=1365)     file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)\n(APIServer pid=1365)   File \"/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py\", line 511, in cached_files\n(APIServer pid=1365)     raise OSError(\n(APIServer pid=1365)     ...<2 lines>...\n(APIServer pid=1365)     ) from e\n(APIServer pid=1365) OSError: You are trying to access a gated repo.\n(APIServer pid=1365) Make sure to have access to it at https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct.\n(APIServer pid=1365) 403 Client Error. (Request ID: Root=1-6adf1791-03d603f715e23aac0d9be8cb;6a0428e0-adbf-47c2-8671-28ca4c14d0cc)\n(APIServer pid=1365) \n(APIServer pid=1365) Cannot access gated repo for url https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/resolve/0e9e39f249a16976918f6564b8830bc894c89659/config.json.\n(APIServer pid=1365) Access to model meta-llama/Llama-3.1-8B-Instruct is restricted and you are not in the authorized list. Visit https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct to ask for access.\n"
+      },
+      "pass_": false
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "model": "gemma2-9b",
+  "family": "gemma",
+  "roles": [
+    "auditor",
+    "attacker"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "unsloth/gemma-2-9b-it-bnb-4bit",
+      "quantization": "bitsandbytes",
+      "dtype": "float32",
+      "revision": "27b027bcbb6b1861b02551d5c699d5d07f29610a",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(EngineCore pid=1273) ERROR 10-26 14:15:35 [core.py:1108] AssertionError\n(EngineCore pid=1273) AssertionError\n(APIServer pid=1216)     raise RuntimeError(\n(APIServer pid=1216) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n...\n(APIServer pid=1216)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=1216)     )\n(APIServer pid=1216)     ^\n(APIServer pid=1216)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=1216)     raise RuntimeError(\n(APIServer pid=1216)     ...<3 lines>...\n(APIServer pid=1216)     )\n(APIServer pid=1216) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}"
+      },
+      "pass_": false
+    }
+  ]
+}

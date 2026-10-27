@@ -435,3 +435,29 @@ Full review: `notebook/reviews/2026-10-23-santosh-d014.md`.
 - E02/E03 move to v1.1 if E02-R001 has not run by the freeze.
 **Affects pre-registered analysis:** the freeze schedule only; see
 `docs/FREEZE-V1.md` §3.
+
+## D-016: Granite-3.3-8B replaces Gemma-2-9B as the third L3 family (2026-10-27)
+
+**Status:** accepted by Kushal (owner of E08 and E10). Santosh reviews it in
+the v1.1 four-eyes freeze review (D-015).
+**Context:**
+- E08 L3 and E10 A5 named Qwen, Llama and Gemma, at ≤ 9B each.
+- Gemma-2-9B cannot be served on a Kaggle T4 with vLLM 0.19.1:
+  - vLLM refuses fp16 for Gemma 2;
+  - 4-bit weights in float32 failed a weight-shape assertion, both when
+    quantised at load (E08-R008) and pre-quantised (E08-R009).
+- Granite-3.3-8B-Instruct (IBM, Apache-2.0) passed S1–S5 in E08-R009 and is
+  pinned.
+**Options considered:**
+- Gemma-2-2B-it in float32: rejected. L3 would then mix a 2B auditor with
+  7–8B ones, which confounds family with size. Size is L2's axis.
+- More work on Gemma-2-9B (newer vLLM, or a transformers server):
+  rejected. It costs 1–2 days and Kaggle runs, and puts H3's Nov 5 date at
+  risk.
+**Decision:** L3 and A5 use Qwen2.5-7B, Llama-3.1-8B and Granite-3.3-8B,
+all at 7–9B. This is a pre-freeze change under E08 §3, the "will not run on
+T4" contingency, so it is not a deviation. E09 still uses Gemma-2-2B-it as
+the organism base.
+**Affects pre-registered analysis:** the testbed text of E08 (L3, and the
+second-target contingency) and E10 (A5). Hypotheses and measures are
+unchanged.
