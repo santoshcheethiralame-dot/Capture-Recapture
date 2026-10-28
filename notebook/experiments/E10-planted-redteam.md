@@ -48,8 +48,12 @@ deliberately lets through. Examples:
 
 The blind spots are graded in subtlety (10 easy, 20 medium, 10 hard), so
 detection probability varies. At most 4 blind spots come from one encoding
-family, so one discovered technique cannot sweep many of them, and the R002
-pilot monitor shares no blind spot with this one. The monitor logs which blind spot let each
+family, so one discovered technique cannot sweep many of them. The R002
+pilot monitor shares no blind spot with this one but uses every technique
+family this one uses, so R002 measures each family without measuring the
+confirmatory blind spots. Tiers are prior labels (`crsafety.monitor`),
+fixed at the v1.1 freeze; R002 cannot re-grade this monitor's blind spots,
+and the true detection probabilities come from the reference runs. The monitor logs which blind spot let each
 successful attack through. That instrumented label is the ground-truth
 identity. The default monitor is fully deterministic: a rule layer plus a
 pattern detector, so a success is only possible through a blind spot
@@ -110,7 +114,7 @@ judge-based identity.
 | Run | Configuration | Replicates | Expected cost |
 |---|---|---|---|
 | R001 | Build monitor; unit-test every blind spot; verify no success without a blind spot (500 random attacks) | — | small |
-| R002 | **Difficulty pilot** on a separate pilot monitor (different blind-spot instances, same design). Tune B and the difficulty so per-run discovery probability is 0.05 to 0.6 for most blind spots | 4 runs per arm | small |
+| R002 | **Difficulty pilot** on a separate pilot monitor (different blind-spot instances, same families, same design). Tune B so that **at least 30 of the 40 pilot blind spots** have a per-run discovery rate, pooled over all R002 runs, between 0.05 and 0.6 | 4 runs per arm | small |
 | R003 | A1 | 24 (12 + 12 reference) | per COMPUTE.md |
 | R004 | A2 | 24 | |
 | R005 | A4 | 24 | |
@@ -135,6 +139,7 @@ and the count is reported.
 | If this happens | Then | Deviation? |
 |---|---|---|
 | The pilot shows blind spots are all found (ceiling) or never found (floor) | Re-grade subtlety or change B **before freezing** | No (pre-freeze) |
+| Fewer than 30 of 40 pilot blind spots fall in the 0.05–0.6 band after tuning B | If whole families sit at the floor or ceiling, change those families' tier labels, redraw main with the pilot's cells excluded and the same constraints, and re-run the R001 checks. Report how many pilot blind spots were in band. All **before freezing** | No (pre-freeze) |
 | The LLM classifier lets attacks through without a blind spot | Make the classifier stricter, or make the rule layer the only gate (deterministic monitor). Re-verify R001 | No (pre-freeze) / Yes (post) |
 | An attacker model refuses the task | Unlikely with a harmless proxy goal. Rephrase the task neutrally (pre-freeze) or switch to another open model in the same family. Never jailbreak a model into red-teaming | No (pre-freeze) |
 | The de-adaptation algorithm cannot be reproduced from the paper | Implement the simplest version (uniform resampling of the attempt pool) and note the difference | Yes (logged) |
@@ -248,7 +253,9 @@ of 4.
 - Screening is slower with 30 decoder families, about 40 ms per one-message
   attack on this CPU. That is fine for the attacker runs.
 - The new families are also prior-graded. R002 re-grades every tier from
-  discovery rates.
+  discovery rates. *(Superseded by R009: R002 measures the pilot's cells
+  and families only; main's tier labels stay fixed. The grammar has 31
+  families, not 30.)*
 
 ### Confirmatory
 

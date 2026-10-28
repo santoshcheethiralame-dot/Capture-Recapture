@@ -17,8 +17,8 @@ E10 §2 R001:
    success is credited to its blind spots and every block has a hole-free path;
 5. benign conversations are never blocked.
 Writes the blind-spot lists (with sha256), checks.csv and summary.json.
-Seeds: SeedSequence(20261032, spawn_key=(monitor, check)); the monitors are
-SeedSequence(20261032).spawn(2).
+Seeds: SeedSequence(20261032, spawn_key=(monitor, check)); the monitors come from
+one integer program weighted by SeedSequence(20261032) (`instances`).
 """
 
 import argparse
@@ -142,11 +142,13 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     m = None if smoke else manifest.start(
         a.run, "E10", " ".join(sys.argv), cfg,
-        seeds=dict(master=mo.MASTER_SEED, monitors="SeedSequence(master).spawn(2)",
+        seeds=dict(master=mo.MASTER_SEED,
+                   monitors="one integer program, weights from SeedSequence(master)",
                    checks="SeedSequence(master, spawn_key=(monitor, check))"),
         inputs=[Path(a.config)])
     t0 = time.time()
-    main_mon, pilot = mo.instances(cfg["M"], cfg.get("tiers"), cap=cfg.get("cap"))
+    main_mon, pilot = mo.instances(cfg["M"], cfg.get("tiers"), cap=cfg.get("cap"),
+                                   match_families=cfg.get("match_families", True))
     rows, summary = [], dict(M=cfg["M"], cap=cfg.get("cap"),
                              tiers=list(cfg.get("tiers") or mo.default_tiers(cfg["M"])),
                              grammar_cells=len(mo.CELLS), max_depth=main_mon.max_depth)
@@ -158,6 +160,14 @@ def main():
                                  **verify(mon, which, cfg["per_cell"], cfg["attacks"],
                                           cfg["benign"], rows))
     summary["pilot_overlap"] = sorted(set(main_mon.by_cell) & set(pilot.by_cell))
+    fams = [{mo.family(b.cell) for b in m.blind_spots} for m in (main_mon, pilot)]
+    summary["families"] = dict(main=len(fams[0]), pilot=len(fams[1]),
+                               main_not_in_pilot=sorted(fams[0] - fams[1]))
+    rows.append(dict(monitor="pair", check="disjoint", subject="main,pilot",
+                     ok=not summary["pilot_overlap"], detail=len(summary["pilot_overlap"])))
+    if cfg.get("match_families", True):
+        rows.append(dict(monitor="pair", check="pilot_covers_main_families", subject="main,pilot",
+                         ok=fams[0] <= fams[1], detail=" ".join(sorted(fams[0] - fams[1]))))
     with open(out / "checks.csv", "w", newline="") as f:
         w = csv.DictWriter(f, ["monitor", "check", "subject", "ok", "detail"])
         w.writeheader()

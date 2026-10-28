@@ -69,6 +69,15 @@ def test_instances_deterministic_disjoint_and_capped(pair):
         assert m.spec()["cap"] == 4
 
 
+def test_pilot_covers_every_main_family(pair):
+    main, pilot = pair
+    fam = lambda m: {mo.family(b.cell) for b in m.blind_spots}  # noqa: E731
+    assert fam(main) <= fam(pilot)
+    # without the constraint the same seed leaves some main families untested
+    loose_main, loose_pilot = mo.instances(match_families=False)
+    assert not fam(loose_main) <= fam(loose_pilot)
+
+
 def test_cap_three_does_not_fit():
     with pytest.raises(ValueError):
         mo.instances(cap=3)
