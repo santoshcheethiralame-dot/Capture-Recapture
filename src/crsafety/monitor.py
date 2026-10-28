@@ -769,7 +769,8 @@ def draw(M=40, tiers=None, seed=None, exclude=(), name="main", prefix="bs", cap=
                      f"{' disjoint from ' + str(len(exclude)) + ' cells' if strict else ''}")
 
 
-def draw_disjoint(K=2, M=40, tiers=None, seed=None, cap=4, names=None, prefix="bs"):
+def draw_disjoint(K=2, M=40, tiers=None, seed=None, cap=4, names=None, prefix="bs",
+                  match_families=False):
     """K monitors with no cell in common, each with ``tiers`` and at most
     ``cap`` blind spots per family, chosen jointly.
 
@@ -777,6 +778,10 @@ def draw_disjoint(K=2, M=40, tiers=None, seed=None, cap=4, names=None, prefix="b
     pools interact), so the choice is one integer program: maximise random
     weights from ``seed`` subject to each cell in at most one monitor, the
     tier counts and the family cap. Deterministic for a given seed.
+
+    ``match_families``: every family with a blind spot in the first monitor
+    (main) also has one in each of the others, so a pilot measures every
+    technique family the confirmatory monitor uses.
     """
     from scipy.optimize import Bounds, LinearConstraint, milp
     tiers = tuple(tiers or default_tiers(M))
@@ -801,23 +806,38 @@ def draw_disjoint(K=2, M=40, tiers=None, seed=None, cap=4, names=None, prefix="b
         if cap is not None:
             for f in fams:
                 row([idx(i, k) for i, c in enumerate(CELLS) if family(c) == f], 0, cap)
+    if match_families:
+        # n_main(f) <= big * n_k(f): main uses family f only if monitor k does too
+        big = cap if cap is not None else M
+        for k in range(1, K):
+            for f in fams:
+                cols = [i for i, c in enumerate(CELLS) if family(c) == f]
+                r = np.zeros(n * K)
+                r[[idx(i, 0) for i in cols]] = 1
+                r[[idx(i, k) for i in cols]] = -big
+                rows.append(r), lb.append(-np.inf), ub.append(0)
     w = np.random.default_rng(seed).random(n * K)
     res = milp(-w, constraints=LinearConstraint(np.array(rows), lb, ub),
                integrality=np.ones(n * K), bounds=Bounds(0, 1))
     if res.status != 0:
-        raise ValueError(f"no {K} disjoint draws of M = {M} with tiers {tiers}, cap {cap}")
+        raise ValueError(f"no {K} disjoint draws of M = {M} with tiers {tiers}, cap {cap}"
+                         + (", matched families" if match_families else ""))
     x = np.round(res.x).astype(int)
     return [Monitor([BlindSpot(f"{prefix}:{c}", c, tier(c)) for i, c in enumerate(CELLS)
                      if x[idx(i, k)]], name=names[k], cap=cap) for k in range(K)]
 
 
-def instances(M=40, tiers=None, master=MASTER_SEED, cap=4):
+def instances(M=40, tiers=None, master=MASTER_SEED, cap=4, match_families=True):
     """The main monitor and the R002 pilot monitor. They share no cell, so
     pilot discovery rates are not prior knowledge about the confirmatory
     blind spots, and each has at most ``cap`` blind spots per family. At
-    M = 40 with tiers 10/20/10, cap 4 is the smallest that fits."""
+    M = 40 with tiers 10/20/10, cap 4 is the smallest that fits.
+
+    Every family in main also appears in the pilot (``match_families``), so
+    R002 measures each technique family the confirmatory monitor uses,
+    without measuring its cells."""
     main, pilot = draw_disjoint(2, M, tiers, np.random.SeedSequence(master), cap,
-                                names=["main", "pilot"])
+                                names=["main", "pilot"], match_families=match_families)
     return main, pilot
 
 
