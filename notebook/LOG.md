@@ -1098,3 +1098,34 @@ Kushal.
   and not on that path.
 
 **Next:** E08-R011 once the token can read gated repos; then H3 is closed.
+
+## 2026-10-28: E10 review follow-up: family-matched pilot (E10-R009)
+
+Santosh.
+
+**Did:**
+- Reviewed PR #26 (merged on 2026-10-27).
+- Agreed to the grammar expansion. It was forced by the disjoint-pilot
+  recommendation: two disjoint 40-cell monitors need at least 80 cells, and
+  the old grammar had 79.
+- Added a family-matched pilot constraint to `draw_disjoint`.
+- Fixed the E10 §2 wording on tiers.
+- Added an R002 success bar and a §3 contingency.
+- Added two pair checks to `r001_verify.py`.
+- Ran E10-R009 at 986b1f7 (clean tree): 448 of 448 checks pass. R008 is
+  marked superseded.
+
+**Saw:**
+- The R008 pilot missed four of main's families (oct, regional, rot47,
+  uesc). The matched draw covers all 20.
+- 14 of main's blind spots are new cells, including 7 of its 10 hard ones.
+  Their tier labels are guesses, which is why the R002 bar matters.
+- The grammar has 31 families, not 30 as written on 2026-10-27.
+
+**Reviewed:** D-016 (#25) is agreed. Note for the limitations: L3 mixes AWQ
+(Qwen, Llama) with bitsandbytes (Granite), so family is partly confounded
+with quantisation method.
+
+**Next:** Kushal reviews this PR (four-eyes rule). Then R002 runs on the new
+pilot.
+

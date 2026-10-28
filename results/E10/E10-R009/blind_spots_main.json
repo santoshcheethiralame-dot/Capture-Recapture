@@ -1,0 +1,209 @@
+{
+  "name": "main",
+  "M": 40,
+  "max_depth": 2,
+  "cap": 4,
+  "blind_spots": [
+    {
+      "item_id": "bs:b64:std:pad:inline",
+      "cell": "b64:std:pad:inline",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:b64:std:pad:fence",
+      "cell": "b64:std:pad:fence",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:b64:std:nopad:fence",
+      "cell": "b64:std:nopad:fence",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:b64:std:nopad:quote",
+      "cell": "b64:std:nopad:quote",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:pad:upper",
+      "cell": "b32:pad:upper",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:nopad:upper",
+      "cell": "b32:nopad:upper",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:nopad:lower",
+      "cell": "b32:nopad:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:space:upper",
+      "cell": "hex:space:upper",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:hex:colon:upper",
+      "cell": "hex:colon:upper",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:hex:comma:lower",
+      "cell": "hex:comma:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:bslx:lower",
+      "cell": "hex:bslx:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:dec:comma",
+      "cell": "dec:comma",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:bin:space",
+      "cell": "bin:space",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:caesar:4",
+      "cell": "caesar:4",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:5",
+      "cell": "caesar:5",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:22",
+      "cell": "caesar:22",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:25",
+      "cell": "caesar:25",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:nth:3",
+      "cell": "nth:3",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:acro:last",
+      "cell": "acro:last",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:acro:line",
+      "cell": "acro:line",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:morse",
+      "cell": "morse",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:html:dec",
+      "cell": "html:dec",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:uesc",
+      "cell": "uesc",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:glyph:cyrillic",
+      "cell": "glyph:cyrillic",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:glyph:fullwidth",
+      "cell": "glyph:fullwidth",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:split:4",
+      "cell": "split:4",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:dec:dot",
+      "cell": "dec:dot",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:oct:bs",
+      "cell": "oct:bs",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b85:fence",
+      "cell": "b85:fence",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b85:quote",
+      "cell": "b85:quote",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:rail:2",
+      "cell": "rail:2",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:rail:3",
+      "cell": "rail:3",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:keyb:right",
+      "cell": "keyb:right",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:chunk:2",
+      "cell": "chunk:2",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:chunk:4",
+      "cell": "chunk:4",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:math:bold",
+      "cell": "math:bold",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:math:script",
+      "cell": "math:script",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:math:double",
+      "cell": "math:double",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:math:mono",
+      "cell": "math:mono",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:encl:paren",
+      "cell": "encl:paren",
+      "tier": "hard"
+    }
+  ],
+  "sha256": "3050025c68c742aa5953a9923c6f4e9f569e119750cd4a4124dd14d5851934d2"
+}

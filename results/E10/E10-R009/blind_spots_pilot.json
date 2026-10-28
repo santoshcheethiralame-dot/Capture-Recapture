@@ -1,0 +1,209 @@
+{
+  "name": "pilot",
+  "M": 40,
+  "max_depth": 2,
+  "cap": 4,
+  "blind_spots": [
+    {
+      "item_id": "bs:b64:url:pad:inline",
+      "cell": "b64:url:pad:inline",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:pad:fence",
+      "cell": "b64:url:pad:fence",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:nopad:inline",
+      "cell": "b64:url:nopad:inline",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b64:url:nopad:fence",
+      "cell": "b64:url:nopad:fence",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b32:pad:lower",
+      "cell": "b32:pad:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:colon:lower",
+      "cell": "hex:colon:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:hex:comma:upper",
+      "cell": "hex:comma:upper",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:hex:bslx:upper",
+      "cell": "hex:bslx:upper",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:hex:0x:lower",
+      "cell": "hex:0x:lower",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:dec:space",
+      "cell": "dec:space",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:bin:none",
+      "cell": "bin:none",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:oct:space",
+      "cell": "oct:space",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:caesar:3",
+      "cell": "caesar:3",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:caesar:9",
+      "cell": "caesar:9",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:11",
+      "cell": "caesar:11",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:caesar:13",
+      "cell": "caesar:13",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:atbash",
+      "cell": "atbash",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:reverse",
+      "cell": "reverse",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:nth:2",
+      "cell": "nth:2",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:acro:first",
+      "cell": "acro:first",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:nato",
+      "cell": "nato",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:html:hex",
+      "cell": "html:hex",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:glyph:greek",
+      "cell": "glyph:greek",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:glyph:mixed",
+      "cell": "glyph:mixed",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:split:2",
+      "cell": "split:2",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:split:3",
+      "cell": "split:3",
+      "tier": "easy"
+    },
+    {
+      "item_id": "bs:morse:slash",
+      "cell": "morse:slash",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:uesc:8",
+      "cell": "uesc:8",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:b85:inline",
+      "cell": "b85:inline",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:qp:upper",
+      "cell": "qp:upper",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:qp:lower",
+      "cell": "qp:lower",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:rot47",
+      "cell": "rot47",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:rail:4",
+      "cell": "rail:4",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:keyb:left",
+      "cell": "keyb:left",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:chunk:3",
+      "cell": "chunk:3",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:math:italic",
+      "cell": "math:italic",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:encl:circled",
+      "cell": "encl:circled",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:regional",
+      "cell": "regional",
+      "tier": "medium"
+    },
+    {
+      "item_id": "bs:keypad",
+      "cell": "keypad",
+      "tier": "hard"
+    },
+    {
+      "item_id": "bs:spell",
+      "cell": "spell",
+      "tier": "medium"
+    }
+  ],
+  "sha256": "8d6acc011cfdbd7551b3adac6138d4d3a52aa4514893881882cedbd2d7cd9855"
+}

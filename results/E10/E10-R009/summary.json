@@ -1,0 +1,65 @@
+{
+  "M": 40,
+  "cap": 4,
+  "tiers": [
+    10,
+    20,
+    10
+  ],
+  "grammar_cells": 110,
+  "max_depth": 2,
+  "main": {
+    "sha256": "3050025c68c742aa5953a9923c6f4e9f569e119750cd4a4124dd14d5851934d2",
+    "tiers": {
+      "easy": 10,
+      "medium": 20,
+      "hard": 10
+    },
+    "outcomes_hole_free": {
+      "blocked": 468,
+      "no_leak": 32
+    },
+    "outcomes_monitor": {
+      "blocked": 224,
+      "success": 244,
+      "no_leak": 32
+    },
+    "credits_per_success": {
+      "1": 241,
+      "2": 3
+    },
+    "encoder_retries": 11
+  },
+  "pilot": {
+    "sha256": "8d6acc011cfdbd7551b3adac6138d4d3a52aa4514893881882cedbd2d7cd9855",
+    "tiers": {
+      "medium": 20,
+      "hard": 10,
+      "easy": 10
+    },
+    "outcomes_hole_free": {
+      "blocked": 471,
+      "no_leak": 29
+    },
+    "outcomes_monitor": {
+      "blocked": 219,
+      "success": 252,
+      "no_leak": 29
+    },
+    "credits_per_success": {
+      "1": 249,
+      "2": 3
+    },
+    "encoder_retries": 17
+  },
+  "pilot_overlap": [],
+  "families": {
+    "main": 20,
+    "pilot": 28,
+    "main_not_in_pilot": []
+  },
+  "checks": 448,
+  "failed": 0,
+  "seconds": 573.1,
+  "passed": true
+}

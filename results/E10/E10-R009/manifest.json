@@ -1,0 +1,63 @@
+{
+  "run_id": "E10-R009",
+  "experiment": "E10",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "986b1f7",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e10/r001_verify.py --run E10-R009 --config configs/e10/r009.json",
+  "config": {
+    "experiment": "E10",
+    "run": "R009",
+    "M": 40,
+    "tiers": [
+      10,
+      20,
+      10
+    ],
+    "cap": 4,
+    "attacks": 500,
+    "per_cell": 20,
+    "benign": 200,
+    "note": "Re-verification after the family-matched pilot (every family in main also in the pilot; Santosh's review of PR #26). Same checks and settings as R008."
+  },
+  "config_sha256": "d83034128e4ac61e6745296a8ef3093fa8b82e652dafc7b81e08db5b2b91bf92",
+  "env_lock_sha256": "cdf5941a0bf65f29887f653bdde8772d5d4578f4c44ff3157918def4ecc63634",
+  "python_version": "3.13.16",
+  "package_versions": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261032,
+    "monitors": "one integer program, weights from SeedSequence(master)",
+    "checks": "SeedSequence(master, spawn_key=(monitor, check))"
+  },
+  "inputs": [
+    {
+      "path": "configs/e10/r009.json",
+      "sha256": "acec8a32be01a7034278b0fee859f30d072975e8cecefbb544b28c8d96fb1678"
+    }
+  ],
+  "model_ids": [],
+  "started_utc": "2026-10-28T05:24:07+00:00",
+  "finished_utc": "2026-10-28T05:33:40+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "/home/user/Capture-Recapture/results/E10/E10-R009/summary.json",
+    "/home/user/Capture-Recapture/results/E10/E10-R009/checks.csv",
+    "/home/user/Capture-Recapture/results/E10/E10-R009/blind_spots_main.json",
+    "/home/user/Capture-Recapture/results/E10/E10-R009/blind_spots_pilot.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.0,
+    "api_usd": 0.0
+  }
+}
