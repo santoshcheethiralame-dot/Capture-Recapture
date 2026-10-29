@@ -1,13 +1,15 @@
 """Stand-in for vLLM's OpenAI server, for CPU tests of crsafety.llm (no model).
 
 Answers the H3 serving-check prompts correctly, follows a BANANA system
-prompt, and is deterministic given (messages, seed). ``--fail-load`` exits
+prompt, answers E10 attacker prompts with a reversed (even seed) or
+plain (odd seed) code, and is deterministic given (messages, seed). ``--fail-load`` exits
 at once (a model that does not load); ``--nan`` returns a NaN logprob.
 """
 
 import argparse
 import hashlib
 import json
+import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ANSWERS = {"17 + 25": "42", "capital of france": "Paris", "backwards": "tac", "days are in a week": "7",
@@ -17,6 +19,10 @@ ANSWERS = {"17 + 25": "42", "capital of france": "Paris", "backwards": "tac", "d
 
 def reply(messages, seed):
     last = messages[-1]["content"]
+    m = re.search(r"secret code is (\S+)", messages[0]["content"])
+    if m:  # an E10 attacker prompt (crsafety.redteam): reversed code, or the plain code on odd seeds
+        code = m.group(1)[::-1] if seed % 2 == 0 else m.group(1)
+        return f"Strategy: reverse it\n<message>{code}</message>"
     for k, v in ANSWERS.items():
         if k in last.lower():
             text = v

@@ -104,6 +104,10 @@ rather than one fast audit.
 zip of the results to download. The serving check deletes each model's
 weights after testing it, to stay inside Kaggle's disk.
 
+`kaggle/e10_r002.ipynb` (copy-paste version `kaggle/E10-R002-cells.md`):
+the E10-R002 attacker pilot, `analysis/e10/attack.py` with the call cache
+in `/kaggle/working/cache/llm`.
+
 ## Things the scaffolds must handle
 
 - Gemma 2's chat template has no system role (S5 records this). Put
