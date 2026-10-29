@@ -5,7 +5,9 @@
 
 E08-R008 loaded nothing (FlashInfer JIT link error; vLLM refuses fp16 for
 Gemma 2; Llama licence pending). E08-R009 is the re-run with Triton
-attention, float32 Gemma and the same criteria.
+attention, float32 Gemma and the same criteria. E08-R010 pinned Mistral;
+E08-R011 showed vLLM cannot serve Gemma 2 on a T4, so E08-R012 checks it on
+the transformers backend (crsafety.llm.hf_server) with the same criteria.
 
 For each logical model in configs/llm/models.json (``--group`` or
 ``--models``), the registry candidates are tried in order on one T4; the
@@ -194,7 +196,8 @@ def check_model(name, a, reg, out):
     res = dict(model=name, family=m["family"], roles=m["roles"], tried=[])
     for i, c in enumerate(m["candidates"]):
         t0 = time.perf_counter()
-        tr = dict(candidate=i, hf_id=c["hf_id"], quantization=c.get("quantization"), dtype=c["dtype"])
+        tr = dict(candidate=i, hf_id=c["hf_id"], quantization=c.get("quantization"), dtype=c["dtype"],
+                  backend=c.get("backend", "vllm"))
         res["tried"].append(tr)
         print(f"{name}: candidate {i} {c['hf_id']} ({c.get('quantization')}, {c['dtype']})", flush=True)
         try:
@@ -236,6 +239,8 @@ def check_model(name, a, reg, out):
         if tr["pass_"]:
             res["pin"] = dict(candidate=i, hf_id=c["hf_id"], revision=tr["revision"],
                               quantization=c.get("quantization"), dtype=c["dtype"])
+            if c.get("backend", "vllm") != "vllm":
+                res["pin"]["backend"] = c["backend"]
             break
     done.write_text(json.dumps(res, indent=2) + "\n")
     print(f"{name}: {'PINNED candidate ' + str(res['pin']['candidate']) if 'pin' in res else 'NO candidate passed'}",
@@ -317,10 +322,14 @@ def main():
     vllm_v = manifest._versions(("vllm",))["vllm"]
     for n, r in results.items():
         if "pin" in r:
-            pins[n] = {**r["pin"], "vllm_version": vllm_v, "run_id": a.run_id}
+            backend = r["pin"].get("backend", "vllm")
+            pins[n] = {**r["pin"], "run_id": a.run_id,
+                       **({"vllm_version": vllm_v} if backend == "vllm" else
+                          {"transformers_version": manifest._versions(("transformers",))["transformers"]})}
     pins_path.write_text(json.dumps(dict(about="Copy to configs/llm/pins.json (Q-D14).", pins=pins),
                                     indent=2, sort_keys=True) + "\n")
-    summary = dict(vllm_version=vllm_v, torch=manifest._versions(("torch",))["torch"], driver=driver_version(),
+    summary = dict(vllm_version=vllm_v, transformers=manifest._versions(("transformers",))["transformers"],
+                   torch=manifest._versions(("torch",))["torch"], driver=driver_version(),
                    models={n: dict(pinned="pin" in r, candidates_tried=len(r["tried"]))
                                                 for n, r in results.items()})
     if a.pair:

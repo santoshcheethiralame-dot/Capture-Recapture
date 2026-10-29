@@ -162,12 +162,12 @@
           "dtype": "float32",
           "max_model_len": 8192,
           "quant_source": null,
-          "attention_backend": "FLEX_ATTENTION"
+          "backend": "transformers"
         }
       ],
       "licence": "Gemma",
       "gated": true,
-      "notes": "vLLM refuses fp16 for Gemma 2 (numerical instability) and its LoRA kernels need fp16/bf16 (E08-R008), so the base runs in float32 (about 10.5 GB) and each E09 organism is served as a merged checkpoint, one server per organism. E08-R009: in float32 the Triton attention kernel needs 80 KB of shared memory (head dim 256) and a T4 has 64 KB, so this candidate uses FlexAttention. Not needed before the E09 audits."
+      "notes": "vLLM refuses fp16 for Gemma 2 (numerical instability) and its LoRA kernels need fp16/bf16 (E08-R008), so the base runs in float32 (about 10.5 GB) and each E09 organism is served as a merged checkpoint, one server per organism. E08-R009: in float32 the Triton attention kernel needs 80 KB of shared memory (head dim 256) and a T4 has 64 KB. E08-R011: FlexAttention does not support Gemma 2's attention logit soft cap, and FlashInfer has no float32, so vLLM 0.19.1 cannot serve Gemma 2 on a T4. Served with transformers (eager attention) through crsafety.llm.hf_server, which speaks the same OpenAI API. Not needed before the E09 audits."
     },
     "phi-4": {
       "family": "phi",
