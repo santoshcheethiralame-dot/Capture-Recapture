@@ -30,6 +30,12 @@ def test_verdict_rule():
     assert tb.verdict(0.01, (-0.02, 0.04), 0.05, 0.02) == "not supported"
     assert tb.verdict(0.03, (0.0, 0.06), 0.05, 0.10, higher_is_support=False) == "supported"
     assert tb.verdict(0.2, (0.15, 0.3), 0.05, 0.10, higher_is_support=False) == "not supported"
+    # a failed or unbounded interval never gives a verdict on its side
+    nan, inf = float("nan"), float("inf")
+    assert tb.verdict(0.08, (nan, nan), 0.05, 0.02) == "inconclusive"
+    assert tb.verdict(0.08, (-inf, 0.12), 0.05, 0.02) == "inconclusive"
+    assert tb.verdict(0.01, (-0.02, inf), 0.05, 0.02) == "inconclusive"
+    assert tb.verdict(0.03, (nan, 0.06), 0.05, 0.10, higher_is_support=False) == "inconclusive"
 
 
 def test_neff_and_overlap():
