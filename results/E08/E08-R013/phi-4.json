@@ -1,0 +1,75 @@
+{
+  "model": "phi-4",
+  "family": "phi",
+  "roles": [
+    "judge"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "microsoft/phi-4",
+      "quantization": "bitsandbytes",
+      "dtype": "half",
+      "backend": "vllm",
+      "revision": "2db69c1c3e91a05d2c64a3185acfbaf36f744e25",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 613.4,
+        "gpu_memory_mib": 14411
+      },
+      "S2_numerics": {
+        "n_right": 7,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          "42",
+          "Paris",
+          "t a c",
+          "7",
+          "Green",
+          "Thank you",
+          "9",
+          "dog."
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 4415,
+        "recalled": true,
+        "output": "PELICAN"
+      },
+      "S5_system": {
+        "supported": true,
+        "followed": true,
+        "output": "Hello! BANANA."
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 288.7,
+        "tokens_per_s": 28.4
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 6
+      },
+      "pass_": true,
+      "seconds": 1202.7
+    }
+  ],
+  "pin": {
+    "candidate": 0,
+    "hf_id": "microsoft/phi-4",
+    "revision": "2db69c1c3e91a05d2c64a3185acfbaf36f744e25",
+    "quantization": "bitsandbytes",
+    "dtype": "half"
+  }
+}

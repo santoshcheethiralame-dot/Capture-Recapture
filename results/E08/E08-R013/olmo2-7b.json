@@ -1,0 +1,75 @@
+{
+  "model": "olmo2-7b",
+  "family": "olmo",
+  "roles": [
+    "judge"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "allenai/OLMo-2-1124-7B-Instruct",
+      "quantization": "bitsandbytes",
+      "dtype": "half",
+      "backend": "vllm",
+      "revision": "470b1fba1ae01581f270116362ee4aa1b97f4c84",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 353.2,
+        "gpu_memory_mib": 14181
+      },
+      "S2_numerics": {
+        "n_right": 7,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          "42",
+          "Paris",
+          "tac",
+          "7",
+          "Green",
+          "gracias",
+          "9",
+          "The quick brown fox jumps over the lazy dog."
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 2229,
+        "recalled": true,
+        "output": "Pelican"
+      },
+      "S5_system": {
+        "supported": true,
+        "followed": true,
+        "output": "Hello BANANA"
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 153.3,
+        "tokens_per_s": 53.4
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 5
+      },
+      "pass_": true,
+      "seconds": 655.3
+    }
+  ],
+  "pin": {
+    "candidate": 0,
+    "hf_id": "allenai/OLMo-2-1124-7B-Instruct",
+    "revision": "470b1fba1ae01581f270116362ee4aa1b97f4c84",
+    "quantization": "bitsandbytes",
+    "dtype": "half"
+  }
+}

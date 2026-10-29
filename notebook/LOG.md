@@ -1200,3 +1200,29 @@ criteria as R008–R012. Runbook K8 and notebook cell 5 updated.
 κ check (judge–human κ ≥ 0.7) before the v1.1 freeze. OLMo-2's 4,096-token
 window may be too short for full 20-turn transcripts; R013's S4 checks only
 65% of the window.
+
+## 2026-10-29: E08-R013, all three judge candidates pinned; H3 complete
+
+Kushal.
+
+**Did:**
+- Ran E08-R013 on Kaggle at 6855ab6 (clean tree), 0.59 GPU-h. It
+  succeeded.
+- Added Phi-4-mini, OLMo-2-7B and Phi-4 to `configs/llm/pins.json`.
+
+**Saw:**
+
+| Model | Build | S2 | Recall | Speed (32 concurrent) | Seed | Memory |
+|---|---|---|---|---|---|---|
+| Phi-4-mini | fp16 | 8/8 | 8.8k tokens | 452 tok/s | 7/8 | |
+| OLMo-2-7B | bnb | 7/8 | 2.2k tokens | 53 tok/s | 5/8 | |
+| Phi-4 14B | bnb | 7/8 | 4.4k tokens | 28 tok/s | 6/8 | 14.4 GB on one T4 |
+
+- OLMo-2-7B has a 4,096-token window. Phi-4 takes 10 minutes to load.
+- All three follow a system prompt.
+- Every model the E08, E09 and E10 plans name is now pinned (8 models),
+  so H3 is delivered ahead of its Nov 5 due date.
+
+**Next:** choose the judge for the E08-R002 κ check, which is the E08
+owner's call. E08 §2 asks for a family that is neither target nor auditor,
+so Phi or OLMo both qualify. The other family is the fallback if κ < 0.7.

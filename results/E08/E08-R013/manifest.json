@@ -1,0 +1,70 @@
+{
+  "run_id": "E08-R013",
+  "experiment": "E08",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "6855ab6",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e08/serving_check.py --run-id E08-R013 --out results/E08/E08-R013 --models phi-4-mini,olmo2-7b,phi-4 --record",
+  "config": {
+    "models": [
+      "phi-4-mini",
+      "olmo2-7b",
+      "phi-4"
+    ],
+    "pair": null,
+    "seed": 20261030,
+    "enforce_eager": false,
+    "vllm_version_registry": "0.19.1"
+  },
+  "config_sha256": "e9de8d8f81ad90e305cff91c1e86bf81a2b6f7449c759f2d5b474e8ed72cee1d",
+  "env_lock_sha256": "cdf5941a0bf65f29887f653bdde8772d5d4578f4c44ff3157918def4ecc63634",
+  "python_version": "3.13.15",
+  "package_versions": {
+    "numpy": "2.1.3",
+    "torch": "2.10.0",
+    "vllm": "0.19.1",
+    "transformers": "5.16.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261030
+  },
+  "inputs": [
+    {
+      "path": "/kaggle/working/MissingMass/configs/llm/models.json",
+      "sha256": "843cec8d2726f8adf515b9734aee3b688dd2d8e30cb32ad9e8b3f9928f62da13"
+    }
+  ],
+  "model_ids": [
+    "google/gemma-2-2b-it@299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+    "ibm-granite/granite-3.3-8b-instruct@51dd4bc2ade4059a6bd87649d68aa11e4fb2529b",
+    "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4@db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+    "solidrust/Mistral-7B-Instruct-v0.3-AWQ@95b1295ddd1a8673117cdc7bd2a4da2a457bb3f7",
+    "Qwen/Qwen2.5-7B-Instruct-AWQ@b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "microsoft/Phi-4-mini-instruct@cfbefacb99257ffa30c83adab238a50856ac3083",
+    "allenai/OLMo-2-1124-7B-Instruct@470b1fba1ae01581f270116362ee4aa1b97f4c84",
+    "microsoft/phi-4@2db69c1c3e91a05d2c64a3185acfbaf36f744e25"
+  ],
+  "started_utc": "2026-10-29T08:24:02+00:00",
+  "finished_utc": "2026-10-29T08:59:23+00:00",
+  "status": "succeeded",
+  "outputs": [
+    "results/E08/E08-R013/manifest.json",
+    "results/E08/E08-R013/olmo2-7b.json",
+    "results/E08/E08-R013/phi-4-mini.json",
+    "results/E08/E08-R013/phi-4.json",
+    "results/E08/E08-R013/pins.json",
+    "results/E08/E08-R013/summary.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.589,
+    "api_usd": 0.0
+  }
+}
