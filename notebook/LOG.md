@@ -1159,3 +1159,30 @@ Kushal.
 **Next:** E08-R012 on Kaggle, then pin Gemma-2-2B. Its S6 throughput says
 whether the E09 interview budget fits on transformers. Not on the Nov 10
 path.
+
+## 2026-10-29: E08-R012, Gemma-2-2B pinned on the transformers backend; H3 done for the pilots and the E09 base
+
+Kushal.
+
+**Did:**
+- Ran E08-R012 on Kaggle at 0c9f8f1 (clean tree, PR #29 merged), 0.05
+  GPU-h. It succeeded.
+- Added Gemma-2-2B-it to `configs/llm/pins.json`: revision 299a856, fp32,
+  `backend: transformers`, transformers 5.16.1.
+
+**Saw:**
+- Loads in 58 s at 10.2 GB. S2 7/8 with finite logprobs. The S3 cache
+  replay was identical. S4 recalled the code word at 4.4k tokens.
+- S5: the system role is refused (HTTP 400). This is expected for Gemma 2
+  and not required for the organism base.
+- S6: 121 tok/s at 32 concurrent, on par with vLLM AWQ 7B (112–116), thanks
+  to batching.
+- S7: 0/8 seeded sampled requests reproduce across batches (one seed per
+  batch), against 7–8/8 on vLLM. For E09 the cache is the only record of a
+  generation.
+- Pinned now: Qwen2.5-7B, Mistral-7B, Llama-3.1-8B, Granite-3.3-8B and
+  Gemma-2-2B-it. That covers the E08-R001 and E10-R002 pilots (Nov 10) and
+  the E09 base, ahead of H3's Nov 5 due date.
+
+**Next:** pin the judge (Phi-4, Phi-4-mini or OLMo-2-7B) before the E08
+judge κ check. E09 organisms use the same backend as merged checkpoints.

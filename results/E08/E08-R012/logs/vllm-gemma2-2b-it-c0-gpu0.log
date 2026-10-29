@@ -1,0 +1,4 @@
+Fetching 2 files:   0%|          | 0/2 [00:00<?, ?it/s]Fetching 2 files:  50%|█████     | 1/2 [00:05<00:05,  5.65s/it]Fetching 2 files: 100%|██████████| 2/2 [00:26<00:00, 14.86s/it]Fetching 2 files: 100%|██████████| 2/2 [00:26<00:00, 13.48s/it]
+Loading weights:   0%|          | 0/288 [00:00<?, ?it/s]Loading weights:   0%|          | 1/288 [00:02<09:46,  2.04s/it]Loading weights:  59%|█████▉    | 170/288 [00:02<00:01, 107.56it/s]Loading weights:  83%|████████▎ | 238/288 [00:02<00:00, 111.36it/s]Loading weights:  98%|█████████▊| 281/288 [00:03<00:00, 112.24it/s]Loading weights: 100%|██████████| 288/288 [00:03<00:00, 91.77it/s] 
+loaded google/gemma-2-2b-it@299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8 (float32) on cuda in 57 s
+serving gemma2-2b-it at http://127.0.0.1:8100/v1

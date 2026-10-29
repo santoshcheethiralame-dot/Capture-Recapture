@@ -1,0 +1,76 @@
+{
+  "model": "gemma2-2b-it",
+  "family": "gemma",
+  "roles": [
+    "organism base"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "dtype": "float32",
+      "backend": "transformers",
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "S1_load": {
+        "pass_": true,
+        "seconds": 58.1,
+        "gpu_memory_mib": 10209
+      },
+      "S2_numerics": {
+        "n_right": 7,
+        "n": 8,
+        "all_logprobs_finite": true,
+        "n_empty": 0,
+        "outputs": [
+          "42 \n",
+          "Paris \n",
+          "tca \n",
+          "7 \n",
+          "Green \n",
+          "Thank you \n",
+          "9 \n",
+          "**dog**. \n"
+        ],
+        "pass": true
+      },
+      "S3_cache": {
+        "all_cached": true,
+        "identical": true,
+        "new_tokens": 0,
+        "pass": true
+      },
+      "S4_context": {
+        "pass_": true,
+        "prompt_tokens": 4417,
+        "recalled": true,
+        "output": "PELICAN \n"
+      },
+      "S5_system": {
+        "supported": false,
+        "followed": false,
+        "error": "HTTP 400: b'{\"error\": {\"message\": \"chat template: System role not supported\", \"type\": \"BadRequestError\"}}'"
+      },
+      "S6_throughput": {
+        "requests": 32,
+        "completion_tokens": 8192,
+        "wall_s": 67.6,
+        "tokens_per_s": 121.1
+      },
+      "S7_seed": {
+        "n": 8,
+        "identical": 0
+      },
+      "pass_": true,
+      "seconds": 189.9
+    }
+  ],
+  "pin": {
+    "candidate": 0,
+    "hf_id": "google/gemma-2-2b-it",
+    "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+    "quantization": null,
+    "dtype": "float32",
+    "backend": "transformers"
+  }
+}

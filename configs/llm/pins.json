@@ -1,6 +1,16 @@
 {
   "about": "Pinned builds (Q-D14), written by the H3 serving check (analysis/e08/serving_check.py). A pin records that the build loads and passes S1-S5 on a Kaggle T4; which models the experiments use is set in their pre-registrations.",
   "pins": {
+    "gemma2-2b-it": {
+      "backend": "transformers",
+      "candidate": 0,
+      "dtype": "float32",
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "run_id": "E08-R012",
+      "transformers_version": "5.16.1"
+    },
     "granite3.3-8b": {
       "candidate": 0,
       "dtype": "half",

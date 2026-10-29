@@ -36,7 +36,10 @@ Found in E08-R008 (vLLM 0.19.1 on Kaggle):
   organisms run on transformers instead (`crsafety.llm.hf_server`, eager
   attention, the same OpenAI API, requests batched when they arrive
   together); the registry marks the candidate `"backend": "transformers"`
-  and `Server` starts the right one.
+  and `Server` starts the right one. E08-R012 pinned it: 10.2 GB in fp32,
+  121 tok/s at 32 concurrent requests. A seeded sampled request does not
+  reproduce across batches on this backend (S7 0/8; vLLM gave 7–8/8), so
+  for E09 the call cache is the only record of a generation.
 - The community Mistral AWQ build's chat template rejects the system role.
   `configs/llm/templates/mistral-v0.3.jinja` reproduces Mistral's v3 format
   (system message prepended to the last user turn, as Mistral's own
