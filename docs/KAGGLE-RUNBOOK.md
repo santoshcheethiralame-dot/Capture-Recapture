@@ -114,12 +114,13 @@ pip install -q -e . "sae-lens==6.54.12" safetensors huggingface_hub
 | K5 | ~~E08-R010 H3 serving check, part 3~~ done 2026-10-27: Mistral pinned, Mistral+Qwen pair passes; Gemma-2-2B blocked by a 401 (token) | done | `python analysis/e08/serving_check.py --run-id E08-R010 --out results/E08/E08-R010 --models mistral-7b,gemma2-2b-it --pair mistral-7b,qwen2.5-7b --record` | 0.28 (actual) |
 | K6 | ~~E08-R011 H3 serving check, part 4: Gemma-2-2B-it only~~ done 2026-10-28: failed, vLLM cannot serve Gemma 2 on a T4 (no attention backend with the logit soft cap in fp32) | done | `python analysis/e08/serving_check.py --run-id E08-R011 --out results/E08/E08-R011 --models gemma2-2b-it --record` | 0.02 (actual) |
 | K7 | ~~E08-R012 H3 serving check, part 5: Gemma-2-2B-it on the transformers backend~~ done 2026-10-29: pinned (121 tok/s at 32 concurrent) | done | `python analysis/e08/serving_check.py --run-id E08-R012 --out results/E08/E08-R012 --models gemma2-2b-it --record` | 0.05 (actual) |
+| K8 | E08-R013 H3 serving check, part 6: judge candidates Phi-4-mini (fp16), OLMo-2-7B (bnb), Phi-4 14B (bnb); first that passes S1–S4 is the judge for the E08-R002 κ check | pre-freeze OK (infrastructure) | `python analysis/e08/serving_check.py --run-id E08-R013 --out results/E08/E08-R013 --models phi-4-mini,olmo2-7b,phi-4 --record`; setup is in `kaggle/llm_serving.ipynb`. Run it with Save Version → Save & Run All. Phi-4 downloads ~29 GB, so it runs last | < 1 |
 
-K5–K7 need GPU T4 x2 and an HF_TOKEN that can read gated repos: the
+K5–K8 need GPU T4 x2 and an HF_TOKEN that can read gated repos: the
 Gemma 2, Llama 3.1 and Mistral-7B-Instruct-v0.3 licences accepted on its
 account, and, for a fine-grained token, "Read access to contents of all
 public gated repos you can access" ticked (E08-R010 got a 401 on Gemma with
-a new token). Download `results/E08/E08-R012/` as a zip (the version's Output tab); its `pins.json` goes to
+a new token). Download `results/E08/E08-R013/` as a zip (the version's Output tab); its `pins.json` goes to
 `configs/llm/pins.json`. See `kaggle/README.md`.
 
 K1–K4 need a GPU (T4 or P100; it loads two 2B models in bf16, about 11 GB).
