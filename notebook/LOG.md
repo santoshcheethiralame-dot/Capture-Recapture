@@ -1186,3 +1186,17 @@ Kushal.
 
 **Next:** pin the judge (Phi-4, Phi-4-mini or OLMo-2-7B) before the E08
 judge κ check. E09 organisms use the same backend as merged checkpoints.
+
+## 2026-10-29: E08-R013 registered (judge candidates)
+
+Kushal.
+
+**Did:** registered E08-R013, the serving check for the three judge
+candidates in `configs/llm/models.json`: Phi-4-mini (fp16), OLMo-2-7B (bnb)
+and Phi-4 14B (bnb, run last because it downloads about 29 GB). Same S1–S7
+criteria as R008–R012. Runbook K8 and notebook cell 5 updated.
+
+**Next:** Wolf runs it on Kaggle. The pinned judge is used for the E08-R002
+κ check (judge–human κ ≥ 0.7) before the v1.1 freeze. OLMo-2's 4,096-token
+window may be too short for full 20-turn transcripts; R013's S4 checks only
+65% of the window.
