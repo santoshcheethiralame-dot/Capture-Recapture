@@ -1226,3 +1226,33 @@ Kushal.
 **Next:** choose the judge for the E08-R002 κ check, which is the E08
 owner's call. E08 §2 asks for a family that is neither target nor auditor,
 so Phi or OLMo both qualify. The other family is the fallback if κ < 0.7.
+
+## 2026-10-29: E10 attacker harness for the R002 difficulty pilot
+
+Kushal.
+
+**Did:**
+- Wrote the attacker harness, `crsafety.redteam`, and the runner,
+  `analysis/e10/attack.py`. Nothing in the repo ran LLM attackers against
+  the monitor yet. The protocol choices §2 left open are in E10 §2a: what an
+  attempt is, the shared prompt, A1 as independent samples, A2/A4 verdict
+  feedback, A5 round robin, decoding, seeds.
+- The attacker is never told the budget. So one pass at B_max = 200 gives
+  every smaller B as a prefix, and R002 reads B off one run.
+- The runner checks the pilot monitor's sha256 against E10-R009. It
+  refuses the main monitor until E10 is frozen.
+- `configs/e10/r002.json`; Kaggle notebook `kaggle/e10_r002.ipynb`, with
+  copy-paste cells in `kaggle/E10-R002-cells.md`; runbook row K9.
+- 19 tests in `tests/test_redteam.py`, including a run against the fake
+  vLLM server and cache replay on resume.
+- Set E10-R002's config and command in runs.csv. It stays planned until
+  the Kaggle run.
+
+**Saw:**
+- Only a scripted stand-in attacker ran here, in smoke tests outside
+  `results/`. Its numbers say nothing about LLM attackers.
+- Risk for R002: 7–8B models may mis-encode byte-level families (base32,
+  base85, quoted-printable). Those attempts score `no_leak`, so whole
+  families could sit at the floor. §3's contingency covers that.
+
+**Next:** merge, then run K9 on Kaggle (about 1–1.5 session hours).
