@@ -1,0 +1,62 @@
+{
+  "run_id": "E08-R011",
+  "experiment": "E08",
+  "prereg": null,
+  "confirmatory": false,
+  "git_sha": "5d14e24",
+  "git_dirty": false,
+  "diff_sha256": null,
+  "command": "analysis/e08/serving_check.py --run-id E08-R011 --out results/E08/E08-R011 --models gemma2-2b-it --record",
+  "config": {
+    "models": [
+      "gemma2-2b-it"
+    ],
+    "pair": null,
+    "seed": 20261030,
+    "enforce_eager": false,
+    "vllm_version_registry": "0.19.1"
+  },
+  "config_sha256": "bb944521db289a9d7ff83836622b0abd63a2ab87d92cd290b5e62fae0691e472",
+  "env_lock_sha256": "cdf5941a0bf65f29887f653bdde8772d5d4578f4c44ff3157918def4ecc63634",
+  "python_version": "3.13.15",
+  "package_versions": {
+    "numpy": "2.1.3",
+    "torch": "2.10.0",
+    "vllm": "0.19.1",
+    "transformers": "5.16.1",
+    "crsafety": "0.1.0"
+  },
+  "hardware": {
+    "machine": "x86_64",
+    "cpus": 4,
+    "system": "Linux"
+  },
+  "seeds": {
+    "master": 20261030
+  },
+  "inputs": [
+    {
+      "path": "/kaggle/working/MissingMass/configs/llm/models.json",
+      "sha256": "b262da5b001d007cecd83891acca385cfe92b7702a9667d1116791789c6d2faa"
+    }
+  ],
+  "model_ids": [
+    "ibm-granite/granite-3.3-8b-instruct@51dd4bc2ade4059a6bd87649d68aa11e4fb2529b",
+    "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4@db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+    "solidrust/Mistral-7B-Instruct-v0.3-AWQ@95b1295ddd1a8673117cdc7bd2a4da2a457bb3f7",
+    "Qwen/Qwen2.5-7B-Instruct-AWQ@b25037543e9394b818fdfca67ab2a00ecc7dd641"
+  ],
+  "started_utc": "2026-10-28T09:11:47+00:00",
+  "finished_utc": "2026-10-28T09:13:00+00:00",
+  "status": "failed",
+  "outputs": [
+    "results/E08/E08-R011/gemma2-2b-it.json",
+    "results/E08/E08-R011/manifest.json",
+    "results/E08/E08-R011/pins.json",
+    "results/E08/E08-R011/summary.json"
+  ],
+  "cost": {
+    "gpu_hours": 0.02,
+    "api_usd": 0.0
+  }
+}

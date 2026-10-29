@@ -1,0 +1,13 @@
+{
+  "vllm_version": "0.19.1",
+  "torch": "2.10.0",
+  "driver": "580.178.04",
+  "models": {
+    "gemma2-2b-it": {
+      "pinned": false,
+      "candidates_tried": 1
+    }
+  },
+  "all_pinned": false,
+  "session_hours": 0.02
+}

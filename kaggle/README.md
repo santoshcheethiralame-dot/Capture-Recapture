@@ -30,7 +30,13 @@ Found in E08-R008 (vLLM 0.19.1 on Kaggle):
   a T4 with this vLLM. Granite-3.3-8B passed every check and replaces it
   as the third L3 family (D-016).
 - Gemma-2-2B in float32 with Triton attention needs 80 KB of shared memory
-  (head dim 256); a T4 has 64 KB. Its candidate uses FlexAttention.
+  (head dim 256); a T4 has 64 KB. FlexAttention does not support Gemma 2's
+  attention logit soft cap (E08-R011), and FlashInfer has no float32, so
+  vLLM 0.19.1 cannot serve Gemma 2 on a T4 at all. Gemma-2-2B and the E09
+  organisms run on transformers instead (`crsafety.llm.hf_server`, eager
+  attention, the same OpenAI API, requests batched when they arrive
+  together); the registry marks the candidate `"backend": "transformers"`
+  and `Server` starts the right one.
 - The community Mistral AWQ build's chat template rejects the system role.
   `configs/llm/templates/mistral-v0.3.jinja` reproduces Mistral's v3 format
   (system message prepended to the last user turn, as Mistral's own
@@ -43,7 +49,7 @@ while a saved version keeps its Output tab.
 ## Pins
 
 `configs/llm/models.json` lists each logical model with candidate builds in
-order of preference. The serving check (E08-R008 to R011;
+order of preference. The serving check (E08-R008 to R012;
 `analysis/e08/serving_check.py`) tries them on a T4 and pins the first that
 passes: Hugging Face commit sha, quantisation, dtype and vLLM version, in
 `configs/llm/pins.json`. Confirmatory scripts use

@@ -1,0 +1,22 @@
+{
+  "model": "gemma2-2b-it",
+  "family": "gemma",
+  "roles": [
+    "organism base"
+  ],
+  "tried": [
+    {
+      "candidate": 0,
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "dtype": "float32",
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "S1_load": {
+        "pass_": false,
+        "error": "server exited with code 1 before becoming ready",
+        "log_tail": "(EngineCore pid=179) ERROR 10-28 09:12:55 [core.py:1108]     raise NotImplementedError(\n(EngineCore pid=179) ERROR 10-28 09:12:55 [core.py:1108] NotImplementedError: FlexAttention does not support logits soft cap yet.\n(EngineCore pid=179)     raise NotImplementedError(\n(EngineCore pid=179) NotImplementedError: FlexAttention does not support logits soft cap yet.\n(APIServer pid=122)     raise RuntimeError(\n(APIServer pid=122) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}\n...\n(APIServer pid=122)         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n(APIServer pid=122)     )\n(APIServer pid=122)     ^\n(APIServer pid=122)   File \"/usr/local/lib/python3.13/dist-packages/vllm/v1/engine/utils.py\", line 1057, in wait_for_engine_startup\n(APIServer pid=122)     raise RuntimeError(\n(APIServer pid=122)     ...<3 lines>...\n(APIServer pid=122)     )\n(APIServer pid=122) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}"
+      },
+      "pass_": false
+    }
+  ]
+}

@@ -1129,3 +1129,33 @@ with quantisation method.
 **Next:** Kushal reviews this PR (four-eyes rule). Then R002 runs on the new
 pilot.
 
+
+## 2026-10-29: E08-R011, vLLM cannot serve Gemma 2 on a T4; transformers backend; E08-R012 registered
+
+Kushal.
+
+**Did:**
+- Ran E08-R011 on Kaggle at 5d14e24 (clean tree), 0.02 GPU-h, after fixing
+  the HF_TOKEN secret (it held notebook code, hence R010's 401).
+- Closed R011 as failed (design). Added `crsafety.llm.hf_server`: an
+  OpenAI-compatible server on transformers (eager attention), batching
+  requests that arrive together. The registry's Gemma-2-2B candidate is now
+  `"backend": "transformers"`, and `Server` starts the right server. The
+  client, cache and scaffolds are unchanged. The backend goes into the cache
+  identity only when it is not vLLM, so existing keys stay valid.
+- Tested on CPU with a 2-layer random Gemma 2 that has the soft caps:
+  greedy alone equals greedy in a batch, logprobs, a system role gives a 400,
+  and an over-long prompt gives a 400.
+- Registered E08-R012: the same serving check for Gemma-2-2B on the new
+  backend (runbook K7, notebook cell 5).
+
+**Saw:**
+- Gemma-2-2B downloaded and loaded in fp32, then vLLM stopped:
+  "FlexAttention does not support logits soft cap yet".
+- With R008/R009 (fp16 refused; Triton fp32 needs 80 KB of shared memory)
+  and FlashInfer having no fp32, no vLLM 0.19.1 attention backend serves
+  Gemma 2 on a T4.
+
+**Next:** E08-R012 on Kaggle, then pin Gemma-2-2B. Its S6 throughput says
+whether the E09 interview budget fits on transformers. Not on the Nov 10
+path.

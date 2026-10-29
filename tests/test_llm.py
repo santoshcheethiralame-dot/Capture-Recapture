@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 
 from crsafety.llm import CallCache, Client, NotPinned, ServerError, call_key, models
-from crsafety.llm.serve import Server, vllm_command
+from crsafety.llm.serve import Server, server_command, vllm_command
 
 ROOT = Path(__file__).resolve().parents[1]
 FAKES = ROOT / "tests" / "fakes"
@@ -132,7 +132,7 @@ def test_registry_commands_build():
     reg = models.load_registry()
     for n, m in reg["models"].items():
         for i in range(len(m["candidates"])):
-            assert "--model" in vllm_command(models.candidate_spec(n, i, reg), 8000)
+            assert "--model" in server_command(models.candidate_spec(n, i, reg), 8000)
 
 
 # --- client against the fake server ------------------------------------------------
@@ -342,3 +342,115 @@ def test_committed_pins_resolve():
     for name, pin in models.load_pins().items():
         s = models.resolve(name, require_pinned=True)
         assert s.revision == pin["revision"] and len(s.revision) == 40
+
+
+# --- transformers backend (Gemma 2 on a T4, E08-R011) ---------------------------------
+
+def test_transformers_backend_command_and_identity():
+    reg = models.load_registry()
+    g = models.candidate_spec("gemma2-2b-it", 0, reg, revision="abc")
+    assert g.backend == "transformers" and g.identity()["backend"] == "transformers"
+    cmd = server_command(g, 8100, python="py")
+    assert cmd[:3] == ["py", "-m", "crsafety.llm.hf_server"]
+    j = " ".join(cmd)
+    for part in ("--model google/gemma-2-2b-it", "--served-model-name gemma2-2b-it", "--dtype float32",
+                 "--revision abc", "--port 8100", "--max-model-len 8192"):
+        assert part in j
+    q = models.candidate_spec("qwen2.5-7b", 0, reg)
+    assert q.backend == "vllm" and "backend" not in q.identity()  # vLLM cache keys unchanged
+    assert server_command(q, 8000)[2] == "vllm.entrypoints.openai.api_server"
+
+
+def test_registry_rejects_unknown_backend(tmp_path):
+    reg = json.loads(models.REGISTRY.read_text())
+    reg["models"]["gemma2-2b-it"]["candidates"][0]["backend"] = "llamacpp"
+    p = tmp_path / "r.json"
+    p.write_text(json.dumps(reg))
+    with pytest.raises(ValueError, match="backend"):
+        models.load_registry(p)
+
+
+GEMMA_LIKE_TEMPLATE = (
+    "{{ bos_token }}{% for m in messages %}"
+    "{% if m['role'] == 'system' %}{{ raise_exception('System role not supported') }}{% endif %}"
+    "<start_of_turn>{{ 'model' if m['role'] == 'assistant' else 'user' }} {{ m['content'] }} <end_of_turn> "
+    "{% endfor %}{% if add_generation_prompt %}<start_of_turn>model {% endif %}")
+
+
+@pytest.fixture(scope="module")
+def tiny_gemma(tmp_path_factory):
+    """A 2-layer random Gemma 2 (with the logit soft caps) and a word-level tokenizer, saved locally."""
+    pytest.importorskip("torch")
+    transformers = pytest.importorskip("transformers")
+    from tokenizers import Tokenizer, models as tmodels, pre_tokenizers
+
+    words = ["<pad>", "<eos>", "<bos>", "<unk>", "<start_of_turn>", "<end_of_turn>", "user", "model"]
+    words += [f"w{i}" for i in range(56)]
+    vocab = {w: i for i, w in enumerate(words)}
+    tk = Tokenizer(tmodels.WordLevel(vocab, unk_token="<unk>"))
+    tk.pre_tokenizer = pre_tokenizers.WhitespaceSplit()
+    tok = transformers.PreTrainedTokenizerFast(tokenizer_object=tk, pad_token="<pad>", eos_token="<eos>",
+                                               bos_token="<bos>", unk_token="<unk>")
+    tok.chat_template = GEMMA_LIKE_TEMPLATE
+    cfg = transformers.Gemma2Config(vocab_size=len(words), hidden_size=32, intermediate_size=64,
+                                    num_hidden_layers=2, num_attention_heads=2, num_key_value_heads=1,
+                                    head_dim=16, max_position_embeddings=256, pad_token_id=0, eos_token_id=1,
+                                    bos_token_id=2, attn_logit_softcapping=50.0, final_logit_softcapping=30.0,
+                                    sliding_window=64)
+    import torch
+    torch.manual_seed(0)
+    d = tmp_path_factory.mktemp("tiny-gemma")
+    transformers.AutoModelForCausalLM.from_config(cfg).save_pretrained(d)
+    tok.save_pretrained(d)
+    return d
+
+
+@pytest.fixture
+def hf_endpoint(tiny_gemma):
+    from crsafety.llm import hf_server
+    engine = hf_server.Engine(str(tiny_gemma), dtype="float32", max_model_len=128, device="cpu")
+    srv = ThreadingHTTPServer(("127.0.0.1", free_port()),
+                              hf_server.make_handler("gemma-tiny", hf_server.Batcher(engine, max_batch=4)))
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    yield f"http://127.0.0.1:{srv.server_address[1]}/v1"
+    srv.shutdown()
+
+
+def test_hf_server_speaks_the_client_api(hf_endpoint, tmp_path):
+    from crsafety.llm.client import wait_ready
+    wait_ready(hf_endpoint, timeout=10)
+    s = spec(name="gemma-tiny", family="gemma", quantization=None, dtype="float32", backend="transformers")
+    llm = Client(s, hf_endpoint, cache=CallCache(tmp_path / "c"), retries=0)
+    msgs = [{"role": "user", "content": "w1 w2 w3"}]
+    r = llm.chat(msgs, seed=1, temperature=0.0, max_tokens=6, logprobs=True)
+    assert r["usage"]["prompt_tokens"] > 0 and 1 <= r["usage"]["completion_tokens"] <= 6
+    assert len(r["logprobs"]) >= 1 and all(x <= 0 for x in r["logprobs"])
+    assert r["finish_reason"] in ("stop", "length")
+    # greedy is deterministic across a fresh cache, alone or in a batch
+    again = Client(s, hf_endpoint, cache=CallCache(tmp_path / "c2"), retries=0)
+    jobs = [dict(messages=[{"role": "user", "content": f"w{i} w{i + 1}"}], seed=i, temperature=0.0,
+                 max_tokens=6) for i in range(8)]
+    batched = again.chat_many(jobs + [dict(messages=msgs, seed=1, temperature=0.0, max_tokens=6)], workers=9)
+    assert batched[-1]["text"] == r["text"]
+    alone = [Client(s, hf_endpoint, cache=CallCache(tmp_path / f"a{i}"), retries=0).chat(**j)["text"]
+             for i, j in enumerate(jobs[:3])]
+    assert alone == [b["text"] for b in batched[:3]]
+    # sampling works and is counted
+    rs = again.chat_many([dict(messages=msgs, seed=k, temperature=0.9, max_tokens=8) for k in range(4)])
+    assert all(x["usage"]["completion_tokens"] >= 1 for x in rs)
+    # Gemma 2's template has no system role: a 400, not a retry (S5 records it as unsupported)
+    with pytest.raises(ServerError, match="HTTP 400"):
+        llm.chat([{"role": "system", "content": "w1"}] + msgs, seed=1, temperature=0.0, max_tokens=4)
+    # too long for max_model_len: a 400
+    with pytest.raises(ServerError, match="HTTP 400"):
+        llm.chat([{"role": "user", "content": "w5 " * 200}], seed=1, temperature=0.0, max_tokens=4)
+
+
+def test_hf_server_through_the_launcher(tiny_gemma, tmp_path):
+    s = spec(name="gemma-tiny", family="gemma", hf_id=str(tiny_gemma), quantization=None, dtype="float32",
+             max_model_len=128, backend="transformers")
+    with Server(s, port=free_port(), log_dir=tmp_path) as srv:
+        r = srv.client(CallCache(tmp_path / "c"), retries=0).chat([{"role": "user", "content": "w1 w2"}],
+                                                                  seed=1, temperature=0.0, max_tokens=4)
+    assert r["usage"]["completion_tokens"] >= 1
+    assert "serving gemma-tiny" in srv.log_tail()

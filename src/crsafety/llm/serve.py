@@ -8,7 +8,9 @@
 Default layout on 2 x T4: the target (or organism) on GPU 0, the auditor or
 attacker on GPU 1, each a 4-bit 7-9B model with its own server. vLLM is run
 as ``python -m vllm.entrypoints.openai.api_server`` so the version on the
-path is the one pinned in configs/llm/models.json.
+path is the one pinned in configs/llm/models.json. A candidate with
+``"backend": "transformers"`` (Gemma 2) runs ``crsafety.llm.hf_server``
+instead, which speaks the same API.
 
     python -m crsafety.llm.serve start qwen2.5-7b --gpu 1 --port 8001   # stays in the foreground
     python -m crsafety.llm.serve cmd qwen2.5-7b                          # print the command only
@@ -23,6 +25,22 @@ from pathlib import Path
 
 from . import models
 from .client import Client, wait_ready
+
+
+def server_command(spec, port, seed=0, enforce_eager=False, python=sys.executable):
+    if spec.backend == "transformers":
+        return hf_command(spec, port, python=python)
+    return vllm_command(spec, port, seed=seed, enforce_eager=enforce_eager, python=python)
+
+
+def hf_command(spec, port, python=sys.executable):
+    """``crsafety.llm.hf_server``: transformers with eager attention (Gemma 2 on a T4, E08-R011)."""
+    cmd = [python, "-m", "crsafety.llm.hf_server", "--model", spec.hf_id,
+           "--served-model-name", spec.name, "--dtype", spec.dtype,
+           "--max-model-len", str(spec.max_model_len), "--host", "127.0.0.1", "--port", str(port)]
+    if spec.revision:
+        cmd += ["--revision", spec.revision]
+    return cmd + list(spec.extra_args)
 
 
 def vllm_command(spec, port, seed=0, enforce_eager=False, python=sys.executable):
@@ -77,7 +95,7 @@ def libcuda_link_dir(dirs=LIBCUDA_DIRS, cache=Path.home() / ".cache" / "crsafety
 class Server:
     def __init__(self, spec, gpu=0, port=8000, log_dir=".", enforce_eager=False, env=None):
         self.spec, self.gpu, self.port = spec, gpu, port
-        self.cmd = vllm_command(spec, port, enforce_eager=enforce_eager)
+        self.cmd = server_command(spec, port, enforce_eager=enforce_eager)
         self.log_path = Path(log_dir) / f"vllm-{spec.name}-c{spec.candidate}-gpu{gpu}.log"
         self.env = {**os.environ, "CUDA_VISIBLE_DEVICES": str(gpu), **T4_ENV, **(env or {})}
         lib = libcuda_link_dir()
@@ -154,7 +172,7 @@ def main(argv=None):
     spec = (models.candidate_spec(a.model, a.candidate) if a.candidate is not None
             else models.resolve(a.model))
     if a.action == "cmd":
-        print(" ".join(vllm_command(spec, a.port, enforce_eager=a.enforce_eager)))
+        print(" ".join(server_command(spec, a.port, enforce_eager=a.enforce_eager)))
         return
     srv = Server(spec, a.gpu, a.port, a.log_dir, a.enforce_eager).start()
     print(f"{spec.name} ({spec.hf_id}) starting on GPU {a.gpu}, port {a.port}; log {srv.log_path}")

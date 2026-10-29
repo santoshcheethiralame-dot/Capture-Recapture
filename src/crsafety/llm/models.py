@@ -19,6 +19,7 @@ REGISTRY = ROOT / "configs" / "llm" / "models.json"
 PINS = ROOT / "configs" / "llm" / "pins.json"
 DTYPES = ("half", "float32")  # T4 (sm75) has no bf16
 QUANTS = (None, "awq", "gptq", "bitsandbytes")
+BACKENDS = ("vllm", "transformers")  # transformers: crsafety.llm.hf_server, for what vLLM cannot serve on a T4
 
 
 class NotPinned(RuntimeError):
@@ -42,12 +43,15 @@ class ModelSpec:
     pinned: bool = False
     vllm_version: str | None = None
     quant_source: str | None = None
+    backend: str = "vllm"
     roles: tuple = field(default=(), compare=False)
 
     def identity(self):
         """What a cached generation depends on: the exact weights, numerics and prompt format."""
         ident = dict(name=self.name, hf_id=self.hf_id, revision=self.revision,
                      quantization=self.quantization, dtype=self.dtype)
+        if self.backend != "vllm":  # different kernels, different generations; vLLM keys stay as they were
+            ident["backend"] = self.backend
         if self.chat_template:
             ident["chat_template_sha256"] = hashlib.sha256((ROOT / self.chat_template).read_bytes()).hexdigest()
         return ident
@@ -68,6 +72,8 @@ def load_registry(path=REGISTRY):
                 raise ValueError(f"{name}: dtype {c['dtype']!r} not usable on T4 (use one of {DTYPES})")
             if c.get("quantization") not in QUANTS:
                 raise ValueError(f"{name}: unknown quantization {c.get('quantization')!r}")
+            if c.get("backend", "vllm") not in BACKENDS:
+                raise ValueError(f"{name}: unknown backend {c.get('backend')!r}")
     for g, names in reg.get("groups", {}).items():
         missing = set(names) - set(reg["models"])
         if missing:
@@ -92,6 +98,7 @@ def candidate_spec(name, i, registry=None, revision=None):
         chat_template=c.get("chat_template"),
         extra_args=tuple(c.get("extra_args", ())), candidate=i,
         vllm_version=reg.get("vllm_version"), quant_source=c.get("quant_source"),
+        backend=c.get("backend", "vllm"),
         roles=tuple(m.get("roles", ())))
 
 
