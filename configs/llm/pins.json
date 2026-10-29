@@ -38,6 +38,33 @@
       "run_id": "E08-R010",
       "vllm_version": "0.19.1"
     },
+    "olmo2-7b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "allenai/OLMo-2-1124-7B-Instruct",
+      "quantization": "bitsandbytes",
+      "revision": "470b1fba1ae01581f270116362ee4aa1b97f4c84",
+      "run_id": "E08-R013",
+      "vllm_version": "0.19.1"
+    },
+    "phi-4": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "microsoft/phi-4",
+      "quantization": "bitsandbytes",
+      "revision": "2db69c1c3e91a05d2c64a3185acfbaf36f744e25",
+      "run_id": "E08-R013",
+      "vllm_version": "0.19.1"
+    },
+    "phi-4-mini": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "microsoft/Phi-4-mini-instruct",
+      "quantization": null,
+      "revision": "cfbefacb99257ffa30c83adab238a50856ac3083",
+      "run_id": "E08-R013",
+      "vllm_version": "0.19.1"
+    },
     "qwen2.5-7b": {
       "candidate": 0,
       "dtype": "half",

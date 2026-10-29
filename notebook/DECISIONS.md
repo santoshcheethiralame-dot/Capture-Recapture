@@ -461,3 +461,32 @@ the organism base.
 **Affects pre-registered analysis:** the testbed text of E08 (L3, and the
 second-target contingency) and E10 (A5). Hypotheses and measures are
 unchanged.
+
+## D-017: Phi-4 (14B) is the first E08 judge; OLMo-2-7B is the fallback (2026-10-29)
+
+**Status:** accepted by Kushal (owner of E08). Santosh reviews it in the
+v1.1 four-eyes freeze review (D-015).
+**Context:**
+- E08 §2 requires a judge from a family that is used neither as target
+  (Mistral) nor as auditor (Qwen, Llama, Granite). The judge is validated in
+  E08-R002: 100 reports, double hand-labelled, with judge–human κ ≥ 0.7.
+- E08-R013 pinned all three registry candidates:
+
+  | Candidate | S2 | Speed (32 concurrent) | Notes |
+  |---|---|---|---|
+  | Phi-4-mini, fp16 | 8/8 | 452 tok/s | |
+  | OLMo-2-7B, bnb | 7/8 | 53 tok/s | 4,096-token window |
+  | Phi-4 14B, bnb | 7/8 | 28 tok/s | 10-minute load |
+
+**Options considered:**
+- Phi-4-mini: the fastest, but at 3.8B it is the most likely to miss κ 0.7.
+- OLMo-2-7B: its training data is fully open, but the 4k window may cut long
+  reports.
+- Phi-4: the strongest. Its speed does not matter for about 100 short
+  reports.
+
+**Decision:** E08-R002 validates Phi-4 first. If κ < 0.7, the rubric is
+fixed first, then OLMo-2-7B (the other family) is validated, as E08 §3
+allows before the freeze.
+**Affects pre-registered analysis:** the judge line of the E08 §2 estimands.
+It is not frozen yet and locks at v1.1.

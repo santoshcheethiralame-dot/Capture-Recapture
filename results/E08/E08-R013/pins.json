@@ -1,0 +1,78 @@
+{
+  "about": "Copy to configs/llm/pins.json (Q-D14).",
+  "pins": {
+    "gemma2-2b-it": {
+      "backend": "transformers",
+      "candidate": 0,
+      "dtype": "float32",
+      "hf_id": "google/gemma-2-2b-it",
+      "quantization": null,
+      "revision": "299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8",
+      "run_id": "E08-R012",
+      "transformers_version": "5.16.1"
+    },
+    "granite3.3-8b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "ibm-granite/granite-3.3-8b-instruct",
+      "quantization": "bitsandbytes",
+      "revision": "51dd4bc2ade4059a6bd87649d68aa11e4fb2529b",
+      "run_id": "E08-R009",
+      "vllm_version": "0.19.1"
+    },
+    "llama3.1-8b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+      "quantization": "awq",
+      "revision": "db1f81ad4b8c7e39777509fac66c652eb0a52f91",
+      "run_id": "E08-R009",
+      "vllm_version": "0.19.1"
+    },
+    "mistral-7b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "solidrust/Mistral-7B-Instruct-v0.3-AWQ",
+      "quantization": "awq",
+      "revision": "95b1295ddd1a8673117cdc7bd2a4da2a457bb3f7",
+      "run_id": "E08-R010",
+      "vllm_version": "0.19.1"
+    },
+    "olmo2-7b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "allenai/OLMo-2-1124-7B-Instruct",
+      "quantization": "bitsandbytes",
+      "revision": "470b1fba1ae01581f270116362ee4aa1b97f4c84",
+      "run_id": "E08-R013",
+      "vllm_version": "0.19.1"
+    },
+    "phi-4": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "microsoft/phi-4",
+      "quantization": "bitsandbytes",
+      "revision": "2db69c1c3e91a05d2c64a3185acfbaf36f744e25",
+      "run_id": "E08-R013",
+      "vllm_version": "0.19.1"
+    },
+    "phi-4-mini": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "microsoft/Phi-4-mini-instruct",
+      "quantization": null,
+      "revision": "cfbefacb99257ffa30c83adab238a50856ac3083",
+      "run_id": "E08-R013",
+      "vllm_version": "0.19.1"
+    },
+    "qwen2.5-7b": {
+      "candidate": 0,
+      "dtype": "half",
+      "hf_id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+      "quantization": "awq",
+      "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+      "run_id": "E08-R009",
+      "vllm_version": "0.19.1"
+    }
+  }
+}
