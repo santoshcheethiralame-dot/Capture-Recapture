@@ -163,14 +163,18 @@ def verdict(est, ci, sup, notsup, higher_is_support=True):
     and the interval does not cross the not-supported line; not supported if
     the estimate is on the wrong side and the interval excludes the support
     threshold; otherwise inconclusive. For "lower is support" thresholds pass
-    ``higher_is_support=False``."""
+    ``higher_is_support=False``.
+
+    A NaN bound (failed interval) gives "inconclusive": a verdict needs a
+    working interval. An infinite bound is an unbounded interval, so it
+    crosses every line on its side."""
     lo, hi = ci
     if not higher_is_support:
         est, lo, hi, sup, notsup = -est, -hi, -lo, -sup, -notsup
-    if not np.isfinite(est):
+    if not np.isfinite(est) or np.isnan(lo) or np.isnan(hi):
         return "inconclusive"
-    if est >= sup and (not np.isfinite(lo) or lo >= notsup):
+    if est >= sup and lo >= notsup:
         return "supported"
-    if est < notsup and (not np.isfinite(hi) or hi < sup):
+    if est < notsup and hi < sup:
         return "not supported"
     return "inconclusive"

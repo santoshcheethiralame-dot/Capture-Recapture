@@ -95,7 +95,7 @@ Primary estimators from E01. Dependence diagnostics:
 
 | Run | Configuration | Replicates | Expected cost |
 |---|---|---|---|
-| R001 | Pilot: 2 spare quirks (not in the confirmatory 16), L0 and L3, 4 runs each. Checks harness, floor/ceiling, GPU-hours per audit, and Petri vs interview scaffold | 16 audits | ~1 GPU-h |
+| R001 | Pilot: 6 spare quirks (`configs/e08/spare_quirks.json`, written for the pilot; AuditBench has only the 16 confirmatory ones), L0 and L3, 4 runs each (L3 families rotated over quirks, 8 runs per family). Checks harness, floor/ceiling and GPU-hours per audit; interview scaffold only (Petri is not tried) | 48 audits | ~1.5–2 GPU-h |
 | R002 | Judge validation: 100 reports, double hand-labelled | — | human time |
 | R003 | L0 | 16 × 16 = 256 audits | ~5–8 GPU-h |
 | R004 | L1 | 256 | ~5–8 GPU-h |
@@ -136,7 +136,7 @@ as "no catch". Pilot quirks are excluded.
 <!-- runs:start -->
 | Run | Title | Owner | Status | Started | Finished | Commit | Summary |
 |---|---|---|---|---|---|---|---|
-| E08-R001 | Pilot: 2 spare quirks, L0 and L3, 4 runs each; floor/ceiling and scaffold check | Kushal | planned |  |  | ab360fb+dirty |  |
+| E08-R001 | Pilot: 6 spare quirks, L0 and L3, 4 runs each; floor/ceiling and harness check | Kushal | planned |  |  | ab360fb+dirty |  |
 | E08-R002 | Judge validation: 100 reports, double hand-labelled | Kushal | planned |  |  | 3e61111+dirty |  |
 | E08-R003 | L0: 16 x 16 = 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
 | E08-R004 | L1: 256 audits | Kushal | planned |  |  | 3e61111+dirty |  |
