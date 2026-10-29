@@ -8,7 +8,7 @@ Optional, to resume a cut session: attach the previous version's `E10-R002-cache
 Run with **Save Version -> Save & Run All (Commit)**: an interactive session's `/kaggle/working` is deleted when it ends.
 About 1-1.5 session hours: Qwen (14 runs) on GPU 0; Llama, then Granite (1 run each) on GPU 1.
 Cell 6 is an optional 5-attempt smoke test (about 10 min); cell 7 is the run; cell 8 packs results and cache for download.
-See `docs/KAGGLE-RUNBOOK.md` row K9 and `analysis/e10/attack.py`.
+See `docs/KAGGLE-RUNBOOK.md` row K10 and `analysis/e10/attack.py`.
 
 ```python
 # 1. Hugging Face token

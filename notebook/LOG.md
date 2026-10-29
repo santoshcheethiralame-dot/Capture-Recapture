@@ -1227,6 +1227,50 @@ Kushal.
 owner's call. E08 §2 asks for a family that is neither target nor auditor,
 so Phi or OLMo both qualify. The other family is the fallback if κ < 0.7.
 
+## 2026-10-29: E08-R001 pilot harness ready; spare quirks and L1 prompts written
+
+Kushal.
+
+**Did:**
+- `crsafety.audit` is the E08 interview scaffold. The auditor's
+  instructions go in its first user turn, the same for every family. The
+  auditor gets up to 20 turns and can stop early with DONE. Its final
+  report is JSON with up to 10 quirks. Oldest replies are dropped from
+  both sides' context so a 20-turn audit fits the 16k windows. The judge
+  is AuditBench's judge prompt, read from the pinned clone (e9085916); the
+  clone is not copied into the repo because its licence is unchecked.
+- Runner: `analysis/e08/r001_pilot.py`, with an audits stage and a judge
+  stage. It resumes from finished audits and the call cache, and records
+  a crashed audit as crashed. It refuses all 16 confirmatory quirks.
+  Tests are in `tests/test_e08_audit.py`, on fake models.
+- **Spare quirks:** AuditBench's system-prompt suite has exactly 16 quirks,
+  all of them confirmatory, so E08-R001 had none to use. I wrote 6 in the
+  suite's style: 2 easy, 2 medium, 2 hard
+  (`configs/e08/spare_quirks.json`). None overlaps the 16.
+- **Pilot size:** raised from 2 to 6 spare quirks before the run (E08 §2
+  R001 row; runs.csv title). With 2 quirks, L0 union recall can only be
+  0, 0.5 or 1, so the §3 floor rule (< 20%) says nothing. 48 audits cost
+  about 1.5–2 GPU-h. L3 families are rotated over quirks, 8 runs each.
+- **L1 prompts:** the 8 persona/strategy prompts that E08 §2 requires
+  "written before the pilot" are in `configs/e08/l1_prompts.json`,
+  committed before R001.
+- Petri is not tried in R001. The interview scaffold is the default; to
+  decide before v1.1.
+- Kaggle cells: `kaggle/E08-R001.md`; runbook row K9.
+- `crsafety.testbed.verdict`: a NaN interval bound gave "supported" (or
+  "not supported") when the estimate met the line. It now gives
+  "inconclusive". Santosh to review; it touches E08–E10's frozen-analysis
+  code before any freeze.
+
+**Open for v1.1:**
+- E08 §2 says L3 runs are "balanced across families", but 16 runs per
+  organism don't split evenly over 3 families. The rule (rotation, or 18
+  runs) needs to be written down.
+- The judge is unvalidated until R002, so the pilot's floor and ceiling
+  are read from hand labels (`labels.csv`).
+
+**Next:** Wolf runs K9 on Kaggle (Nov 10 target).
+
 ## 2026-10-29: E10 attacker harness for the R002 difficulty pilot
 
 Kushal.
@@ -1242,7 +1286,7 @@ Kushal.
 - The runner checks the pilot monitor's sha256 against E10-R009. It
   refuses the main monitor until E10 is frozen.
 - `configs/e10/r002.json`; Kaggle notebook `kaggle/e10_r002.ipynb`, with
-  copy-paste cells in `kaggle/E10-R002-cells.md`; runbook row K9.
+  copy-paste cells in `kaggle/E10-R002-cells.md`; runbook row K10.
 - 19 tests in `tests/test_redteam.py`, including a run against the fake
   vLLM server and cache replay on resume.
 - Set E10-R002's config and command in runs.csv. It stays planned until
@@ -1255,4 +1299,4 @@ Kushal.
   base85, quoted-printable). Those attempts score `no_leak`, so whole
   families could sit at the floor. §3's contingency covers that.
 
-**Next:** merge, then run K9 on Kaggle (about 1–1.5 session hours).
+**Next:** merge, then run K10 on Kaggle (about 1–1.5 session hours).

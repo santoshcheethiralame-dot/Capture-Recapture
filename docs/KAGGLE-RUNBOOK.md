@@ -115,7 +115,8 @@ pip install -q -e . "sae-lens==6.54.12" safetensors huggingface_hub
 | K6 | ~~E08-R011 H3 serving check, part 4: Gemma-2-2B-it only~~ done 2026-10-28: failed, vLLM cannot serve Gemma 2 on a T4 (no attention backend with the logit soft cap in fp32) | done | `python analysis/e08/serving_check.py --run-id E08-R011 --out results/E08/E08-R011 --models gemma2-2b-it --record` | 0.02 (actual) |
 | K7 | ~~E08-R012 H3 serving check, part 5: Gemma-2-2B-it on the transformers backend~~ done 2026-10-29: pinned (121 tok/s at 32 concurrent) | done | `python analysis/e08/serving_check.py --run-id E08-R012 --out results/E08/E08-R012 --models gemma2-2b-it --record` | 0.05 (actual) |
 | K8 | ~~E08-R013 H3 serving check, part 6: judge candidates~~ done 2026-10-29: Phi-4-mini, OLMo-2-7B and Phi-4 all pinned | done | `python analysis/e08/serving_check.py --run-id E08-R013 --out results/E08/E08-R013 --models phi-4-mini,olmo2-7b,phi-4 --record` | 0.59 (actual) |
-| K9 | E10-R002 attacker difficulty pilot (4 runs per arm, A1/A2/A4/A5, 200 attempts each) | pre-freeze OK (pilot monitor only; the script refuses main until E10 is frozen) | `python analysis/e10/attack.py --run E10-R002 --config configs/e10/r002.json --record` (notebook `kaggle/e10_r002.ipynb`; copy-paste cells in `kaggle/E10-R002-cells.md`) | 1–1.5 *(est)* |
+| K9 | E08-R001 auditor pilot: 6 spare quirks, L0 and L3, 4 runs each (48 audits), then the Phi-4 judge | pre-freeze OK (pilot, spare quirks only) | cells in `kaggle/E08-R001.md`: `python analysis/e08/r001_pilot.py --auditbench <clone at e9085916> --out results/E08/E08-R001 --stage audits --record`, then `--stage judge` | 1.5–2 *(est)* |
+| K10 | E10-R002 attacker difficulty pilot (4 runs per arm, A1/A2/A4/A5, 200 attempts each) | pre-freeze OK (pilot monitor only; the script refuses main until E10 is frozen) | `python analysis/e10/attack.py --run E10-R002 --config configs/e10/r002.json --record` (notebook `kaggle/e10_r002.ipynb`; copy-paste cells in `kaggle/E10-R002-cells.md`) | 1–1.5 *(est)* |
 
 K5–K8 need GPU T4 x2 and an HF_TOKEN that can read gated repos: the
 Gemma 2, Llama 3.1 and Mistral-7B-Instruct-v0.3 licences accepted on its
@@ -124,7 +125,7 @@ public gated repos you can access" ticked (E08-R010 got a 401 on Gemma with
 a new token). Download `results/E08/E08-R013/` as a zip (the version's Output tab); its `pins.json` goes to
 `configs/llm/pins.json`. See `kaggle/README.md`.
 
-K9 needs GPU T4 x2 and the same HF_TOKEN (Qwen, Llama and Granite are
+K10 needs GPU T4 x2 and the same HF_TOKEN (Qwen, Llama and Granite are
 loaded from their pins). Set `CRSAFETY_LLM_CACHE=/kaggle/working/cache/llm`
 (notebook cell 5) and keep the cache zip: a cut session re-run with the old
 cache attached replays every finished call. Download `E10-R002.zip` and
